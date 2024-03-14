@@ -1,0 +1,35 @@
+.sample {
+    display: flex;
+    background-color: #e2e2e2;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    margin: 1rem;
+    padding: 1rem;
+    width: 425px;
+}
+
+.cover {
+    border-radius: 10px;
+    height: 125px;
+}
+
+.playButton {
+    background: none;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.time {
+    margin: 0 auto;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    color: #828282;
+    font-size: smaller;
+}
+
+.timeline {
+    color: #759;
+}
