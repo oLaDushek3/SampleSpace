@@ -34,12 +34,16 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Nickname = reader.GetString(reader.GetOrdinal("nickname")),
                     Email = reader.GetString(reader.GetOrdinal("email")),
-                    PasswordHash = reader.GetString(reader.GetOrdinal("password_hash"))
+                    PasswordHash = reader.GetString(reader.GetOrdinal("password_hash")),
+                    AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
+                        ? reader.GetString(reader.GetOrdinal("avatar_path"))
+                        : "",
                 };
             }
 
             return userEntity != null
-                ? User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email, userEntity.PasswordHash).User
+                ? User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email, userEntity.PasswordHash,
+                    userEntity.AvatarPath).User
                 : null;
         }
         finally
@@ -50,8 +54,8 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
 
     public async Task<Guid> Create(User user)
     {
-        var queryString = "insert into users(user_guid, nickname, email, password_hash)" +
-                          "values ($1, $2, $3, $4) returning user_guid";
+        var queryString = "insert into users(user_guid, nickname, email, password_hash, avatar_path)" +
+                          "values ($1, $2, $3, $4, $5) returning user_guid";
 
         var connection = GetConnection();
 
@@ -63,6 +67,7 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                 new NpgsqlParameter() { Value = user.Nickname },
                 new NpgsqlParameter() { Value = user.Email },
                 new NpgsqlParameter() { Value = user.Password },
+                new NpgsqlParameter() { Value = user.AvatarPath },
             }
         };
 

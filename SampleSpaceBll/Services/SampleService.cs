@@ -5,8 +5,13 @@ namespace SampleSpaceBll.Services;
 
 public class SampleService(ISampleRepository sampleRepository) : ISampleService
 {
-    public Task<List<Sample>> GetAll()
+    public async Task<List<Sample>> GetAll()
     {
-        return sampleRepository.GetAll();
+        return await sampleRepository.GetAll();
+    }
+    
+    public async Task<List<Sample>> Search(string searchString)
+    {
+        return await sampleRepository.Search(searchString);
     }
 }

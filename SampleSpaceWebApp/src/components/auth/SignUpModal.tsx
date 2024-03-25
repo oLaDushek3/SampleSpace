@@ -42,10 +42,10 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
         <div onClick={e => (e.currentTarget === e.target) && onClose()}>
             <h2>Регистрация</h2>
 
-            <form onSubmit={handleSubmit}>
+            <form className={"verticalForm"} onSubmit={handleSubmit}>
                 <label htmlFor="nickname">Имя пользователя</label>
                 <input id="nickname"
-                       className="control"
+                       className="text-input"
                        placeholder="Введите имя пользователя"
                        type="text"
                        maxLength={75}
@@ -54,7 +54,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
 
                 <label htmlFor="email">Почта</label>
                 <input id="email"
-                       className="control"
+                       className="text-input"
                        placeholder="Введит електронную почту"
                        type="email"
                        value={email}
@@ -62,7 +62,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
 
                 <label htmlFor="password">Пароль</label>
                 <input id="password"
-                       className="control"
+                       className="text-input"
                        placeholder="Введите пароль"
                        type="password"
                        value={password}

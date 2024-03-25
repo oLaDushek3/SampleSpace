@@ -9,4 +9,6 @@ public class UserEntity
     public string Email { get; set; } = string.Empty;
     
     public string PasswordHash { get; set; } = string.Empty;
+    
+    public string AvatarPath { get; set; } = string.Empty;
 }

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import Button from "../button/Button.tsx";
 import ErrorMessage from "../error-message/ErrorMessage.tsx";
 import UserApi from "../../dal/api/user/UserApi.ts";
+import useAuth from "../../hook/useAuth.ts";
 
 interface SignInModalProps {
     onClose: Function
@@ -11,6 +12,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
     const [nickname, setNickname] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
+    const {signIn} = useAuth();
     
 
     useEffect(() =>{
@@ -31,6 +33,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
         if (response) {
             onClose();
+            signIn(response)
         } else {
             setError("Ошибка авторизации");
             return
@@ -41,10 +44,10 @@ export default function SignInModal({onClose}: SignInModalProps) {
         <div onClick={e => (e.currentTarget === e.target) && onClose()}>
             <h2>Авторизация</h2>
 
-            <form onSubmit={handleSubmit}>
+            <form className={"verticalForm"} onSubmit={handleSubmit}>
                 <label htmlFor="nickname">Имя пользователя</label>
                 <input id="nickname"
-                       className="control"
+                       className="text-input"
                        placeholder="Введите имя пользователя"
                        type="text"
                        maxLength={75}
@@ -53,7 +56,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
                 <label htmlFor="password">Пароль</label>
                 <input id="password"
-                       className="control"
+                       className="text-input"
                        placeholder="Введите пароль"
                        type="password"
                        value={password}

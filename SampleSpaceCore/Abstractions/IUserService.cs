@@ -6,5 +6,5 @@ public interface IUserService
 {
     public Task<Guid> SigUp(User newUser);
 
-    public Task<(string? token, string error)> SigIn(string nickname, string password);
+    public Task<(User? loginUser, string? token, string error)> SigIn(string nickname, string password);
 }
