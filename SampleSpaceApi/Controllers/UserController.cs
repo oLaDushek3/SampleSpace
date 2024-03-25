@@ -8,7 +8,7 @@ using SampleSpaceInfrastructure;
 namespace SampleSpaceApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
     [HttpPost("SignUp")]

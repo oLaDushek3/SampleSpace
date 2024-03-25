@@ -4,7 +4,7 @@ using SampleSpaceCore.Abstractions;
 namespace SampleSpaceApi.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("[controller]")]
+[Route("api/[controller]")]
 public class SampleController(ISampleService sampleService) : ControllerBase
 {
     [HttpGet("GetAllSamples")]
