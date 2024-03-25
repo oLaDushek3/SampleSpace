@@ -2,6 +2,7 @@ import axios from 'axios';
 import ApiBase from "../ApiBase";
 import IUserBlank from "../blanks/IUserBlank";
 import ILoginBlank from "../blanks/ILoginBlank";
+import IUser from "../../models/IUser.ts";
 
 export default class UserApi extends ApiBase {
     
@@ -21,7 +22,7 @@ export default class UserApi extends ApiBase {
             })
     }
 
-    static async signIn(nickname: string, password: string): Promise<boolean> {
+    static async signIn(nickname: string, password: string): Promise<IUser> {
 
         let url = this.baseAddress + "User/SignIn";
 
@@ -29,10 +30,10 @@ export default class UserApi extends ApiBase {
 
         return await axios.post(url, blank)
             .then(async res => {
-                return res.status === 200;
+                return res.data;
             })
             .catch(() => {
-                return false;
+                return null;
             })
     }
 }

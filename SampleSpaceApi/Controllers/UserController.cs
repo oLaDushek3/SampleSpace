@@ -31,14 +31,14 @@ public class UserController(IUserService userService) : ControllerBase
         var test = new s3test();
         var r = test.Main();
         
-        var (token, error) = await userService.SigIn(request.Nickname, request.Password);
+        var (loginUser, token, error) = await userService.SigIn(request.Nickname, request.Password);
         
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
         
         HttpContext.Response.Cookies.Append("jwt", token!);
         
-        return Ok(token);
+        return Ok(loginUser);
     }
     
     [Authorize]

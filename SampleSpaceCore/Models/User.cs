@@ -4,12 +4,13 @@ public class User
 {
     private const int MaxNicknameLength = 75;
 
-    private User(Guid userGuid, string nickname, string email, string password)
+    private User(Guid userGuid, string nickname, string email, string password, string? avatarPath)
     {
         UserGuid = userGuid;
         Nickname = nickname;
         Email = email;
         Password = password;
+        AvatarPath = avatarPath;
     }
 
     public Guid UserGuid { get; }
@@ -20,9 +21,12 @@ public class User
 
     public string Password { get; private set; }
 
+    public string? AvatarPath { get; private set; }
+
     public void ChangePassword(string newPassword) => Password = newPassword;
 
-    public static (User User, string Error) Create(Guid userGuid, string nickname, string email, string password)
+    public static (User User, string Error) Create(Guid userGuid, string nickname, string email, string password,
+        string? avatarPath = null)
     {
         var error = string.Empty;
 
@@ -35,7 +39,7 @@ public class User
         if (string.IsNullOrEmpty(password))
             error = "Email cannot be empty";
 
-        var user = new User(userGuid, nickname, email, password);
+        var user = new User(userGuid, nickname, email, password, avatarPath);
 
         return (user, error);
     }

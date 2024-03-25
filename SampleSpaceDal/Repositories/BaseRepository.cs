@@ -5,7 +5,7 @@ namespace SampleSpaceDal.Repositories;
 
 public class BaseRepository
 {
-    private readonly IConfiguration? _configuration;
+    private readonly IConfiguration _configuration;
     
     protected BaseRepository(IConfiguration configuration)
     {

@@ -1,9 +1,11 @@
-header {
-    height: 50px;
+.headerPanel {
     display: flex;
-    padding: 0 1rem;
-    justify-content: space-between;
+    padding: 0.5rem 1rem;
     align-items: center;
     border-bottom: 1px solid #ccc;
     background: #fafafa;
+}
+
+.search {
+    flex: 1;
 }

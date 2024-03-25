@@ -1,30 +1,24 @@
-import {useEffect, useState} from "react";
 import Header from "./components/header/Header.tsx";
-import ISample from "./dal/models/ISample.ts";
-import SampleApi from "./dal/api/sample/SampleApi.ts";
-import Sample from "./components/sample/Sample.tsx";
+import {Route, Routes} from "react-router-dom";
+import MainPage from "./pages/main-page/MainPage.tsx";
+import SearchPage from "./pages/search-page/SearchPage.tsx";
+import RequireAuth from "./hoc/RequireAuth.tsx";
+import AuthProvider from "./hoc/AuthProvider.tsx";
 
-function App() {
-    const [samples, setSamples] = useState<ISample[]>([])
-    
-    async function fetchSample() {
-        const response = await SampleApi.getAllSamples();
-        setSamples(response);
-    }
-    
-    useEffect(() => {
-        fetchSample();
-    }, [])
-    
+function App() {    
     return (
-        <>
+        <AuthProvider>
             <Header/>
 
-            <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
-                { samples.map(sample => <Sample sample={sample} key={sample.sampleGuid.toString()}/>) }
-            </div>
-            
-        </>
+            <Routes>
+                <Route path="/" element={<MainPage/>}/>
+                <Route path="/search" element={<SearchPage/>}/>
+                <Route path="/gg" element={
+                    <RequireAuth>
+                        <div className={"gg"}><h1>Ну гг че</h1></div>
+                    </RequireAuth>}/>
+            </Routes>
+        </AuthProvider>
     )
 }
 

@@ -16,4 +16,17 @@ export default class UserApi extends ApiBase {
                 return [];
             })
     }
+
+    static async searchSamples(searchString: string): Promise<Array<ISample>> {
+
+        let url = this.baseAddress + "Sample/SearchSamples?search_string=" + searchString;
+
+        return await axios.get(url)
+            .then(async res => {
+                return res.data;
+            })
+            .catch(() => {
+                return [];
+            })
+    }
 }

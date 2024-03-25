@@ -16,7 +16,7 @@ public class UserService(IUsersRepository userRepository, IPasswordHasher passwo
         return await userRepository.Create(newUser);
     }
 
-    public async Task<(string? token, string error)> SigIn(string nickname, string password)
+    public async Task<(User? loginUser, string? token, string error)> SigIn(string nickname, string password)
     {
         var error = string.Empty;
         
@@ -25,7 +25,7 @@ public class UserService(IUsersRepository userRepository, IPasswordHasher passwo
         if (userEntity == null)
         {
             error = "Failed to login";
-            return (null, error);
+            return (null, null, error);
         }
 
         var result = passwordHasher.Verify(password, userEntity.Password);
@@ -33,11 +33,11 @@ public class UserService(IUsersRepository userRepository, IPasswordHasher passwo
         if (!result)
         {
             error = "Failed to login";
-            return (null, error);
+            return (null, null, error);
         }
 
         var token = jwtProvider.GenerateToken(userEntity);
         
-        return (token, error);
+        return (userEntity, token, error);
     }
 }

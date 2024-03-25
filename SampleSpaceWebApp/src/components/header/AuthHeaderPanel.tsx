@@ -1,8 +1,8 @@
 import {useState} from "react";
 import Button from "../button/Button.tsx";
 import Modal from "../modal/Modal.tsx";
-import SignUpModal from "./SignUpModal.tsx";
-import SignInModal from "./SignInModal.tsx";
+import SignUpModal from "../auth/SignUpModal.tsx";
+import SignInModal from "../auth/SignInModal.tsx";
 
 export default function AuthHeaderPanel() {
 
@@ -11,7 +11,7 @@ export default function AuthHeaderPanel() {
 
     return (
         <>
-            <div>
+            <div className={"panel"}>
                 <Button isPrimary={true}
                         onClick={() => setSigInIsOpen(true)}>
                     Войти
