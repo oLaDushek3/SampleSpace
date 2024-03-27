@@ -4,6 +4,7 @@ import {AiFillPlayCircle, AiFillPauseCircle} from "react-icons/ai";
 import {IconContext} from "react-icons";
 import ISample from "../../dal/models/ISample.ts";
 import classes from "./Sample.module.css";
+import SampleApi from "../../dal/api/sample/SampleApi.ts";
 
 interface SampleProps {
     sample: ISample;
@@ -13,6 +14,7 @@ export default function Sample({sample}: SampleProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [time, setTime] = useState({min: 0, sec: 0});
     const [currTime, setCurrTime] = useState({min: 0, sec: 0,});
+    const [clicked, setClicked] = useState(false);
 
     const [seconds, setSeconds] = useState();
 
@@ -38,8 +40,14 @@ export default function Sample({sample}: SampleProps) {
         }, 1000);
         return () => clearInterval(interval);
     }, [sound]);
+    
+    async function playingButton() {
+        if (!clicked) {
+            setClicked(true);
 
-    function playingButton() {
+            await SampleApi.addAnListensToSample(sample.sampleGuid);
+        }
+
         if (isPlaying) {
             pause();
             setIsPlaying(false);

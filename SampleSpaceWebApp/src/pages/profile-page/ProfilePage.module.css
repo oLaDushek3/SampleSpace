@@ -1,0 +1,21 @@
+.profilePanel {
+    padding: 1.5rem;
+}
+
+.profilePanel > *:not(:last-child)  {
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.horizontalPanel {
+    display: flex;
+}
+
+.horizontalPanel > *:not(:last-child) {
+    margin-right: 1rem;
+}
+
+.avatar {
+    height: 225px;
+    border-radius: 15px;
+}

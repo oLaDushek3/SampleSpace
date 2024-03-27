@@ -9,13 +9,16 @@ export default function SearchPage() {
     const [searchParams] = useSearchParams()
     const searchQuery = searchParams.get("search_query")
     
-    async function fetchSample() {
+    async function fetchSamples() {
+        console.log("fetchSamples")
         const response = await SampleApi.searchSamples(searchQuery!);
+        console.log(response)
         setSamples(response);
     }
 
     useEffect(() => {
-        fetchSample();
+        console.log("useEffect")
+        fetchSamples();
     }, [searchQuery])
 
     return(

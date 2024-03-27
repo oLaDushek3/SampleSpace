@@ -6,13 +6,13 @@ import SampleList from "../../components/sample-list/SampleList.tsx";
 export default function MainPage() {
     const [samples, setSamples] = useState<ISample[]>([])
 
-    async function fetchSample() {
+    async function fetchSamples() {
         const response = await SampleApi.getAllSamples();
         setSamples(response);
     }
 
     useEffect(() => {
-        fetchSample();
+        fetchSamples();
     }, [])
     
     return(

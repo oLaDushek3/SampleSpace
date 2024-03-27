@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "axios": "^1.6.7",
+    "chart.js": "^4.4.2",
     "guid-typescript": "^1.0.9",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
     "use-sound": "^4.0.1"

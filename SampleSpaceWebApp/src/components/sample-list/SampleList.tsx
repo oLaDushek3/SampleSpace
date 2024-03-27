@@ -3,10 +3,10 @@ import Sample from "../sample/Sample.tsx";
 import sampleListClasses from "./SampleList.module.css"
 
 interface SampleListProps {
-    samples: ISample[]
+    samples?: ISample[]
 }
 
-export default function SampleList({samples}: SampleListProps) {
+export default function SampleList({samples = []}: SampleListProps) {
     return (
         <div className={sampleListClasses.list}>
             {!samples || samples.length ?

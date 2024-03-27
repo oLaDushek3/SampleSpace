@@ -11,4 +11,8 @@ public class SampleEntity
     public string Name { get; set; } = string.Empty;
 
     public string Artist { get; set; } = string.Empty;
+    
+    public Guid UserGuid { get; set; }
+    
+    public int NumberOfListens { get; set; }
 }

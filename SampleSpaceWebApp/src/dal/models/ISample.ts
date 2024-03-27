@@ -6,4 +6,5 @@ export default interface ISample {
     coverPath: string;
     name: string;
     artist: string;
+    numberOfListens: number;
 }
