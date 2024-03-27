@@ -15,20 +15,32 @@ public class UserService(IUsersRepository userRepository, IPasswordHasher passwo
 
         return await userRepository.Create(newUser);
     }
+    
+    public async Task<(User? loginUser, string error)> GetUser(string nickname)
+    {
+        var error = string.Empty;
+        
+        var user = await userRepository.GetByNickname(nickname);
+
+        if (user != null) return (user, error);
+        
+        error = "User was not found";
+        return (null, error);
+    }
 
     public async Task<(User? loginUser, string? token, string error)> SigIn(string nickname, string password)
     {
         var error = string.Empty;
         
-        var userEntity = await userRepository.GetByNickname(nickname);
+        var user = await userRepository.GetByNickname(nickname);
 
-        if (userEntity == null)
+        if (user == null)
         {
             error = "Failed to login";
             return (null, null, error);
         }
 
-        var result = passwordHasher.Verify(password, userEntity.Password);
+        var result = passwordHasher.Verify(password, user.Password);
         
         if (!result)
         {
@@ -36,8 +48,8 @@ public class UserService(IUsersRepository userRepository, IPasswordHasher passwo
             return (null, null, error);
         }
 
-        var token = jwtProvider.GenerateToken(userEntity);
+        var token = jwtProvider.GenerateToken(user);
         
-        return (userEntity, token, error);
+        return (user, token, error);
     }
 }

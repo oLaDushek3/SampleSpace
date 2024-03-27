@@ -1,9 +1,16 @@
 .headerPanel {
+    height: 60px;
     display: flex;
     padding: 0.5rem 1rem;
     align-items: center;
     border-bottom: 1px solid #ccc;
     background: #fafafa;
+}
+
+.headerPanel > * {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
 }
 
 .search {

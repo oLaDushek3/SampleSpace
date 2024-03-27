@@ -37,7 +37,7 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                     PasswordHash = reader.GetString(reader.GetOrdinal("password_hash")),
                     AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
                         ? reader.GetString(reader.GetOrdinal("avatar_path"))
-                        : "",
+                        : null,
                 };
             }
 
@@ -67,7 +67,7 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                 new NpgsqlParameter() { Value = user.Nickname },
                 new NpgsqlParameter() { Value = user.Email },
                 new NpgsqlParameter() { Value = user.Password },
-                new NpgsqlParameter() { Value = user.AvatarPath },
+                new NpgsqlParameter() { Value = user.AvatarPath != null ? user.AvatarPath : DBNull.Value },
             }
         };
 

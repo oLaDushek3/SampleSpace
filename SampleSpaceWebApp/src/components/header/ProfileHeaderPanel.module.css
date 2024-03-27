@@ -1,0 +1,15 @@
+.avatar {
+    border-radius: 50%;
+    height: 100%;
+}
+
+.link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.link:hover {
+    filter: brightness(70%)
+}

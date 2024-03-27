@@ -41,6 +41,20 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(loginUser);
     }
     
+    [HttpPost("GetUser")]
+    public async Task<IActionResult> GetUser(string nickname)
+    {
+        var test = new s3test();
+        var r = test.Main();
+        
+        var (user, error) = await userService.GetUser(nickname);
+        
+        if (!string.IsNullOrEmpty(error))
+            return BadRequest(error);
+        
+        return Ok(user);
+    }
+    
     [Authorize]
     [HttpPost("SigInAuth")]
     public async Task<IActionResult> SigInAuth(LoginUserRequest request)
