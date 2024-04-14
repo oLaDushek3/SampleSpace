@@ -19,10 +19,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-
-    "paths": {
-      "use-sound": ["./generated-types/"]
-    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

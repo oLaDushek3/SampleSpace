@@ -1,104 +1,93 @@
-import {useEffect, useState} from "react";
-import {useSound} from "use-sound";
-import {AiFillPlayCircle, AiFillPauseCircle} from "react-icons/ai";
-import {IconContext} from "react-icons";
+import sampleClasses from "./Sample.module.css"
 import ISample from "../../dal/models/ISample.ts";
-import classes from "./Sample.module.css";
-import SampleApi from "../../dal/api/sample/SampleApi.ts";
+import {ChangeEvent, useEffect, useRef, useState} from "react";
+import Button, {ButtonVisualType} from "../button/Button.tsx";
+import { IoPlay , IoPause } from "react-icons/io5";
 
 interface SampleProps {
     sample: ISample;
 }
 
 export default function Sample({sample}: SampleProps) {
+    const audioRef = useRef<HTMLAudioElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [time, setTime] = useState({min: 0, sec: 0});
-    const [currTime, setCurrTime] = useState({min: 0, sec: 0,});
-    const [clicked, setClicked] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
 
-    const [seconds, setSeconds] = useState();
+    const handlePlay = () => {
+        audioRef.current!.play();
+        setIsPlaying(true);
+    };
 
-    const [play, {pause, duration, sound}] = useSound(sample.samplePath);
+    const handlePause = () => {
+        audioRef.current!.pause();
+        setIsPlaying(false);
+    };
 
-    useEffect(() => {
-        if (duration) {
-            const sec = duration / 1000;
-            const min = Math.floor(sec / 60);
-            const secRemain = Math.floor(sec % 60);
-            setTime({min: min, sec: secRemain});
-        }
-    }, [isPlaying]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (sound) {
-                setSeconds(sound.seek([]));
-                const min = Math.floor(sound.seek([]) / 60);
-                const sec = Math.floor(sound.seek([]) % 60);
-                setCurrTime({min, sec});
-            }
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [sound]);
-    
-    async function playingButton() {
-        if (!clicked) {
-            setClicked(true);
-
-            await SampleApi.addAnListensToSample(sample.sampleGuid);
-        }
-
+    const handlePlayPause = () => {
         if (isPlaying) {
-            pause();
-            setIsPlaying(false);
+            handlePause();
         } else {
-            play();
-            setIsPlaying(true);
+            handlePlay();
         }
+    };
+
+    const handleTimeUpdate = () => {
+        setCurrentTime(audioRef.current!.currentTime);
+        setDuration(audioRef.current!.duration);
+        
+        if(audioRef.current!.currentTime === audioRef.current!.duration) {
+            handlePause();
+            audioRef.current!.currentTime = 0;
+        }
+    };
+
+    const handleSeek = (e: ChangeEvent<HTMLInputElement>) => {
+        audioRef.current!.currentTime = +e.currentTarget.value;
+        setCurrentTime(+e.currentTarget.value);
+    };
+
+    function formatDuration(durationSeconds: number) {
+        const minutes = Math.floor(durationSeconds / 60);
+        const seconds = Math.floor(durationSeconds % 60);
+        const formattedSeconds = seconds.toString().padStart(2, "0");
+        return `${minutes}:${formattedSeconds}`;
     }
 
+    useEffect(() => {
+        audioRef.current!.addEventListener("timeupdate", handleTimeUpdate);
+        return () => {
+            audioRef.current!.removeEventListener("timeupdate", handleTimeUpdate);
+        };
+    }, []);
+
     return (
-        <div className={classes.sample}>
+        <div className={sampleClasses.sample + " horizontalPanel"}>
+            <audio ref={audioRef} src={sample.samplePath} onCanPlayThrough={handleTimeUpdate}/>
+            <img className={sampleClasses.cover} src={sample.coverPath} alt="Cover image"/>
 
-            <img className={classes.cover} src={sample.coverPath} alt={sample.name}/>
-
-            <div style={{margin: "0 1rem"}}>
-                <h3 className={classes.name}>{sample.name}</h3>
-                <p className={classes.artist}>{sample.artist}</p>
-
+            <div className={sampleClasses.mainSpace + " verticalPanel"}>
                 <div>
-                    <div>
-                        <div className={classes.time}>
-                            <p>{currTime.min}:{currTime.sec}</p>
-                            <p>{time.min}:{time.sec}</p>
-                        </div>
-                        <input className={classes.timeline}
-                               type="range"
-                               min="0"
-                               max={duration! / 1000}
-                               value={seconds}
-                               defaultValue="0"
-                               onChange={e => {
-                                   sound.seek([e.target.value]);
-                               }}
-                        />
-                    </div>
+                    <h3>{sample.name}</h3>
+                    <p>{sample.artist}</p>
+                </div>
+                
+                <div className={sampleClasses.track + " horizontalPanel"}>
+                    <input type="range"
+                           min="0"
+                           max={duration}
+                           step="0.001"
+                           value={currentTime}
+                           onChange={handleSeek}/>
 
-                    {!isPlaying ? (
-                        <button className={classes.playButton} onClick={playingButton}>
-                            <IconContext.Provider value={{size: "3em", color: "#759"}}>
-                                <AiFillPlayCircle/>
-                            </IconContext.Provider>
-                        </button>
-                    ) : (
-                        <button className={classes.playButton} onClick={playingButton}>
-                            <IconContext.Provider value={{size: "3em", color: "#759"}}>
-                                <AiFillPauseCircle/>
-                            </IconContext.Provider>
-                        </button>
-                    )}
+                    <p>{currentTime !== 0 ? formatDuration(currentTime) : formatDuration(duration)}</p>
                 </div>
 
+                <Button visualType={ButtonVisualType.icon}
+                        isPrimary={true}
+                        onClick={handlePlayPause}>
+                    {isPlaying ? <IoPause/> : <IoPlay/>}
+                </Button>
             </div>
         </div>
     )

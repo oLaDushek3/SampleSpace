@@ -10,7 +10,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
     user: null,
     signIn: () => undefined,
-    signOut: () => undefined
+    signOut: () => undefined,
 });
 
 interface AuthProviderProps {
@@ -26,7 +26,7 @@ export default function AuthProvider({children}: AuthProviderProps) {
     const signOut = () => {
         setUser(null)
     }
-
+    
     const value= {user, signIn, signOut}
 
     return <AuthContext.Provider value={value}>

@@ -7,14 +7,6 @@
     margin-bottom: 1rem;
 }
 
-.horizontalPanel {
-    display: flex;
-}
-
-.horizontalPanel > *:not(:last-child) {
-    margin-right: 1rem;
-}
-
 .avatar {
     height: 225px;
     border-radius: 15px;
