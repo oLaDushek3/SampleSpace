@@ -17,7 +17,6 @@ export default function SearchPage() {
     }
 
     useEffect(() => {
-        console.log("useEffect")
         fetchSamples();
     }, [searchQuery])
 

@@ -12,9 +12,9 @@ const styles = {
 }
 
 interface ButtonProps extends React.ComponentProps<'button'> {
+    visualType?: ButtonVisualType;
     isPrimary?: boolean;
     alone?: boolean;
-    visualType?: ButtonVisualType;
 }
 
 export default function Button({isPrimary = false, alone = false, visualType = ButtonVisualType.simple, ...pops}: ButtonProps) {

@@ -45,7 +45,9 @@ export default function Search({searchQuery = "", callBack}: SearchProps) {
                    onChange={(event) => setInputValue(event.target!.value)}/>
 
             {searchInput.current?.value.trim() &&
-                <Button type="button" visualType={ButtonVisualType.icon} onClick={() => setInputValue("")}>
+                <Button type="button" 
+                        visualType={ButtonVisualType.icon} 
+                        onClick={() => setInputValue("")}>
                     <IconContext.Provider value={{size: "1.5em"}}>
                         <IoCloseOutline/>
                     </IconContext.Provider>

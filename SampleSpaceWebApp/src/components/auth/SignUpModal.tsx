@@ -39,10 +39,12 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     }
 
     return (
-        <div onClick={e => (e.currentTarget === e.target) && onClose()}>
+        <div className={"verticalPanel"} 
+             onClick={e => (e.currentTarget === e.target) && onClose()}>
             <h2>Регистрация</h2>
 
-            <form className={"verticalForm"} onSubmit={handleSubmit}>
+            <form className={"verticalPanel"} 
+                  onSubmit={handleSubmit}>
                 <label htmlFor="nickname">Имя пользователя</label>
                 <input id="nickname"
                        className="text-input"

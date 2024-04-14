@@ -42,13 +42,13 @@ export default function ProfilePage({}: ProfilePageProps) {
     return (
         <>
             <div className={profilePageClasses.profilePanel}>
-                <div className={profilePageClasses.horizontalPanel}>
+                <div className="horizontalPanel">
                     <img className={profilePageClasses.avatar} src={user?.avatarPath} alt={"avatar"}/>
-                    <div>
+                    <div className="verticalPanel">
                         <h1>{user?.nickname}</h1>
                         <h2>{user?.email}</h2>
 
-                        <div className={profilePageClasses.horizontalPanel}>
+                        <div className="horizontalPanel">
                             <Button isPrimary={true}
                                     onClick={() => setStatisticsIsOpen(true)}>
                                 Статистика

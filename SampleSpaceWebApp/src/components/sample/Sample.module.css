@@ -1,11 +1,12 @@
 .sample {
-    display: flex;
     background-color: #e2e2e2;
     border: 1px solid #ccc;
     border-radius: 15px;
     margin: 1rem;
     padding: 1rem;
     width: 425px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .cover {
@@ -13,23 +14,21 @@
     height: 125px;
 }
 
-.playButton {
-    background: none;
-    border: none;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+.mainSpace {
+    flex: 1;
 }
 
-.time {
-    margin: 0 auto;
-    width: 80%;
+.track {
+    flex: 1;
     display: flex;
     justify-content: space-between;
-    color: #828282;
-    font-size: smaller;
+    align-items: center;
+    font-size: 14px;
 }
 
-.timeline {
-    color: #759;
+input[type="range"] {
+    flex: 1;
+    accent-color: #759;
+    outline: none;
+    display: flex;
 }
