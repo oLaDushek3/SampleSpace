@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Button from "../button/Button.tsx";
 import ErrorMessage from "../error-message/ErrorMessage.tsx";
 import UserApi from "../../dal/api/user/UserApi.ts";
 import useAuth from "../../hook/useAuth.ts";
+import useClickOutside from "../../hook/useClickOutside.ts";
 
 interface SignInModalProps {
-    onClose: Function
+    onClose: () => void;
 }
 
 export default function SignInModal({onClose}: SignInModalProps) {
+    const wrapperRef = useRef(null);
+    useClickOutside(wrapperRef, onClose);
     const [nickname, setNickname] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
@@ -41,7 +44,8 @@ export default function SignInModal({onClose}: SignInModalProps) {
     }
 
     return (
-        <div className={"verticalPanel"} 
+        <div ref={wrapperRef} 
+             className={"verticalPanel"} 
              onClick={e => (e.currentTarget === e.target) && onClose()}>
             <h2>Авторизация</h2>
 
@@ -74,7 +78,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
             </form>
 
             <p style={{textAlign: "center", margin: "0.5rem", cursor: "pointer"}}
-               onClick={() => onClose()}>Назад</p>
+               onClick={onClose}>Назад</p>
         </div>
     )
 }

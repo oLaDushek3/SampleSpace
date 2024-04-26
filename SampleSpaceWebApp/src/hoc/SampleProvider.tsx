@@ -1,27 +1,182 @@
-import React, {createContext, Ref, RefObject, useEffect, useState} from "react";
+import {ChangeEvent, createContext, ReactNode, useEffect, useRef, useState} from "react";
+import useLocalStorageState from 'use-local-storage-state'
+import ISamplePlayer from "../models/ISamplePlayer.ts";
 
-interface SampleContextType {
-    activeSample: RefObject<HTMLAudioElement> | null
+export enum ActionAtTheEnd {
+    pause,
+    playSkipForward,
+    repeat
 }
 
-export const SampleContext = createContext<SampleContextType>({
-    activeSample: null,
+export interface SamplePlayerContextType {
+    samplePlayerList: ISamplePlayer[] | null;
+    handleSamplePlayerList: (samplePlayerList: ISamplePlayer[]) => void;
+    playingSamplePlayer: ISamplePlayer | null;
+    handlePlayingSamplePlayer: (samplePlayer: ISamplePlayer) => void;
+    handlePlayPause: () => void;
+    handleSeek: (e: ChangeEvent<HTMLInputElement>) => void;
+    currentTime: number;
+    handleActionAtTheEnd: (action: ActionAtTheEnd) => void,
+    currentActionAtTheEnd: ActionAtTheEnd,
+    handleVolume: (e: ChangeEvent<HTMLInputElement>) => void;
+    currentVolume: number,
+    isPlaying: boolean;
+    handlePlaySkipForward: () => void;
+    handlePlaySkipPrevious: () => void;
+}
+
+export const SamplePlayerContext = createContext<SamplePlayerContextType>({
+    samplePlayerList: null,
+    handleSamplePlayerList: () => {},
+    playingSamplePlayer: null,
+    handlePlayingSamplePlayer: () => {},
+    handlePlayPause: () => {},
+    handleSeek: () => {},
+    currentTime: 0,
+    handleActionAtTheEnd: () => {},
+    currentActionAtTheEnd: ActionAtTheEnd.pause,
+    handleVolume: () => {},
+    currentVolume: 0,
+    isPlaying: false,
+    handlePlaySkipForward: () => {},
+    handlePlaySkipPrevious: () => {}
 });
 
-interface SampleProviderProps {
-    children: React.ReactNode;
+interface SamplePlayerProviderProps {
+    children: ReactNode;
 }
 
-export default function AuthProvider({children}: SampleProviderProps) {
-    const [activeSample, setActiveSample] = useState<RefObject<HTMLAudioElement>>(null)
+export default function SamplePlayerProvider({children}: SamplePlayerProviderProps) {
+    const [samplePlayerList, setSamplePlayerList] = useState<ISamplePlayer[] | null>(null)
+    const [playingSamplePlayer, setPlayingSamplePlayer] = useState<ISamplePlayer | null>(null)
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [currentActionAtTheEnd, setCurrentActionAtTheEnd] = useLocalStorageState<ActionAtTheEnd>("actionAtTheEnd", {defaultValue: ActionAtTheEnd.playSkipForward});
+    const [currentVolume, setCurrentVolume] = useLocalStorageState<number>("volume", {defaultValue: 0.5});
+
+    const handleSamplePlayerList = (samplePlayerList: ISamplePlayer[]) => {
+        setSamplePlayerList(samplePlayerList);
+    }
+
+    const handlePlayingSamplePlayer = (samplePlayer: ISamplePlayer) => {
+        if (playingSamplePlayer)
+            playingSamplePlayer.isActive = false;
+
+        //Attaching a timestamp to the URL to avoid caching
+        samplePlayer.sample.samplePath += '?' + new Date().getTime();
+        samplePlayer.isActive = true;
+        setPlayingSamplePlayer(samplePlayer);
+        setIsPlaying(true);
+    }
+
+    const handlePlay = () => {
+        audioRef.current!.play();
+        setIsPlaying(true);
+    };
+
+    const handlePause = () => {
+        audioRef.current!.pause();
+        setIsPlaying(false);
+    };
+
+    const handlePlayPause = () => {
+        if (isPlaying) {
+            handlePause();
+        } else {
+            handlePlay();
+        }
+    };
+
+    const handleTimeUpdate = () => {
+        setCurrentTime(audioRef.current!.currentTime);
+
+        if (audioRef.current!.currentTime === audioRef.current!.duration) {
+
+            if(currentActionAtTheEnd === ActionAtTheEnd.pause){
+                handlePause();
+                return
+            }
+            
+            if(currentActionAtTheEnd === ActionAtTheEnd.playSkipForward){
+                handlePlaySkipForward();
+                return
+            }
+
+            if(currentActionAtTheEnd === ActionAtTheEnd.repeat){
+                audioRef.current!.currentTime = 0;
+                handlePlay();
+                return;
+            }
+        }
+    };
+
+    const handleSeek = (e: ChangeEvent<HTMLInputElement>) => {
+        audioRef.current!.currentTime = +e.currentTarget.value;
+        setCurrentTime(+e.currentTarget.value);
+    };
+
+    const handleActionAtTheEnd = (action: ActionAtTheEnd) => {
+        setCurrentActionAtTheEnd(action);
+    }
+    
+    const handleVolume = (e: ChangeEvent<HTMLInputElement>) => {
+        setCurrentVolume(+e.currentTarget.value);
+    }
 
     useEffect(() => {
-        activeSample.current?.pause()
-    }, [activeSample]);
-    
-    const value= {activeSample}
+        audioRef.current!.volume = +currentVolume;
+    }, [currentVolume]);
 
-    return <SampleContext.Provider value={value}>
+    const handlePlaySkipForward = () => {
+        const index = samplePlayerList?.indexOf(playingSamplePlayer!)
+
+        if (index && index + 1 === samplePlayerList!.length) {
+            handlePause();
+            return;
+        }
+
+        handlePlayingSamplePlayer(samplePlayerList![samplePlayerList!.indexOf(playingSamplePlayer!) + 1]);
+    };
+
+    const handlePlaySkipPrevious = () => {
+        const index = samplePlayerList?.indexOf(playingSamplePlayer!)
+
+        if (index === 0) {
+            handlePause();
+            return;
+        }
+
+        handlePlayingSamplePlayer(samplePlayerList![samplePlayerList!.indexOf(playingSamplePlayer!) - 1]);
+    };
+
+    useEffect(() => {
+        audioRef.current?.addEventListener("timeupdate", handleTimeUpdate);
+        return () => {
+            audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
+        };
+    }, [playingSamplePlayer]);
+
+    const value = {
+        samplePlayerList: samplePlayerList,
+        handleSamplePlayerList,
+        playingSamplePlayer: playingSamplePlayer,
+        handlePlayingSamplePlayer,
+        handlePlayPause,
+        handleSeek,
+        currentTime,
+        handleActionAtTheEnd,
+        currentActionAtTheEnd,
+        handleVolume,
+        currentVolume,
+        isPlaying,
+        handlePlaySkipForward,
+        handlePlaySkipPrevious
+    }
+
+    return <SamplePlayerContext.Provider value={value}>
+        <audio ref={audioRef} src={playingSamplePlayer?.sample.samplePath}
+               autoPlay={true}/>
         {children}
-    </SampleContext.Provider>
+    </SamplePlayerContext.Provider>
 }

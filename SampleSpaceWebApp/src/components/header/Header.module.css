@@ -16,3 +16,15 @@
 .search {
     flex: 1;
 }
+
+.playerPanelContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.playerPanelContainer > button {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1/1
+}

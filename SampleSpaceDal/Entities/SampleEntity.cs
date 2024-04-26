@@ -15,4 +15,6 @@ public class SampleEntity
     public Guid UserGuid { get; set; }
     
     public int NumberOfListens { get; set; }
+    
+    public double Duration { get; set; }
 }

@@ -1,0 +1,45 @@
+.settings {
+    z-index: 2;
+    position: absolute;
+    background-color: #e2e2e2;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 0.75rem;
+    top: 60px;
+    right: 0;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: 0.4s;
+}
+
+.settings.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.cover {
+    border-radius: 10px;
+    height: 50px;
+}
+
+.playbackControlPanel {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.volume {
+    visibility: hidden;
+    width: 0;
+    transform: translateX(-20px);
+    transition: visibility 0.2s, width 0.4s, transform 0.4s;
+}
+
+.volume.active {
+    visibility: visible;
+    width: 75px;
+    transform: translateX(0px);
+}

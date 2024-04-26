@@ -12,14 +12,16 @@ const styles = {
 }
 
 interface ButtonProps extends React.ComponentProps<'button'> {
+    isActive?: boolean;
     visualType?: ButtonVisualType;
     isPrimary?: boolean;
     alone?: boolean;
 }
 
-export default function Button({isPrimary = false, alone = false, visualType = ButtonVisualType.simple, ...pops}: ButtonProps) {
-    
+export default function Button({isActive = true, isPrimary = false, alone = false, visualType = ButtonVisualType.simple, ...pops}: ButtonProps) {
     let classes: string = styles[visualType];
+    
+    if(!isActive) classes += ` ${buttonClasses.inactive}`
     
     if(isPrimary) classes += ` ${buttonClasses.primary}`;
     

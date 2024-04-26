@@ -38,7 +38,7 @@ public class UserController(IUserService userService) : ControllerBase
         
         HttpContext.Response.Cookies.Append("jwt", token!);
         
-        return Ok(loginUser);
+        return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser!.Nickname, loginUser.Email));
     }
     
     [HttpPost("GetUser")]
