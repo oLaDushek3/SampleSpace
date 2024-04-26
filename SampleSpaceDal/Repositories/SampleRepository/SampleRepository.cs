@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using SampleSpaceCore.Abstractions;
@@ -32,12 +33,14 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     CoverPath = reader.GetString(reader.GetOrdinal("cover_path")),
                     Name = reader.GetString(reader.GetOrdinal("name")),
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
-                    UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid"))
+                    UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    Duration = reader.GetDouble(reader.GetOrdinal("duration"))
                 };
 
                 sampleEntities.Add(Sample.Create(sampleEntity.SampleGuid, sampleEntity.SamplePath,
                     sampleEntity.CoverPath, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
-                    sampleEntity.NumberOfListens).Sample);
+                    sampleEntity.NumberOfListens, sampleEntity.Duration).Sample);
             }
 
             return sampleEntities;
@@ -76,12 +79,13 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     Name = reader.GetString(reader.GetOrdinal("name")),
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
-                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"))
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    Duration = reader.GetDouble(reader.GetOrdinal("duration"))
                 };
 
                 sampleEntities.Add(Sample.Create(sampleEntity.SampleGuid, sampleEntity.SamplePath,
                     sampleEntity.CoverPath, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
-                    sampleEntity.NumberOfListens).Sample);
+                    sampleEntity.NumberOfListens, sampleEntity.Duration).Sample);
             }
 
             return sampleEntities;
@@ -120,12 +124,13 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     Name = reader.GetString(reader.GetOrdinal("name")),
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
-                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"))
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    Duration = reader.GetDouble(reader.GetOrdinal("duration"))
                 };
 
                 sampleEntities.Add(Sample.Create(sampleEntity.SampleGuid, sampleEntity.SamplePath,
                     sampleEntity.CoverPath, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
-                    sampleEntity.NumberOfListens).Sample);
+                    sampleEntity.NumberOfListens, sampleEntity.Duration).Sample);
             }
 
             return sampleEntities;

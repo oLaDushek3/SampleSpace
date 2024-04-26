@@ -2,8 +2,8 @@ import {FormEvent, useEffect, useRef, useState} from "react";
 import {IconContext} from "react-icons";
 import {CiSearch} from "react-icons/ci";
 import {IoCloseOutline} from "react-icons/io5";
-import searchClasses from "./Search.module.css"
 import Button, {ButtonVisualType} from "../button/Button.tsx";
+import searchClasses from "./Search.module.css"
 
 interface SearchProps {
     searchQuery?: string;
@@ -12,12 +12,12 @@ interface SearchProps {
 
 export default function Search({searchQuery = "", callBack}: SearchProps) {
     const searchInput = useRef<HTMLInputElement>(null)
-    const [inputValue, setInputValue] = useState("")
+    const [inputValue, setInputValue] = useState(searchQuery)
 
     useEffect(() => {
-        setInputValue(searchQuery)
+        setInputValue(searchQuery);
     }, [searchQuery]);
-
+    
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
@@ -44,7 +44,7 @@ export default function Search({searchQuery = "", callBack}: SearchProps) {
                    value={inputValue}
                    onChange={(event) => setInputValue(event.target!.value)}/>
 
-            {searchInput.current?.value.trim() &&
+            {inputValue?.trim() &&
                 <Button type="button" 
                         visualType={ButtonVisualType.icon} 
                         onClick={() => setInputValue("")}>

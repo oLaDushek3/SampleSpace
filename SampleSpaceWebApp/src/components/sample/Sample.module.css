@@ -11,7 +11,12 @@
 
 .cover {
     border-radius: 10px;
-    height: 125px;
+    height: 115px;
+}
+
+.cover:hover {
+    filter: brightness(90%);
+    cursor: pointer;
 }
 
 .mainSpace {
@@ -20,8 +25,6 @@
 
 .track {
     flex: 1;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     font-size: 14px;
 }
@@ -30,5 +33,4 @@ input[type="range"] {
     flex: 1;
     accent-color: #759;
     outline: none;
-    display: flex;
 }

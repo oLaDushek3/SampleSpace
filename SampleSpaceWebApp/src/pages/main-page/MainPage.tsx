@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import ISample from "../../dal/models/ISample.ts";
+import ISample from '../../dal/entities/ISample.ts';
 import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import SampleList from "../../components/sample-list/SampleList.tsx";
 

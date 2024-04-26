@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import ISample from "../../dal/models/ISample.ts";
+import ISample from "../../dal/entities/ISample.ts";
 import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import SampleList from "../../components/sample-list/SampleList.tsx";
 import {useSearchParams} from "react-router-dom";
@@ -10,9 +10,7 @@ export default function SearchPage() {
     const searchQuery = searchParams.get("search_query")
     
     async function fetchSamples() {
-        console.log("fetchSamples")
         const response = await SampleApi.searchSamples(searchQuery!);
-        console.log(response)
         setSamples(response);
     }
 

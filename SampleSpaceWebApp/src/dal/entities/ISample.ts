@@ -7,4 +7,5 @@ export default interface ISample {
     name: string;
     artist: string;
     numberOfListens: number;
+    duration: number;
 }

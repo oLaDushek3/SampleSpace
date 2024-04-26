@@ -6,28 +6,26 @@ import RequireAuth from "./hoc/RequireAuth.tsx";
 import AuthProvider from "./hoc/AuthProvider.tsx";
 import ProfilePage from "./pages/profile-page/ProfilePage.tsx";
 import NotFoundPage from "./pages/not-found/NotFoundPage.tsx";
+import SamplePlayerProvider from "./hoc/SampleProvider.tsx";
 
-function App() {    
+function App() {
     return (
         <AuthProvider>
-            <Header/>
+            <SamplePlayerProvider>
+                <Header/>
 
-            <Routes>
-                <Route path="/" element={<MainPage/>}/>
-                <Route path="/search" element={<SearchPage/>}/>
-                <Route path="/gg" element={
-                    <RequireAuth>
-                        <div className="centered"><h1>Ну гг че</h1></div>
-                    </RequireAuth>}/>
-                <Route path="/:nickname" element={
-                    <RequireAuth>
-                        <ProfilePage/>
-                    </RequireAuth>
-                }/>
-                <Route path="*" element={
-                    <NotFoundPage/>
-                }/>
-            </Routes>
+                <Routes>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route path="/search" element={<SearchPage/>}/>
+                    <Route path="/gg" element={<div className="centered"><h1>Ну гг че</h1></div>}/>
+                    <Route path="/:nickname" element={
+                        <RequireAuth>
+                            <ProfilePage/>
+                        </RequireAuth>
+                    }/>
+                    <Route path="*" element={<NotFoundPage/>}/>
+                </Routes>
+            </SamplePlayerProvider>
         </AuthProvider>
     )
 }

@@ -1,51 +1,25 @@
 import sampleClasses from "./Sample.module.css"
-import ISample from "../../dal/models/ISample.ts";
-import {ChangeEvent, useEffect, useRef, useState} from "react";
+import ISamplePlayer from "../../models/ISamplePlayer.ts";
 import Button, {ButtonVisualType} from "../button/Button.tsx";
-import { IoPlay , IoPause } from "react-icons/io5";
+import {IoPlay, IoPause} from "react-icons/io5";
+import useSamplePlayerContext from "../../hook/useSamplePlayerContext.ts";
+import Modal from "../modal/Modal.tsx";
+import {useState} from "react";
+import SampleModal from "../sample-modal/SampleModal.tsx";
 
 interface SampleProps {
-    sample: ISample;
+    samplePlayer: ISamplePlayer;
 }
 
-export default function Sample({sample}: SampleProps) {
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-
-    const handlePlay = () => {
-        audioRef.current!.play();
-        setIsPlaying(true);
-    };
-
-    const handlePause = () => {
-        audioRef.current!.pause();
-        setIsPlaying(false);
-    };
-
-    const handlePlayPause = () => {
-        if (isPlaying) {
-            handlePause();
-        } else {
-            handlePlay();
-        }
-    };
-
-    const handleTimeUpdate = () => {
-        setCurrentTime(audioRef.current!.currentTime);
-        setDuration(audioRef.current!.duration);
-        
-        if(audioRef.current!.currentTime === audioRef.current!.duration) {
-            handlePause();
-            audioRef.current!.currentTime = 0;
-        }
-    };
-
-    const handleSeek = (e: ChangeEvent<HTMLInputElement>) => {
-        audioRef.current!.currentTime = +e.currentTarget.value;
-        setCurrentTime(+e.currentTarget.value);
-    };
+export default function Sample({samplePlayer}: SampleProps) {
+    const [sampleModalIsOpen, setSampleModalIsOpen] = useState(false)
+    const {
+        handlePlayingSamplePlayer,
+        handlePlayPause,
+        handleSeek,
+        currentTime,
+        isPlaying
+    } = useSamplePlayerContext()
 
     function formatDuration(durationSeconds: number) {
         const minutes = Math.floor(durationSeconds / 60);
@@ -54,41 +28,48 @@ export default function Sample({sample}: SampleProps) {
         return `${minutes}:${formattedSeconds}`;
     }
 
-    useEffect(() => {
-        audioRef.current!.addEventListener("timeupdate", handleTimeUpdate);
-        return () => {
-            audioRef.current!.removeEventListener("timeupdate", handleTimeUpdate);
-        };
-    }, []);
+    const handlePlayback = () => {
+        if (!samplePlayer.isActive)
+            handlePlayingSamplePlayer(samplePlayer);
+        else
+            handlePlayPause();
+    }
 
     return (
         <div className={sampleClasses.sample + " horizontalPanel"}>
-            <audio ref={audioRef} src={sample.samplePath} onCanPlayThrough={handleTimeUpdate}/>
-            <img className={sampleClasses.cover} src={sample.coverPath} alt="Cover image"/>
+            <img className={sampleClasses.cover} src={samplePlayer.sample.coverPath} alt="Cover image"
+                 onClick={() => {setSampleModalIsOpen(true)}}/>
 
             <div className={sampleClasses.mainSpace + " verticalPanel"}>
                 <div>
-                    <h3>{sample.name}</h3>
-                    <p>{sample.artist}</p>
+                    <h3>{samplePlayer.sample.name}</h3>
+                    <p>{samplePlayer.sample.artist}</p>
                 </div>
-                
-                <div className={sampleClasses.track + " horizontalPanel"}>
+
+                <div className={"horizontalPanel"}>
                     <input type="range"
                            min="0"
-                           max={duration}
+                           max={samplePlayer.sample.duration}
                            step="0.001"
-                           value={currentTime}
-                           onChange={handleSeek}/>
+                           value={samplePlayer.isActive ? currentTime : 0}
+                           onChange={samplePlayer.isActive ? handleSeek : () => {
+                           }}/>
 
-                    <p>{currentTime !== 0 ? formatDuration(currentTime) : formatDuration(duration)}</p>
+                    <p>{samplePlayer.isActive
+                        ? formatDuration(currentTime)
+                        : formatDuration(samplePlayer.sample.duration)}</p>
                 </div>
 
                 <Button visualType={ButtonVisualType.icon}
                         isPrimary={true}
-                        onClick={handlePlayPause}>
-                    {isPlaying ? <IoPause/> : <IoPlay/>}
+                        onClick={handlePlayback}>
+                    {samplePlayer.isActive && isPlaying ? <IoPause/> : <IoPlay/>}
                 </Button>
             </div>
+
+            <Modal open={sampleModalIsOpen}>
+                <SampleModal onClose={() => {setSampleModalIsOpen(false)}}/>
+            </Modal>
         </div>
     )
 }

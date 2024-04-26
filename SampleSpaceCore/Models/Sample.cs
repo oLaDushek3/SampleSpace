@@ -4,8 +4,9 @@ public class Sample
 {
     private const int MaxNameLength = 75;
     private const int MaxArtistLength = 75;
-    
-    private Sample(Guid sampleGuid, string samplePath, string coverPath, string name, string artist, Guid userGuid, int numberOfListens)
+
+    private Sample(Guid sampleGuid, string samplePath, string coverPath, string name, string artist, Guid userGuid,
+        int numberOfListens, double duration)
     {
         SampleGuid = sampleGuid;
         SamplePath = samplePath;
@@ -14,23 +15,27 @@ public class Sample
         Artist = artist;
         UserGuid = userGuid;
         NumberOfListens = numberOfListens;
+        Duration = duration;
     }
-    
+
     public Guid SampleGuid { get; set; }
 
     public string SamplePath { get; private set; }
-    
+
     public string CoverPath { get; private set; }
 
     public string Name { get; private set; }
 
     public string Artist { get; private set; }
-    
+
     public Guid UserGuid { get; private set; }
 
-    public int NumberOfListens { get; private set; } = 0;
-    
-    public static (Sample Sample, string Error) Create(Guid sampleGuid, string samplePath, string coverPath, string name, string artist, Guid userGuid, int numberOfListens)
+    public int NumberOfListens { get; private set; }
+
+    public double Duration { get; private set; }
+
+    public static (Sample Sample, string Error) Create(Guid sampleGuid, string samplePath, string coverPath,
+        string name, string artist, Guid userGuid, int numberOfListens, double duration)
     {
         var error = string.Empty;
 
@@ -39,14 +44,14 @@ public class Sample
 
         if (string.IsNullOrEmpty(coverPath))
             error = "Cover path cannot be empty";
-        
+
         if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
             error = $"Name cannot be empty or longer then {MaxNameLength} symbols";
-        
+
         if (string.IsNullOrEmpty(artist) || artist.Length > MaxArtistLength)
             error = $"Artist cannot be empty or longer then {MaxArtistLength} symbols";
 
-        var sample = new Sample(sampleGuid, samplePath, coverPath, name, artist, userGuid, numberOfListens);
+        var sample = new Sample(sampleGuid, samplePath, coverPath, name, artist, userGuid, numberOfListens, duration);
 
         return (sample, error);
     }
