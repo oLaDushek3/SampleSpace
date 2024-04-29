@@ -1,8 +1,8 @@
 dialog {
-    width: 400px;
     margin: auto;
     padding: 1rem;
     border: 1px solid #ccc;
     border-radius: 10px;
+    outline: none;
     z-index: 100;
 }

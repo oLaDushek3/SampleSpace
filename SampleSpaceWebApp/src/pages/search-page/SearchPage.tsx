@@ -7,7 +7,7 @@ import {useSearchParams} from "react-router-dom";
 export default function SearchPage() {
     const [samples, setSamples] = useState<ISample[]>([])
     const [searchParams] = useSearchParams()
-    const searchQuery = searchParams.get("search_query")
+    const searchQuery = searchParams.get("search-query")
     
     async function fetchSamples() {
         const response = await SampleApi.searchSamples(searchQuery!);

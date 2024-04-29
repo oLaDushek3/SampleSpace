@@ -3,16 +3,14 @@ import ISamplePlayer from "../../models/ISamplePlayer.ts";
 import Button, {ButtonVisualType} from "../button/Button.tsx";
 import {IoPlay, IoPause} from "react-icons/io5";
 import useSamplePlayerContext from "../../hook/useSamplePlayerContext.ts";
-import Modal from "../modal/Modal.tsx";
-import {useState} from "react";
-import SampleModal from "../sample-modal/SampleModal.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface SampleProps {
     samplePlayer: ISamplePlayer;
 }
 
 export default function Sample({samplePlayer}: SampleProps) {
-    const [sampleModalIsOpen, setSampleModalIsOpen] = useState(false)
+    const navigate = useNavigate()
     const {
         handlePlayingSamplePlayer,
         handlePlayPause,
@@ -20,7 +18,7 @@ export default function Sample({samplePlayer}: SampleProps) {
         currentTime,
         isPlaying
     } = useSamplePlayerContext()
-
+    
     function formatDuration(durationSeconds: number) {
         const minutes = Math.floor(durationSeconds / 60);
         const seconds = Math.floor(durationSeconds % 60);
@@ -37,8 +35,8 @@ export default function Sample({samplePlayer}: SampleProps) {
 
     return (
         <div className={sampleClasses.sample + " horizontalPanel"}>
-            <img className={sampleClasses.cover} src={samplePlayer.sample.coverPath} alt="Cover image"
-                 onClick={() => {setSampleModalIsOpen(true)}}/>
+            <img className={sampleClasses.cover} src={samplePlayer.sample.coverLink} alt="Cover image"
+                 onClick={() => {navigate({pathname: `/sample/${samplePlayer.sample.sampleGuid}`})}}/>
 
             <div className={sampleClasses.mainSpace + " verticalPanel"}>
                 <div>
@@ -46,7 +44,13 @@ export default function Sample({samplePlayer}: SampleProps) {
                     <p>{samplePlayer.sample.artist}</p>
                 </div>
 
-                <div className={"horizontalPanel"}>
+                <div className={sampleClasses.track + " horizontalPanel"}>
+                    <Button visualType={ButtonVisualType.icon}
+                            isPrimary={true}
+                            onClick={handlePlayback}>
+                        {samplePlayer.isActive && isPlaying ? <IoPause/> : <IoPlay/>}
+                    </Button>
+                    
                     <input type="range"
                            min="0"
                            max={samplePlayer.sample.duration}
@@ -59,17 +63,7 @@ export default function Sample({samplePlayer}: SampleProps) {
                         ? formatDuration(currentTime)
                         : formatDuration(samplePlayer.sample.duration)}</p>
                 </div>
-
-                <Button visualType={ButtonVisualType.icon}
-                        isPrimary={true}
-                        onClick={handlePlayback}>
-                    {samplePlayer.isActive && isPlaying ? <IoPause/> : <IoPlay/>}
-                </Button>
             </div>
-
-            <Modal open={sampleModalIsOpen}>
-                <SampleModal onClose={() => {setSampleModalIsOpen(false)}}/>
-            </Modal>
         </div>
     )
 }

@@ -4,6 +4,7 @@ using Aspose.Cells;
 using Aspose.Words;
 using Aspose.Words.Drawing;
 using Aspose.Words.Drawing.Charts;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceCore.Abstractions;
 using SampleSpaceCore.Models;
@@ -11,39 +12,54 @@ using SampleSpaceCore.Models;
 namespace SampleSpaceApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/sample")]
 public class SampleController(ISampleService sampleService) : ControllerBase
 {
-    [HttpGet("GetAllSamples")]
+    [HttpGet("get-all-samples")]
     public async Task<IActionResult> GetAllSamples()
     {
         var samples = await sampleService.GetAll();
         return Ok(samples);
     }
 
-    [HttpGet("SearchSamples")]
-    public async Task<IActionResult> GetAllSamples([FromQuery(Name = "search_string")] string searchString)
+    [HttpGet("search-samples")]
+    public async Task<IActionResult> SearchSample([FromQuery(Name = "search-string")] string searchString )
     {
         var samples = await sampleService.Search(searchString);
-        return Ok(samples);
+        
+        if (samples.Count == 0)
+            return NotFound();
+        
+        return Ok(samples); 
+    }
+    
+    [HttpGet("get-sample")]
+    public async Task<IActionResult> GetSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
+    {
+        var samples = await sampleService.GetSample(sampleGuid);
+        
+        if (samples == null)
+            return NotFound();
+        
+        return Ok(samples); 
     }
 
-    [HttpGet("GetUserSamples")]
-    public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user_guid")] Guid userGuid)
+    [HttpGet("get-user-samples")]
+    public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user-guid")] Guid userGuid)
     {
         var samples = await sampleService.GetUserSamples(userGuid);
         return Ok(samples);
     }
 
-    [HttpGet("AddAnListensToSample")]
-    public async Task<IActionResult> AddAnListensToSample([FromQuery(Name = "sample_guid")] Guid sampleGuid)
+    [HttpGet("add-an-listens-to-sample")]
+    public async Task<IActionResult> AddAnListensToSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
         var result = await sampleService.AddAnListensToSample(sampleGuid);
         return result ? Ok() : BadRequest("Invalid data");
     }
 
-    [HttpGet("GenerateWord")]
-    public async Task<IActionResult> GenerateWord([FromQuery(Name = "user_guid")] Guid user_guid)
+    [HttpGet("generate-word")]
+    public async Task<IActionResult> GenerateWord([FromQuery(Name = "user-guid")] Guid user_guid)
     {
         var samples = await sampleService.GetUserSamples(user_guid);
 
@@ -75,8 +91,8 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         return resultFile;
     }
 
-    [HttpGet("GenerateExcel")]
-    public async Task<IActionResult> GenerateExcel([FromQuery(Name = "user_guid")] Guid user_guid)
+    [HttpGet("generate-excel")]
+    public async Task<IActionResult> GenerateExcel([FromQuery(Name = "user-guid")] Guid user_guid)
     {
         var samples = await sampleService.GetUserSamples(user_guid);
 

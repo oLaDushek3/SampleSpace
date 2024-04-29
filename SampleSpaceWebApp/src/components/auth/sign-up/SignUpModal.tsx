@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
-import Button from "../button/Button.tsx";
-import ErrorMessage from "../error-message/ErrorMessage.tsx";
-import UserApi from "../../dal/api/user/UserApi.ts";
-import useClickOutside from "../../hook/useClickOutside.ts";
+import Button from "../../button/Button.tsx";
+import ErrorMessage from "../../error-message/ErrorMessage.tsx";
+import UserApi from "../../../dal/api/user/UserApi.ts";
+import useClickOutside from "../../../hook/useClickOutside.ts";
+import signUpModalClasses from "./SignUpModal.module.css"
 
 interface SignUpModalProps {
     onClose: () => void;
@@ -43,7 +44,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
 
     return (
         <div ref={wrapperRef} 
-             className={"verticalPanel"} 
+             className={signUpModalClasses.signUp + " verticalPanel"} 
              onClick={e => (e.currentTarget === e.target) && onClose()}>
             <h2>Регистрация</h2>
 

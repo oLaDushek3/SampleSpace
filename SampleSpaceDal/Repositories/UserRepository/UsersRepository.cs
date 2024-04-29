@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using SampleSpaceCore.Abstractions;
@@ -27,24 +26,26 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
             await using var reader = await command.ExecuteReaderAsync();
 
             UserEntity? userEntity = null;
-            while (await reader.ReadAsync())
-            {
-                userEntity = new UserEntity
-                {
-                    UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
-                    Nickname = reader.GetString(reader.GetOrdinal("nickname")),
-                    Email = reader.GetString(reader.GetOrdinal("email")),
-                    PasswordHash = reader.GetString(reader.GetOrdinal("password_hash")),
-                    AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
-                        ? reader.GetString(reader.GetOrdinal("avatar_path"))
-                        : null,
-                };
-            }
 
-            return userEntity != null
-                ? User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email, userEntity.PasswordHash,
-                    userEntity.AvatarPath).User
-                : null;
+            await reader.ReadAsync();
+            if (!reader.HasRows)
+                return null;
+            
+            userEntity = new UserEntity
+            {
+                UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
+                Nickname = reader.GetString(reader.GetOrdinal("nickname")),
+                Email = reader.GetString(reader.GetOrdinal("email")),
+                PasswordHash = reader.GetString(reader.GetOrdinal("password_hash")),
+                AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
+                    ? reader.GetString(reader.GetOrdinal("avatar_path"))
+                    : null,
+            };
+                
+            await reader.CloseAsync();
+                
+            return User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email, userEntity.PasswordHash,
+                userEntity.AvatarPath).User;
         }
         finally
         {
@@ -76,17 +77,14 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
             await connection.OpenAsync();
 
             await using var reader = await command.ExecuteReaderAsync();
+            
+            await reader.ReadAsync();
+            
+            var userGuid = reader.GetGuid(reader.GetOrdinal("user_guid"));
 
-            var userGuid = Guid.Empty;
-            while (await reader.ReadAsync())
-                userGuid = reader.GetGuid(reader.GetOrdinal("user_guid"));
+            await reader.CloseAsync();
 
             return userGuid;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
         }
         finally
         {

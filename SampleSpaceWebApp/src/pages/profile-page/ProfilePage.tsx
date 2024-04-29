@@ -1,15 +1,15 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import IUser from "../../dal/models/IUser.ts";
 import UserApi from "../../dal/api/user/UserApi.ts";
 import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import profilePageClasses from "./ProfilePage.module.css";
 import SampleList from "../../components/sample-list/SampleList.tsx";
-import ISample from "../../dal/models/ISample.ts";
 import Button from "../../components/button/Button.tsx";
 import Modal from "../../components/modal/Modal.tsx";
 import StatisticsModal from "../../components/statistics/StatisticsModal.tsx";
 import useAuth from "../../hook/useAuth.ts";
+import IUser from "../../dal/entities/IUser.ts";
+import ISample from "../../dal/entities/ISample.ts";
 
 interface ProfilePageProps {
 }
@@ -27,7 +27,7 @@ export default function ProfilePage({}: ProfilePageProps) {
     }
 
     async function fetchUserSamples() {
-        const response = await SampleApi.getUserSamples("fed85493-ccc8-42e9-9b17-1b770ac06393");
+        const response = await SampleApi.getUserSamples(user!.userGuid.toString());
         setUserSamples(response);
     }
 
@@ -36,7 +36,8 @@ export default function ProfilePage({}: ProfilePageProps) {
     }, []);
 
     useEffect(() => {
-        fetchUserSamples();
+        if(user != null)
+            fetchUserSamples();
     }, [user]);
 
     return (

@@ -8,10 +8,10 @@ using SampleSpaceInfrastructure;
 namespace SampleSpaceApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/user")]
 public class UserController(IUserService userService) : ControllerBase
 {
-    [HttpPost("SignUp")]
+    [HttpPost("sign-up")]
     public async Task<IActionResult> SigUp(UserRequest request)
     {
         var (newUser, error) =
@@ -25,7 +25,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(userGuid);
     }
 
-    [HttpPost("SignIn")]
+    [HttpPost("sign-in")]
     public async Task<IActionResult> SignIn(LoginUserRequest request)
     {
         var test = new s3test();
@@ -41,7 +41,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser!.Nickname, loginUser.Email));
     }
     
-    [HttpPost("GetUser")]
+    [HttpPost("get-user-by-nickname")]
     public async Task<IActionResult> GetUser(string nickname)
     {
         var test = new s3test();
@@ -56,7 +56,7 @@ public class UserController(IUserService userService) : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("SigInAuth")]
+    [HttpPost("sig-in-auth")]
     public async Task<IActionResult> SigInAuth(LoginUserRequest request)
     {
         var user = User;
