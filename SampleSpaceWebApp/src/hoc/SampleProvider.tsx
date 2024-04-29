@@ -64,7 +64,7 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
             playingSamplePlayer.isActive = false;
 
         //Attaching a timestamp to the URL to avoid caching
-        samplePlayer.sample.samplePath += '?' + new Date().getTime();
+        samplePlayer.sample.sampleLink += '?' + new Date().getTime();
         samplePlayer.isActive = true;
         setPlayingSamplePlayer(samplePlayer);
         setIsPlaying(true);
@@ -175,7 +175,7 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     }
 
     return <SamplePlayerContext.Provider value={value}>
-        <audio ref={audioRef} src={playingSamplePlayer?.sample.samplePath}
+        <audio ref={audioRef} src={playingSamplePlayer?.sample.sampleLink}
                autoPlay={true}/>
         {children}
     </SamplePlayerContext.Provider>

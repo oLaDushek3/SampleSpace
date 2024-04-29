@@ -14,6 +14,11 @@ public class SampleService(ISampleRepository sampleRepository) : ISampleService
     {
         return await sampleRepository.Search(searchString);
     }
+
+    public async Task<Sample?> GetSample(Guid sampleGuid)
+    {
+        return await sampleRepository.GetByGuid(sampleGuid);
+    }
     
     public async Task<List<Sample>> GetUserSamples(Guid userGuid)
     {

@@ -1,22 +1,20 @@
-.sample {
+.sampleModal {
     background-color: #e2e2e2;
     border: 1px solid #ccc;
     border-radius: 15px;
-    margin: 1rem;
+    margin: 1rem auto;
     padding: 1rem;
-    width: 425px;
+    width: 525px;
+}
+
+.samplePanel {
     display: flex;
-    justify-content: space-between;
+    width: 100%;
 }
 
 .cover {
     border-radius: 10px;
-    height: 115px;
-}
-
-.cover:hover {
-    filter: brightness(90%);
-    cursor: pointer;
+    height: 175px;
 }
 
 .mainSpace {
@@ -24,7 +22,6 @@
 }
 
 .track {
-    justify-content: space-between;
     align-items: center;
     font-size: 14px;
 }

@@ -2,13 +2,13 @@ import axios from 'axios';
 import ApiBase from "../ApiBase";
 import IUserBlank from "../blanks/IUserBlank";
 import ILoginBlank from "../blanks/ILoginBlank";
-import IUser from "../../models/IUser.ts";
+import IUser from "../../entities/IUser.ts";
 
 export default class UserApi extends ApiBase {
 
     static async signUp(nickname: string, email: string, password: string): Promise<boolean> {
 
-        let url = this.baseAddress + "User/SignUp";
+        let url = this.baseAddress + "user/sign-up";
 
         let blank: IUserBlank = {nickname, email, password};
 
@@ -24,7 +24,7 @@ export default class UserApi extends ApiBase {
 
     static async signIn(nickname: string, password: string): Promise<IUser> {
 
-        let url = this.baseAddress + "User/SignIn";
+        let url = this.baseAddress + "user/sign-in";
 
         let blank: ILoginBlank = {nickname, password};
 
@@ -39,7 +39,7 @@ export default class UserApi extends ApiBase {
 
     static async getUser(nickname: string): Promise<IUser> {
 
-        let url = this.baseAddress + `User/GetUser?nickname=${nickname}`;
+        let url = this.baseAddress + `user/get-user-by-nickname?nickname=${nickname}`;
 
         return await axios.post(url)
             .then(async res => {

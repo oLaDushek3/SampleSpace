@@ -7,6 +7,8 @@ public interface ISampleService
     public Task<List<Sample>> GetAll();
 
     public Task<List<Sample>> Search(string searchString);
+    
+    public Task<Sample?> GetSample(Guid sampleGuid);
 
     public Task<List<Sample>> GetUserSamples(Guid userGuid);
 

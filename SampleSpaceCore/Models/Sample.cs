@@ -5,24 +5,28 @@ public class Sample
     private const int MaxNameLength = 75;
     private const int MaxArtistLength = 75;
 
-    private Sample(Guid sampleGuid, string samplePath, string coverPath, string name, string artist, Guid userGuid,
-        int numberOfListens, double duration)
+    private Sample(Guid sampleGuid, string sampleLink, string coverLink, string name, string artist, Guid userGuid,
+        double duration, string vkontakteLink,
+        string spotifyLink, string soundcloudLink, int numberOfListens)
     {
         SampleGuid = sampleGuid;
-        SamplePath = samplePath;
-        CoverPath = coverPath;
+        SampleLink = sampleLink;
+        CoverLink = coverLink;
         Name = name;
         Artist = artist;
         UserGuid = userGuid;
-        NumberOfListens = numberOfListens;
         Duration = duration;
+        VkontakteLink = vkontakteLink;
+        SpotifyLink = spotifyLink;
+        SoundcloudLink = soundcloudLink;
+        NumberOfListens = numberOfListens;
     }
 
     public Guid SampleGuid { get; set; }
 
-    public string SamplePath { get; private set; }
+    public string SampleLink { get; private set; }
 
-    public string CoverPath { get; private set; }
+    public string CoverLink { get; private set; }
 
     public string Name { get; private set; }
 
@@ -30,12 +34,19 @@ public class Sample
 
     public Guid UserGuid { get; private set; }
 
-    public int NumberOfListens { get; private set; }
-
     public double Duration { get; private set; }
 
+    public string VkontakteLink { get; set; }
+
+    public string SpotifyLink { get; set; }
+
+    public string SoundcloudLink { get; set; }
+    
+    public int NumberOfListens { get; private set; }
+
     public static (Sample Sample, string Error) Create(Guid sampleGuid, string samplePath, string coverPath,
-        string name, string artist, Guid userGuid, int numberOfListens, double duration)
+        string name, string artist, Guid userGuid, double duration, string vkontakteLink,
+        string spotifyLink, string soundcloudLink, int numberOfListens)
     {
         var error = string.Empty;
 
@@ -51,7 +62,8 @@ public class Sample
         if (string.IsNullOrEmpty(artist) || artist.Length > MaxArtistLength)
             error = $"Artist cannot be empty or longer then {MaxArtistLength} symbols";
 
-        var sample = new Sample(sampleGuid, samplePath, coverPath, name, artist, userGuid, numberOfListens, duration);
+        var sample = new Sample(sampleGuid, samplePath, coverPath, name, artist, userGuid, duration, vkontakteLink,
+            spotifyLink, soundcloudLink, numberOfListens);
 
         return (sample, error);
     }

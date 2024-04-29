@@ -7,6 +7,7 @@ import AuthProvider from "./hoc/AuthProvider.tsx";
 import ProfilePage from "./pages/profile-page/ProfilePage.tsx";
 import NotFoundPage from "./pages/not-found/NotFoundPage.tsx";
 import SamplePlayerProvider from "./hoc/SampleProvider.tsx";
+import SamplePage from "./pages/sample-page/SamplePage.tsx";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
                     <Route path="/search" element={<SearchPage/>}/>
+                    <Route path="/sample/:sampleGuid" element={<SamplePage/>}/>
                     <Route path="/gg" element={<div className="centered"><h1>Ну гг че</h1></div>}/>
                     <Route path="/:nickname" element={
                         <RequireAuth>

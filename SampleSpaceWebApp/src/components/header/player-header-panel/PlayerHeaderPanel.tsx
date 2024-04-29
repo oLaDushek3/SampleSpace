@@ -86,7 +86,7 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
         <div className={classes + " verticalPanel"}>
             {playingSamplePlayer &&
                 <div className={"horizontalPanel"}>
-                    <img className={playerHeaderPanelClasses.cover} src={playingSamplePlayer.sample?.coverPath}
+                    <img className={playerHeaderPanelClasses.cover} src={playingSamplePlayer.sample?.coverLink}
                          alt="Cover image"/>
 
                     <div className={"verticalPanel"}>

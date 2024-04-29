@@ -1,13 +1,12 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
-import ISample from "../../models/ISample.ts";
-import {Guid} from "guid-typescript";
+import ISample from "../../entities/ISample.ts";
 
-export default class UserApi extends ApiBase {
+export default class SampleApi extends ApiBase {
 
     static async getAllSamples(): Promise<Array<ISample>> {
 
-        let url = this.baseAddress + "Sample/GetAllSamples";
+        let url = this.baseAddress + "sample/get-all-samples";
 
         return await axios.get(url)
             .then(async res => {
@@ -20,7 +19,20 @@ export default class UserApi extends ApiBase {
 
     static async searchSamples(searchString: string): Promise<Array<ISample>> {
 
-        let url = this.baseAddress + "Sample/SearchSamples?search_string=" + searchString;
+        let url = this.baseAddress + `sample/search-samples?search-string=${searchString}`
+
+        return await axios.get(url)
+            .then(async res => {
+                return res.data;
+            })
+            .catch(() => {
+                return [];
+            })
+    }
+
+    static async getSample(sampleGuid: string): Promise<ISample> {
+
+        let url = this.baseAddress + `sample/get-sample?sample-guid=${sampleGuid}`
 
         return await axios.get(url)
             .then(async res => {
@@ -33,7 +45,7 @@ export default class UserApi extends ApiBase {
 
     static async getUserSamples(userGuid: string): Promise<Array<ISample>> {
 
-        let url = this.baseAddress + "Sample/GetUserSamples?user_guid=" + userGuid;
+        let url = this.baseAddress + `sample/get-user-samples?user-guid=${userGuid}`
 
         return await axios.get(url)
             .then(async res => {
@@ -44,9 +56,9 @@ export default class UserApi extends ApiBase {
             })
     }
 
-    static async addAnListensToSample(sampleGuid: Guid): Promise<boolean> {
+    static async addAnListensToSample(sampleGuid: string): Promise<boolean> {
 
-        let url = this.baseAddress + "Sample/AddAnListensToSample?sample_guid=" + sampleGuid;
+        let url = this.baseAddress + `sample/add-an-listens-to-sample?sample-guid=${sampleGuid}`;
 
         return await axios.get(url)
             .then(async () => {
@@ -58,7 +70,7 @@ export default class UserApi extends ApiBase {
 
     static async generateWord(userGuid: string): Promise<boolean> {
 
-        let url = this.baseAddress + "Sample/GenerateWord?user_guid=" + userGuid;
+        let url = this.baseAddress + `sample/generate-word?user-guid=${userGuid}`
 
         return await axios.get(url)
             .then(async () => {
@@ -71,7 +83,7 @@ export default class UserApi extends ApiBase {
 
     static async generateExcel(userGuid: string): Promise<boolean> {
 
-        let url = this.baseAddress + "Sample/GenerateExcel?user_guid=" + userGuid;
+        let url = this.baseAddress + `sample/generate-excel?user-guid=${userGuid}`
 
         return await axios.get(url)
             .then(async () => {

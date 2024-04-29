@@ -14,14 +14,14 @@ import useClickOutside from "../../hook/useClickOutside.ts";
 export default function Header() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const searchQuery = searchParams.get("search_query")
+    const searchQuery = searchParams.get("search-query")
     const {user} = useAuth()
     const [playerPanelIsActive, setPlayerPanelIsActive] = useState<boolean>(false)
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, () => {setPlayerPanelIsActive(false)});
 
     const handleSearch = (searchQuery: string) => {
-        navigate({pathname: "/search", search: `?search_query=${searchQuery}`});
+        navigate({pathname: "/search", search: `?search-query=${searchQuery}`});
     }
 
     return (

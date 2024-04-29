@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
-import Button from "../button/Button.tsx";
-import ErrorMessage from "../error-message/ErrorMessage.tsx";
-import UserApi from "../../dal/api/user/UserApi.ts";
-import useAuth from "../../hook/useAuth.ts";
-import useClickOutside from "../../hook/useClickOutside.ts";
+import Button from "../../button/Button.tsx";
+import ErrorMessage from "../../error-message/ErrorMessage.tsx";
+import UserApi from "../../../dal/api/user/UserApi.ts";
+import useAuth from "../../../hook/useAuth.ts";
+import useClickOutside from "../../../hook/useClickOutside.ts";
+import signInModalClasses from "./SignInModal.module.css"
 
 interface SignInModalProps {
     onClose: () => void;
@@ -45,7 +46,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
     return (
         <div ref={wrapperRef} 
-             className={"verticalPanel"} 
+             className={signInModalClasses.signIn + " verticalPanel"} 
              onClick={e => (e.currentTarget === e.target) && onClose()}>
             <h2>Авторизация</h2>
 

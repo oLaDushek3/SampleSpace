@@ -1,8 +1,8 @@
 import {useState} from "react";
 import Button from "../button/Button.tsx";
 import Modal from "../modal/Modal.tsx";
-import SignUpModal from "../auth/SignUpModal.tsx";
-import SignInModal from "../auth/SignInModal.tsx";
+import SignInModal from "../auth/sign-in/SignInModal.tsx";
+import SignUpModal from "../auth/sign-up/SignUpModal.tsx";
 
 export default function AuthHeaderPanel() {
 
