@@ -1,0 +1,38 @@
+.commentPanel {
+    flex: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header > a, a:visited {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.header > a:hover {
+    text-decoration: underline;
+}
+
+.header > .toolsPanel {
+    display: none;
+}
+
+.header.active > .toolsPanel {
+    display: flex;
+}
+
+.userAvatar {
+    border-radius: 50%;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.userAvatar:hover {
+    filter: brightness(70%)
+}

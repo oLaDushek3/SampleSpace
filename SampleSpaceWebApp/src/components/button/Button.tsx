@@ -3,11 +3,13 @@ import React from "react";
 
 export enum ButtonVisualType {
     simple,
-    icon,
+    withIcon,
+    icon
 }
 
 const styles = {
     [ButtonVisualType.simple]: buttonClasses.button,
+    [ButtonVisualType.withIcon]: buttonClasses.button + ` ${buttonClasses.withIcon}`,
     [ButtonVisualType.icon]: buttonClasses.button + ` ${buttonClasses.icon}`,
 }
 

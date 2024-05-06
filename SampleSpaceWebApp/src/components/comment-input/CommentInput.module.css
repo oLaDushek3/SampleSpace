@@ -1,4 +1,5 @@
-.search {
+.commentInputForm {
+    height: 50px;
     flex: 1;
     display: flex;
     align-items: center;
@@ -9,7 +10,7 @@
     cursor: text;
 }
 
-.searchInput {
+.commentInput {
     flex: 1;
     background: transparent;
     border: none;

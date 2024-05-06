@@ -1,7 +1,7 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
-import IUserBlank from "../blanks/IUserBlank";
-import ILoginBlank from "../blanks/ILoginBlank";
+import IUserBlank from "../blanks/user/IUserBlank";
+import ILoginBlank from "../blanks/user/ILoginBlank";
 import IUser from "../../entities/IUser.ts";
 
 export default class UserApi extends ApiBase {

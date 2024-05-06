@@ -26,7 +26,7 @@ body {
 .text-input {
     border: 1px solid #ccc;
     border-radius: 15px;
-    padding: 1rem 1rem;
+    padding: 1rem;
     width: 100%;
     font-size: 16px;
 }
@@ -36,9 +36,18 @@ body {
 }
 
 .centered {
-    width: 100%;
-    height: 100vh;
+    height: calc(100vh - 60px);
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.secondaryFont {
+    color: #767676;
+}
+
+.singleLineText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

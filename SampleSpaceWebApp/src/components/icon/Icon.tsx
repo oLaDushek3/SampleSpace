@@ -1,8 +1,22 @@
 import iconClasses from "./Icon.module.css"
+import {ReactNode} from "react";
 
-export default function Icon({...props}) {
+interface IconProps {
+    height?: number;
+    isPrimary?: boolean;
+    children: ReactNode;
+}
+
+export default function Icon({height = 24, isPrimary = true, children}: IconProps) {
+    let classes: string = iconClasses.icon; 
+    
+    if(isPrimary){
+        classes += ` ${iconClasses.primary}`
+    }
+    
     return (
-        <div className={iconClasses.icon} {...props}>
+        <div style={{fontSize: height}} className={classes}>
+            {children}
         </div>
     )
 }

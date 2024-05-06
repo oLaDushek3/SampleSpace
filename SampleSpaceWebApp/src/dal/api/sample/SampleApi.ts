@@ -30,17 +30,15 @@ export default class SampleApi extends ApiBase {
             })
     }
 
-    static async getSample(sampleGuid: string): Promise<ISample> {
+    static async getSample(sampleGuid: string): Promise<ISample | null> {
 
         let url = this.baseAddress + `sample/get-sample?sample-guid=${sampleGuid}`
 
-        return await axios.get(url)
-            .then(async res => {
-                return res.data;
-            })
-            .catch(() => {
-                return [];
-            })
+        return axios.get(url).then(async res => {
+            return res.data;
+        }).catch(() => {
+            return null;
+        })
     }
 
     static async getUserSamples(userGuid: string): Promise<Array<ISample>> {
