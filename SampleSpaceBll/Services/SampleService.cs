@@ -1,31 +1,32 @@
-using SampleSpaceCore.Abstractions;
+using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.Services;
 using SampleSpaceCore.Models;
 
 namespace SampleSpaceBll.Services;
 
 public class SampleService(ISampleRepository sampleRepository) : ISampleService
 {
-    public async Task<List<Sample>> GetAll()
+    public async Task<(List<Sample>? samples, string error)> GetAll()
     {
         return await sampleRepository.GetAll();
     }
     
-    public async Task<List<Sample>> Search(string searchString)
+    public async Task<(List<Sample>? samples, string error)> Search(string searchString)
     {
         return await sampleRepository.Search(searchString);
     }
 
-    public async Task<Sample?> GetSample(Guid sampleGuid)
+    public async Task<(Sample? sample, string error)> GetSample(Guid sampleGuid)
     {
         return await sampleRepository.GetByGuid(sampleGuid);
     }
     
-    public async Task<List<Sample>> GetUserSamples(Guid userGuid)
+    public async Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid)
     {
         return await sampleRepository.GetUserSamples(userGuid);
     }
     
-    public async Task<bool> AddAnListensToSample(Guid sampleGuid)
+    public async Task<(bool successfully, string error)> AddAnListensToSample(Guid sampleGuid)
     {
         return await sampleRepository.AddAnListens(sampleGuid);
     }

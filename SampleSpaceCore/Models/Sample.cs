@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace SampleSpaceCore.Models;
 
 public class Sample
@@ -6,8 +8,7 @@ public class Sample
     private const int MaxArtistLength = 75;
 
     private Sample(Guid sampleGuid, string sampleLink, string coverLink, string name, string artist, Guid userGuid,
-        double duration, string vkontakteLink,
-        string spotifyLink, string soundcloudLink, int numberOfListens)
+        double duration, string vkontakteLink, string spotifyLink, string soundcloudLink, int numberOfListens, User? user)
     {
         SampleGuid = sampleGuid;
         SampleLink = sampleLink;
@@ -20,9 +21,10 @@ public class Sample
         SpotifyLink = spotifyLink;
         SoundcloudLink = soundcloudLink;
         NumberOfListens = numberOfListens;
+        User = user;
     }
 
-    public Guid SampleGuid { get; set; }
+    public Guid SampleGuid { get; private set; }
 
     public string SampleLink { get; private set; }
 
@@ -36,35 +38,36 @@ public class Sample
 
     public double Duration { get; private set; }
 
-    public string VkontakteLink { get; set; }
+    public string VkontakteLink { get; private set; }
 
-    public string SpotifyLink { get; set; }
+    public string SpotifyLink { get; private set; }
 
-    public string SoundcloudLink { get; set; }
-    
+    public string SoundcloudLink { get; private set; }
+
     public int NumberOfListens { get; private set; }
+    
+    public User? User { get; private set; }
 
-    public static (Sample Sample, string Error) Create(Guid sampleGuid, string samplePath, string coverPath,
+    public static (Sample? Sample, string Error) Create(Guid sampleGuid, string samplePath, string coverPath,
         string name, string artist, Guid userGuid, double duration, string vkontakteLink,
-        string spotifyLink, string soundcloudLink, int numberOfListens)
+        string spotifyLink, string soundcloudLink, int numberOfListens, User? user)
     {
-        var error = string.Empty;
 
         if (string.IsNullOrEmpty(samplePath))
-            error = "Sample path cannot be empty";
+            return (null, "Sample path cannot be empty");
 
         if (string.IsNullOrEmpty(coverPath))
-            error = "Cover path cannot be empty";
+            return (null, "Cover path cannot be empty");
 
         if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
-            error = $"Name cannot be empty or longer then {MaxNameLength} symbols";
+            return (null, $"Name cannot be empty or longer then {MaxNameLength} symbols");
 
         if (string.IsNullOrEmpty(artist) || artist.Length > MaxArtistLength)
-            error = $"Artist cannot be empty or longer then {MaxArtistLength} symbols";
+            return (null, $"Artist cannot be empty or longer then {MaxArtistLength} symbols");
 
         var sample = new Sample(sampleGuid, samplePath, coverPath, name, artist, userGuid, duration, vkontakteLink,
-            spotifyLink, soundcloudLink, numberOfListens);
+            spotifyLink, soundcloudLink, numberOfListens, user);
 
-        return (sample, error);
+        return (sample, string.Empty);
     }
 }

@@ -23,4 +23,6 @@ public class SampleEntity
     public string SoundcloudLink { get; set; } = string.Empty;
     
     public int NumberOfListens { get; set; }
+
+    public UserEntity User { get; set; } = new UserEntity();
 }
