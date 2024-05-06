@@ -2,7 +2,7 @@ import sampleClasses from "./Sample.module.css"
 import ISamplePlayer from "../../models/ISamplePlayer.ts";
 import Button, {ButtonVisualType} from "../button/Button.tsx";
 import {IoPlay, IoPause} from "react-icons/io5";
-import useSamplePlayerContext from "../../hook/useSamplePlayerContext.ts";
+import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import {useNavigate} from "react-router-dom";
 
 interface SampleProps {
@@ -17,7 +17,7 @@ export default function Sample({samplePlayer}: SampleProps) {
         handleSeek,
         currentTime,
         isPlaying
-    } = useSamplePlayerContext()
+    } = useSamplePlayer()
     
     function formatDuration(durationSeconds: number) {
         const minutes = Math.floor(durationSeconds / 60);
@@ -40,12 +40,12 @@ export default function Sample({samplePlayer}: SampleProps) {
 
             <div className={sampleClasses.mainSpace + " verticalPanel"}>
                 <div>
-                    <h3>{samplePlayer.sample.name}</h3>
-                    <p>{samplePlayer.sample.artist}</p>
+                    <h3 className={"singleLineText"}>{samplePlayer.sample.name}</h3>
+                    <p className={"singleLineText"}>{samplePlayer.sample.artist}</p>
                 </div>
 
                 <div className={sampleClasses.track + " horizontalPanel"}>
-                    <Button visualType={ButtonVisualType.icon}
+                    <Button visualType={ButtonVisualType.withIcon}
                             isPrimary={true}
                             onClick={handlePlayback}>
                         {samplePlayer.isActive && isPlaying ? <IoPause/> : <IoPlay/>}

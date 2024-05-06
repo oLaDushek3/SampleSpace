@@ -92,7 +92,6 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         setCurrentTime(audioRef.current!.currentTime);
 
         if (audioRef.current!.currentTime === audioRef.current!.duration) {
-
             if(currentActionAtTheEnd === ActionAtTheEnd.pause){
                 handlePause();
                 return

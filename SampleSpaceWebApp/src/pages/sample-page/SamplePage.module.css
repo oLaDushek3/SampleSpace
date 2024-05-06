@@ -1,6 +1,6 @@
 .sampleModal {
-    background-color: #e2e2e2;
     border: 1px solid #ccc;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
     border-radius: 15px;
     margin: 1rem auto;
     padding: 1rem;
@@ -9,7 +9,6 @@
 
 .samplePanel {
     display: flex;
-    width: 100%;
 }
 
 .cover {
@@ -18,6 +17,7 @@
 }
 
 .mainSpace {
+    overflow: hidden;
     flex: 1;
 }
 
@@ -26,8 +26,44 @@
     font-size: 14px;
 }
 
-input[type="range"] {
+.track > input[type="range"] {
     flex: 1;
     accent-color: #759;
     outline: none;
+}
+
+.userPanel {
+    align-items: center;
+}
+
+.userPanel > a, a:visited {
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.userPanel > a:hover {
+    text-decoration: underline;
+}
+
+.userAvatar {
+    border-radius: 50%;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.userAvatar:hover {
+    filter: brightness(70%)
+}
+
+.commentsPanel {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.commentsPanel > * {
+    width: 100%;
 }

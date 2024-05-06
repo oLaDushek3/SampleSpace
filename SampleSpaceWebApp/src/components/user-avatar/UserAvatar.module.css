@@ -1,0 +1,5 @@
+.userAvatar {
+    border-radius: 50%;
+    display: flex;
+    vertical-align: center;
+}

@@ -2,7 +2,7 @@ import ISample from "../../dal/entities/ISample.ts";
 import Sample from "../sample/Sample.tsx";
 import sampleListClasses from "./SampleList.module.css"
 import ISamplePlayer from "../../models/ISamplePlayer.ts";
-import useSamplePlayerContext from "../../hook/useSamplePlayerContext.ts";
+import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import {useEffect, useState} from "react";
 
 interface SampleListProps {
@@ -10,7 +10,7 @@ interface SampleListProps {
 }
 
 export default function SampleList({samples = []}: SampleListProps) {
-    let samplePlayer = useSamplePlayerContext();
+    let samplePlayer = useSamplePlayer();
     const [samplePlayerList, setSamplePlayerList] = useState<ISamplePlayer[]>([]);
 
     useEffect(() => {

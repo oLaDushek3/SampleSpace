@@ -26,7 +26,7 @@
     width: 100%;
 }
 
-.icon {
+.withIcon {
     width: 2rem;
     height: 2rem;
     font-size: 16px;
@@ -36,4 +36,17 @@
     justify-content: center;
     border-radius: 50%;
     padding: 0;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+    background: transparent;
+}
+
+.icon:hover {
+    background: #e2e2e2;
 }

@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {IoPause, IoPlay, IoPlaySkipBack, IoPlaySkipForward, IoVolumeHigh, IoPlayForward} from "react-icons/io5";
 import {FaRepeat} from "react-icons/fa6";
 import Button, {ButtonVisualType} from "../../button/Button.tsx";
-import useSamplePlayerContext from "../../../hook/useSamplePlayerContext.ts";
+import useSamplePlayer from "../../../hook/useSamplePlayer.ts";
 import Icon from "../../icon/Icon.tsx";
 import {ActionAtTheEnd} from "../../../hoc/SampleProvider.tsx";
 
@@ -27,7 +27,7 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
         handlePlaySkipForward,
         handleVolume,
         currentVolume
-    } = useSamplePlayerContext()
+    } = useSamplePlayer()
 
     useEffect(() => {
         if (isActive)
@@ -85,46 +85,46 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
     return (
         <div className={classes + " verticalPanel"}>
             {playingSamplePlayer &&
-                <div className={"horizontalPanel"}>
+                <div className={playerHeaderPanelClasses.samplePanel + " horizontalPanel"}>
                     <img className={playerHeaderPanelClasses.cover} src={playingSamplePlayer.sample?.coverLink}
                          alt="Cover image"/>
 
-                    <div className={"verticalPanel"}>
+                    <div className={playerHeaderPanelClasses.samplePanel + " verticalPanel"}>
                         <div>
-                            <h3>{playingSamplePlayer.sample?.name}</h3>
-                            <p style={{overflow: "hidden"}}>{playingSamplePlayer.sample?.artist}</p>
+                            <h3 className={"singleLineText"}>{playingSamplePlayer.sample?.name}</h3>
+                            <p className={"singleLineText"}>{playingSamplePlayer.sample?.artist}</p>
                         </div>
                     </div>
                 </div>}
 
             <div className={playerHeaderPanelClasses.playbackControlPanel + " horizontalPanel"}>
                 <Button isActive={playingSamplePlayer?.sample != null && !playingSampleIsFirst}
-                        visualType={ButtonVisualType.icon}
+                        visualType={ButtonVisualType.withIcon}
                         isPrimary={true}
                         onClick={handlePlaySkipPrevious}>
                     <IoPlaySkipBack/>
                 </Button>
 
                 <Button isActive={playingSamplePlayer?.sample != null}
-                        visualType={ButtonVisualType.icon}
+                        visualType={ButtonVisualType.withIcon}
                         isPrimary={true}
                         onClick={handlePlayPause}>
                     {isPlaying && isPlaying ? <IoPause/> : <IoPlay/>}
                 </Button>
 
                 <Button isActive={playingSamplePlayer?.sample != null && !playingSampleIsLast}
-                        visualType={ButtonVisualType.icon}
+                        visualType={ButtonVisualType.withIcon}
                         isPrimary={true}
                         onClick={handlePlaySkipForward}>
                     <IoPlaySkipForward/>
                 </Button>
 
-                <Button visualType={ButtonVisualType.icon}
+                <Button visualType={ButtonVisualType.withIcon}
                         isPrimary={true}
                         onClick={handleActionAtTheEndButton}>
                     {currentActionAtTheEnd === ActionAtTheEnd.pause ?
-                        <IoPause/> : currentActionAtTheEnd === ActionAtTheEnd.playSkipForward ? <FaRepeat/> :
-                            <IoPlayForward/>}
+                        <IoPause/> : currentActionAtTheEnd === ActionAtTheEnd.playSkipForward ? <IoPlayForward/> :
+                            <FaRepeat/>}
                 </Button>
 
                 <div className={"horizontalPanel"}

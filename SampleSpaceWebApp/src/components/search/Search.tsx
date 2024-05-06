@@ -4,7 +4,6 @@ import {CiSearch} from "react-icons/ci";
 import {IoCloseOutline} from "react-icons/io5";
 import Button, {ButtonVisualType} from "../button/Button.tsx";
 import searchClasses from "./Search.module.css"
-
 interface SearchProps {
     searchQuery?: string;
     callBack: (searchQuery: string) => void;
@@ -21,13 +20,12 @@ export default function Search({searchQuery = "", callBack}: SearchProps) {
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
 
-        const searchQuery = searchInput.current!.value.trim();
-        if (searchQuery !== "")
-            callBack(searchQuery)
+        if (inputValue !== "")
+            callBack(inputValue)
     }
 
     return (
-        <form className={searchClasses.search}
+        <form className={searchClasses.search + " horizontalPanel"}
               onClick={() => searchInput.current!.focus()}
               onSubmit={handleSubmit}
               autoComplete="false"
@@ -46,11 +44,9 @@ export default function Search({searchQuery = "", callBack}: SearchProps) {
 
             {inputValue?.trim() &&
                 <Button type="button" 
-                        visualType={ButtonVisualType.icon} 
+                        visualType={ButtonVisualType.withIcon} 
                         onClick={() => setInputValue("")}>
-                    <IconContext.Provider value={{size: "1.5em"}}>
-                        <IoCloseOutline/>
-                    </IconContext.Provider>
+                    <IoCloseOutline/>
                 </Button>}
         </form>
     )

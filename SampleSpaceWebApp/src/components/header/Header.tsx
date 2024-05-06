@@ -34,7 +34,7 @@ export default function Header() {
             <Search searchQuery={searchQuery ? searchQuery : ""} callBack={handleSearch}/>
 
             <div ref={wrapperRef} className={headerClasses.playerPanelContainer}>
-                <Button visualType={ButtonVisualType.icon}
+                <Button visualType={ButtonVisualType.withIcon}
                         onClick={() => {
                             setPlayerPanelIsActive(prevState => !prevState)
                         }}>

@@ -8,7 +8,7 @@ interface ProfileHeaderPanelProps {
 
 export default function ProfileHeaderPanel({user}: ProfileHeaderPanelProps) {
     return (
-        <Link to={`/${user.nickname}`} className={profileHeaderPanelClasses.link}>
+        <Link to={`/${user.nickname}`}>
             <img className={profileHeaderPanelClasses.avatar} src={user.avatarPath} alt={"avatar"}/>
         </Link>
     )

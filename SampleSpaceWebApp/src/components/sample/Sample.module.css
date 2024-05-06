@@ -20,6 +20,7 @@
 }
 
 .mainSpace {
+    overflow: hidden;
     flex: 1;
 }
 
@@ -29,7 +30,7 @@
     font-size: 14px;
 }
 
-input[type="range"] {
+.track > input[type="range"] {
     flex: 1;
     accent-color: #759;
     outline: none;

@@ -19,7 +19,6 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({children}: AuthProviderProps) {
-    //const [user, setUser] = useState<IUser | null>(null)
     const [user, setUser] = useLocalStorageState<IUser | null>('user', {defaultValue: null})
 
     const signIn = (loginUser: IUser) => {
