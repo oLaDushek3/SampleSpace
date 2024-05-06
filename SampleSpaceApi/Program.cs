@@ -4,6 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using SampleSpaceBll.Abstractions.Auth;
 using SampleSpaceBll.Services;
 using SampleSpaceCore.Abstractions;
+using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.Services;
+using SampleSpaceDal.Repositories.SampleCommentRepository;
 using SampleSpaceDal.Repositories.SampleRepository;
 using SampleSpaceDal.Repositories.UserRepository;
 using SampleSpaceInfrastructure;
@@ -41,12 +44,14 @@ void ConfigureRepositories(IServiceCollection services)
 {
     services.AddScoped<IUsersRepository, UsersRepository>();
     services.AddScoped<ISampleRepository, SampleRepository>();
+    services.AddScoped<ISampleCommentRepository, SampleCommentRepository>();
 }
 
 void ConfigureServices(IServiceCollection services)
 {
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ISampleService, SampleService>();
+    services.AddScoped<ISampleCommentServices, SampleCommentService>();
 }
 
 void ConfigureInfrastructure(IServiceCollection services)

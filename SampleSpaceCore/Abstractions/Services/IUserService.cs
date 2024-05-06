@@ -1,10 +1,10 @@
 using SampleSpaceCore.Models;
 
-namespace SampleSpaceCore.Abstractions;
+namespace SampleSpaceCore.Abstractions.Services;
 
 public interface IUserService
 {
-    public Task<Guid> SigUp(User newUser);
+    public Task<(Guid? userGuid, string error)> SigUp(User newUser);
 
     public Task<(User? loginUser, string? token, string error)> SigIn(string nickname, string password);
     

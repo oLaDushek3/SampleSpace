@@ -13,7 +13,7 @@ public class User
         AvatarPath = avatarPath;
     }
 
-    public Guid UserGuid { get; }
+    public Guid UserGuid { get; private set; }
 
     public string Nickname { get; private set; }
 
@@ -25,42 +25,20 @@ public class User
 
     public void ChangePassword(string newPassword) => Password = newPassword;
 
-    public static (User User, string Error) Create(Guid userGuid, string nickname, string email, string password,
+    public static (User? User, string Error) Create(Guid userGuid, string nickname, string email, string? password,
         string? avatarPath = null)
     {
-        var error = string.Empty;
-
         if (string.IsNullOrEmpty(nickname) || nickname.Length > MaxNicknameLength)
-            error = "Nickname cannot be empty or longer then 75 symbols";
+            return (null, "Nickname cannot be empty or longer then 75 symbols");
 
         if (string.IsNullOrEmpty(email))
-            error = "Email cannot be empty";
+            return (null, "Email cannot be empty");
 
         if (string.IsNullOrEmpty(password))
-            error = "Email cannot be empty";
+            password = "";
 
         var user = new User(userGuid, nickname, email, password, avatarPath);
 
-        return (user, error);
+        return (user, string.Empty);
     }
-
-    // public (User user, string Error) Update(string nickname, string email, string password)
-    // {
-    //     var error = string.Empty;
-    //
-    //     if (string.IsNullOrEmpty(nickname) || nickname.Length > MaxNicknameLength)
-    //         error = "Nickname cannot be empty or longer then 75 symbols";
-    //
-    //     if (string.IsNullOrEmpty(email))
-    //         error = "Email cannot be empty";
-    //
-    //     if (string.IsNullOrEmpty(password))
-    //         error = "Email cannot be empty";
-    //
-    //     Nickname = nickname;
-    //     Email = email;
-    //     Password = password;
-    //     
-    //     return (this, error);
-    // }
 }

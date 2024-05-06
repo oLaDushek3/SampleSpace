@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using SampleSpaceCore.Abstractions;
+using SampleSpaceCore.Abstractions.Repositories;
 using SampleSpaceCore.Models;
 using SampleSpaceDal.Entities;
 
@@ -8,7 +9,7 @@ namespace SampleSpaceDal.Repositories.UserRepository;
 
 public class UsersRepository(IConfiguration configuration) : BaseRepository(configuration), IUsersRepository
 {
-    public async Task<User?> GetByNickname(string email)
+    public async Task<(User? user, string error)> GetByNickname(string nickname)
     {
         var queryString = "select * from users where nickname = $1";
 
@@ -16,7 +17,7 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
 
         var command = new NpgsqlCommand(queryString, connection)
         {
-            Parameters = { new NpgsqlParameter { Value = email } }
+            Parameters = { new NpgsqlParameter { Value = nickname } }
         };
 
         try
@@ -25,13 +26,11 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            UserEntity? userEntity = null;
-
             await reader.ReadAsync();
             if (!reader.HasRows)
-                return null;
-            
-            userEntity = new UserEntity
+                return (null, string.Empty);
+
+            var userEntity = new UserEntity
             {
                 UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                 Nickname = reader.GetString(reader.GetOrdinal("nickname")),
@@ -41,11 +40,18 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                     ? reader.GetString(reader.GetOrdinal("avatar_path"))
                     : null,
             };
-                
+
             await reader.CloseAsync();
-                
-            return User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email, userEntity.PasswordHash,
-                userEntity.AvatarPath).User;
+
+            var (user, error) = User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email,
+                userEntity.PasswordHash,
+                userEntity.AvatarPath);
+
+            return !string.IsNullOrEmpty(error) ? (null, error) : (user, string.Empty);
+        }
+        catch (Exception exception)
+        {
+            return (null, exception.Message);
         }
         finally
         {
@@ -53,7 +59,7 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
         }
     }
 
-    public async Task<Guid> Create(User user)
+    public async Task<(Guid? userGuid, string error)> Create(User user)
     {
         var queryString = "insert into users(user_guid, nickname, email, password_hash, avatar_path)" +
                           "values ($1, $2, $3, $4, $5) returning user_guid";
@@ -77,14 +83,18 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
             await connection.OpenAsync();
 
             await using var reader = await command.ExecuteReaderAsync();
-            
+
             await reader.ReadAsync();
-            
+
             var userGuid = reader.GetGuid(reader.GetOrdinal("user_guid"));
 
             await reader.CloseAsync();
 
-            return userGuid;
+            return (userGuid, string.Empty);
+        }
+        catch (Exception exception)
+        {
+            return (null, exception.Message);
         }
         finally
         {
