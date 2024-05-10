@@ -2,14 +2,14 @@ namespace SampleSpaceCore.Models;
 
 public class PlaylistSample
 {
-    private PlaylistSample(Guid playlistSampleEntityGuid, Guid playlistGuid, Guid sampleGuid)
+    private PlaylistSample(Guid playlistSampleGuid, Guid playlistGuid, Guid sampleGuid)
     {
-        PlaylistSampleEntityGuid = playlistSampleEntityGuid;
+        PlaylistSampleGuid = playlistSampleGuid;
         PlaylistGuid = playlistGuid;
         SampleGuid = sampleGuid;
     }
 
-    public Guid PlaylistSampleEntityGuid { get; private set; }
+    public Guid PlaylistSampleGuid { get; private set; }
     
     public Guid PlaylistGuid { get; private set; }
     

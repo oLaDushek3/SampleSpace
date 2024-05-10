@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using SampleSpaceCore.Abstractions;
 using SampleSpaceCore.Abstractions.Repositories;
 using SampleSpaceCore.Models;
 using SampleSpaceDal.Entities;

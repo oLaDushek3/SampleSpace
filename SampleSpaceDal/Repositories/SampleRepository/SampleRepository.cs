@@ -84,32 +84,31 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             await using var reader = await command.ExecuteReaderAsync();
             
             if (!reader.HasRows)
-                return (null, string.Empty);
+                return (null, "Sample not found");
             
             var sampleEntity = new SampleEntity();
-            
-            while (await reader.ReadAsync())
-            {
-                sampleEntity.SampleGuid = reader.GetGuid(reader.GetOrdinal("sample_guid"));
-                sampleEntity.SampleLink = reader.GetString(reader.GetOrdinal("sample_link"));
-                sampleEntity.CoverLink = reader.GetString(reader.GetOrdinal("cover_link"));
-                sampleEntity.Name = reader.GetString(reader.GetOrdinal("name"));
-                sampleEntity.Artist = reader.GetString(reader.GetOrdinal("artist"));
-                sampleEntity.UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid"));
-                sampleEntity.Duration = reader.GetDouble(reader.GetOrdinal("duration"));
-                sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
-                sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
-                sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
-                sampleEntity.NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"));
 
-                sampleEntity.User = new UserEntity
-                {
-                    UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
-                    Nickname = reader.GetString(reader.GetOrdinal("nickname")),
-                    Email = reader.GetString(reader.GetOrdinal("email")),
-                    AvatarPath = reader.GetString(reader.GetOrdinal("avatar_path")),
-                };
-            }
+            await reader.ReadAsync();
+            
+            sampleEntity.SampleGuid = reader.GetGuid(reader.GetOrdinal("sample_guid"));
+            sampleEntity.SampleLink = reader.GetString(reader.GetOrdinal("sample_link"));
+            sampleEntity.CoverLink = reader.GetString(reader.GetOrdinal("cover_link"));
+            sampleEntity.Name = reader.GetString(reader.GetOrdinal("name"));
+            sampleEntity.Artist = reader.GetString(reader.GetOrdinal("artist"));
+            sampleEntity.UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid"));
+            sampleEntity.Duration = reader.GetDouble(reader.GetOrdinal("duration"));
+            sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+            sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+            sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
+            sampleEntity.NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"));
+
+            sampleEntity.User = new UserEntity
+            {
+                UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
+                Nickname = reader.GetString(reader.GetOrdinal("nickname")),
+                Email = reader.GetString(reader.GetOrdinal("email")),
+                AvatarPath = reader.GetString(reader.GetOrdinal("avatar_path")),
+            };
 
             await reader.CloseAsync();
 
