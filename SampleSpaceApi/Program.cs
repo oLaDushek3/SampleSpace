@@ -6,6 +6,7 @@ using SampleSpaceBll.Services;
 using SampleSpaceCore.Abstractions;
 using SampleSpaceCore.Abstractions.Repositories;
 using SampleSpaceCore.Abstractions.Services;
+using SampleSpaceDal.Repositories.PlaylistRepository;
 using SampleSpaceDal.Repositories.SampleCommentRepository;
 using SampleSpaceDal.Repositories.SampleRepository;
 using SampleSpaceDal.Repositories.UserRepository;
@@ -45,6 +46,7 @@ void ConfigureRepositories(IServiceCollection services)
     services.AddScoped<IUsersRepository, UsersRepository>();
     services.AddScoped<ISampleRepository, SampleRepository>();
     services.AddScoped<ISampleCommentRepository, SampleCommentRepository>();
+    services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 }
 
 void ConfigureServices(IServiceCollection services)
@@ -52,6 +54,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ISampleService, SampleService>();
     services.AddScoped<ISampleCommentServices, SampleCommentService>();
+    services.AddScoped<IPlaylistService, PlaylistService>();
 }
 
 void ConfigureInfrastructure(IServiceCollection services)

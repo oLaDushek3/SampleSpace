@@ -11,13 +11,13 @@ public class Playlist
         Name = name;
     }
 
-    public Guid PlaylistGuid { get; set; }
+    public Guid PlaylistGuid { get; private set; }
 
-    public Guid UserGuid { get; set; }
+    public Guid UserGuid { get; private set; }
 
-    public string Name { get; set; }
+    public string Name { get; private set; }
 
-    public static (Playlist? Playlist, string Error) Create(Guid playlistGuid, Guid userGuid, string name)
+    public static (Playlist? playlist, string Error) Create(Guid playlistGuid, Guid userGuid, string name)
     {
         if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
             return (null, "Nickname cannot be empty or longer then 75 symbols");
@@ -25,5 +25,15 @@ public class Playlist
         var playlist = new Playlist(playlistGuid, userGuid, name);
 
         return (playlist, string.Empty);
+    }
+    
+    public (Playlist? playlist, string error) Edit(string newName)
+    {
+        if(string.IsNullOrEmpty(newName) || newName.Length > MaxNameLength)
+            return (null, $"Name cannot be empty or longer then {MaxNameLength} symbols");
+
+        Name = newName;
+        
+        return (this, string.Empty);
     }
 }

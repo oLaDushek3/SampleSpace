@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.SampleComment;
 using SampleSpaceCore.Abstractions.Services;
@@ -26,11 +25,11 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
     
     // Раскомментировать после развертывания на сервере
     //[Authorize]
-    [HttpPost("create-new-comment")]
-    public async Task<IActionResult> CreateNewComment(CreateSampleCommentRequest createCommentRequest)
+    [HttpPost("create-comment")]
+    public async Task<IActionResult> CreateComment(CreateSampleCommentRequest request)
     {
-        var (requestComment, requestError) = SampleComment.Create(Guid.NewGuid(), createCommentRequest.SampleGuid,
-            createCommentRequest.UserGuid, DateTime.Now, createCommentRequest.Comment, null);
+        var (requestComment, requestError) = SampleComment.Create(Guid.NewGuid(), request.SampleGuid,
+            request.UserGuid, DateTime.Now, request.Comment, null);
 
         if (!string.IsNullOrEmpty(requestError))
             return BadRequest(requestError);
@@ -46,9 +45,9 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
     // Раскомментировать после развертывания на сервере
     //[Authorize]
     [HttpPut("edit-comment")]
-    public async Task<IActionResult> DeleteSampleComment(EditSampleCommentRequest editCommentRequest)
+    public async Task<IActionResult> EditComment(EditSampleCommentRequest request)
     {
-        var (comment, getError) = await commentServices.GetSampleComment(editCommentRequest.CommentGuid);
+        var (comment, getError) = await commentServices.GetSampleComment(request.CommentGuid);
         
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
@@ -59,7 +58,7 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         // if (new Guid(loginUserGuid) != comment!.UserGuid)
         //     return Forbid();
 
-        var (modifiedComment, modifiedError) = comment!.Edit(editCommentRequest.Comment);
+        var (modifiedComment, modifiedError) = comment!.Edit(request.Comment);
         
         if(!string.IsNullOrEmpty(modifiedError))
             return  BadRequest(modifiedError);

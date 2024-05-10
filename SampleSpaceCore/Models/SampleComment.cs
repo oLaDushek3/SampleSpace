@@ -27,7 +27,7 @@ public class SampleComment
 
     public User? User { get; private set; }
 
-    public static (SampleComment? SampleComment, string Error) Create(Guid sampleCommentEntityGuid, Guid sampleGuid,
+    public static (SampleComment? sampleComment, string Error) Create(Guid sampleCommentEntityGuid, Guid sampleGuid,
         Guid userGuid, DateTime date, string comment, User? user)
     {
         if (string.IsNullOrEmpty(comment) || comment.Length > 300)
@@ -38,9 +38,9 @@ public class SampleComment
         return (sampleComment, string.Empty);
     }
 
-    public (SampleComment? SampleComment, string error) Edit(string newCommentValue)
+    public (SampleComment? sampleComment, string error) Edit(string newCommentValue)
     {
-        if(string.IsNullOrEmpty(newCommentValue) || newCommentValue.Length > 300)
+        if(string.IsNullOrEmpty(newCommentValue) || newCommentValue.Length > MaxCommentLength)
             return (null, $"Comment cannot be empty or longer then {MaxCommentLength} symbols");
 
         Comment = newCommentValue;
