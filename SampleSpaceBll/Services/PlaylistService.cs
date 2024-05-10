@@ -6,14 +6,46 @@ namespace SampleSpaceBll.Services;
 
 public class PlaylistService(IPlaylistRepository playlistRepository, ISampleRepository sampleRepository) : IPlaylistService
 {
-    public async Task<(Playlist?, string error)> GetPlaylist(Guid playlistGuid)
+    public async Task<(Playlist? playlist, string error)> GetPlaylist(Guid playlistGuid)
     {
         return await playlistRepository.GetByGuid(playlistGuid);
     }
 
-    public async Task<(List<Playlist>?, string error)> GetPlaylists(Guid userGuid)
+    public async Task<(List<Playlist>? playlists, string error)> GetUserPlaylists(Guid userGuid)
     {
         return await playlistRepository.Get(userGuid);
+    }
+
+    public async Task<(bool successfully, string error)> CheckSampleContain(Guid playlistGuid, Guid sampleGuid)
+    {
+        return await playlistRepository.CheckSampleContain(playlistGuid, sampleGuid);
+    }
+
+    public async Task<(List<PlaylistRelativeSample>?, string error)> GetUserPlaylistsRelativeSample(Guid userGuid, Guid sampleGuid)
+    {
+        var (playlists, playlistsError) = await GetUserPlaylists(userGuid);
+
+        if (!string.IsNullOrEmpty(playlistsError))
+            return (null, playlistsError);
+
+        var playlistsRelativeSample = new List<PlaylistRelativeSample>();
+        
+        foreach (var playlist in playlists!)
+        {
+            var (contain, existError) = await CheckSampleContain(playlist.PlaylistGuid, sampleGuid);
+            
+            if (!string.IsNullOrEmpty(existError))
+                return (null, existError);
+
+            var (playlistRelativeSample, playlistRelativeSampleError) = PlaylistRelativeSample.Create(playlist, contain);
+            
+            if (!string.IsNullOrEmpty(playlistRelativeSampleError))
+                return (null, playlistRelativeSampleError);
+            
+            playlistsRelativeSample.Add(playlistRelativeSample!);
+        }
+
+        return (playlistsRelativeSample, string.Empty);
     }
 
     public async Task<(Guid? playlistGuid, string error)> CreatePlaylist(Playlist playlist)
