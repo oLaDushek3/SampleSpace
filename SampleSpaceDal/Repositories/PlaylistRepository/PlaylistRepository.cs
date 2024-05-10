@@ -29,9 +29,9 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
 
             if (!reader.HasRows)
                 return (null, "Playlist not found");
-            
+
             await reader.ReadAsync();
-            
+
             var playlistEntity = new PlaylistEntity()
             {
                 PlaylistGuid = reader.GetGuid(reader.GetOrdinal("playlist_guid")),
@@ -160,14 +160,14 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
         var connection = GetConnection();
 
         var command = new NpgsqlCommand(queryString, connection)
-        { 
+        {
             Parameters =
             {
                 new NpgsqlParameter { Value = playlist.PlaylistGuid },
                 new NpgsqlParameter { Value = playlist.Name }
             }
         };
-        
+
         try
         {
             await connection.OpenAsync();
@@ -185,7 +185,7 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
             await connection.CloseAsync();
         }
     }
-    
+
     public async Task<(bool successfully, string error)> AddSample(PlaylistSample playlistSample)
     {
         var queryString = "insert into playlist_samples " +
@@ -207,7 +207,7 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
             await connection.OpenAsync();
 
             var successfully = await command.ExecuteNonQueryAsync() > 0;
-            
+
             return (successfully, string.Empty);
         }
         catch (Exception exception)
@@ -219,7 +219,41 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
             await connection.CloseAsync();
         }
     }
-    
+
+    public async Task<(bool successfully, string error)> CheckSampleContain(Guid playlistGuid, Guid sampleGuid)
+    {
+        var queryString = "select * " +
+                          "from playlist_samples " +
+                          "where playlist_guid = $1 and sample_guid = $2";
+
+        var connection = GetConnection();
+
+        var command = new NpgsqlCommand(queryString, connection)
+        {
+            Parameters =
+            {
+                new NpgsqlParameter { Value = playlistGuid },
+                new NpgsqlParameter { Value = sampleGuid }
+            }
+        };
+        try
+        {
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            return reader.HasRows ? (true, string.Empty) : (false, string.Empty);
+        }
+        catch (Exception exception)
+        {
+            return (false, exception.Message);
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
     public async Task<(bool successfully, string error)> DeleteSample(Guid playlistSampleGuid)
     {
         var queryString = "delete from playlist_samples where playlist_guid = $1";

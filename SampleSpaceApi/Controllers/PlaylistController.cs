@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Playlist;
 using SampleSpaceCore.Abstractions.Services;
@@ -10,9 +11,23 @@ namespace SampleSpaceApi.Controllers;
 public class PlaylistController(IPlaylistService playlistService) : ControllerBase
 {
     [HttpGet("get-user-playlists")]
-    public async Task<IActionResult> GetSampleComments([FromQuery(Name = "user-guid")] Guid userGuid)
+    public async Task<IActionResult> GetUserPlaylists([FromQuery(Name = "user-guid")] Guid userGuid)
     {
-        var (playlists, error) = await playlistService.GetPlaylists(userGuid);
+        var (playlists, error) = await playlistService.GetUserPlaylists(userGuid);
+        
+        if (!string.IsNullOrEmpty(error))
+            return BadRequest(error);
+        
+        if (playlists == null)
+            return NotFound();
+        
+        return Ok(playlists); 
+    }
+    
+    [HttpGet("get-user-playlists-relative-sample")]
+    public async Task<IActionResult> GetUserPlaylistsRelativeSample([FromQuery(Name = "user-guid")] Guid userGuid, [FromQuery(Name = "sample-guid")] Guid sampleGuid)
+    {
+        var (playlists, error) = await playlistService.GetUserPlaylistsRelativeSample(userGuid, sampleGuid);
         
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -85,17 +100,26 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     [HttpPost("add-sample-to-playlist")]
     public async Task<IActionResult> AddSampleToPlaylist(AddSampleToPlaylistRequest request)
     {
-        // var (playlist, getError) = await playlistService.GetPlaylist(request.PlaylistGuid);
-        //
-        // if(!string.IsNullOrEmpty(getError))
-        //     return  BadRequest(getError);
+        var (playlist, getError) = await playlistService.GetPlaylist(request.PlaylistGuid);
+        
+        if(!string.IsNullOrEmpty(getError))
+            return  BadRequest(getError);
 
         // // Раскомментировать после развертывания на сервере
         // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
         //
         // if (new Guid(loginUserGuid) != playlist!.UserGuid)
         //     return Forbid();
+
+        var (alreadyContain, alreadyContainError) =
+            await playlistService.CheckSampleContain(request.PlaylistGuid, request.SampleGuid);
         
+        if (!string.IsNullOrEmpty(alreadyContainError))
+            return BadRequest(alreadyContainError);
+
+        if (alreadyContain)
+            return BadRequest("Already contain");
+
         var (requestPlaylistSample, requestError) =
             PlaylistSample.Create(Guid.NewGuid(), request.PlaylistGuid, request.SampleGuid);
         
