@@ -1,14 +1,14 @@
 .playlistPanel {
     z-index: 2;
     position: absolute;
-    background-color: #E2E2E2;
-    border: 1px solid #ccc;
+    background-color: var(--secondary-background-color);
+    border: 1px solid var(--border-color);
     border-radius: 15px;
     padding: 0.75rem;
     top: 35px;
     right: 0;
     width: 225px;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 8px var(--shadow-color);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);

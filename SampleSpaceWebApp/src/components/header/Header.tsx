@@ -25,7 +25,7 @@ export default function Header() {
     }
 
     return (
-        <header className={"panel " + headerClasses.headerPanel}>
+        <header className={headerClasses.headerPanel + " horizontalPanel"}>
             <img src={logo}
                  alt="Sample Space"
                  style={{height: "25px", cursor: "pointer"}}

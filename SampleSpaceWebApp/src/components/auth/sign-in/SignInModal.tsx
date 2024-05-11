@@ -69,17 +69,15 @@ export default function SignInModal({onClose}: SignInModalProps) {
                        value={password}
                        onChange={e => setPassword(e.target.value)}/>
 
-                {error && <ErrorMessage error={error}/>}
+                {error && <ErrorMessage error={error} setError={setError}/>}
 
                 <Button isPrimary={true}
                         alone={true}>
-                    Продолжить
+                    Войти
                 </Button>
 
+                <Button alone={true} onClick={onClose}>Назад</Button>
             </form>
-
-            <p style={{textAlign: "center", margin: "0.5rem", cursor: "pointer"}}
-               onClick={onClose}>Назад</p>
         </div>
     )
 }

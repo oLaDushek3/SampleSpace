@@ -11,7 +11,7 @@ export default function AuthHeaderPanel() {
 
     return (
         <>
-            <div className={"panel"}>
+            <div className={"horizontalPanel"}>
                 <Button isPrimary={true}
                         onClick={() => setSigInIsOpen(true)}>
                     Войти

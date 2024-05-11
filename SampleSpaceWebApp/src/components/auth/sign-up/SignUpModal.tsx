@@ -75,17 +75,15 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
                        value={password}
                        onChange={e => setPassword(e.target.value)}/>
 
-                {error && <ErrorMessage error={error}/>}
+                {error && <ErrorMessage error={error} setError={setError}/>}
 
                 <Button isPrimary={true}
                         alone={true}>
                     Продолжить
                 </Button>
-                
-            </form>
 
-            <p style={{textAlign: "center", margin: "0.5rem", cursor: "pointer"}} 
-               onClick={onClose}>Назад</p>
+                <Button alone={true} onClick={onClose}>Назад</Button>
+            </form>
         </div>
     )
 }

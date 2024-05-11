@@ -9,7 +9,7 @@ import Button, {ButtonVisualType} from "../../button/Button.tsx";
 import useAuth from "../../../hook/useAuth.ts";
 import SampleCommentApi from "../../../dal/api/sample-comment/SampleCommentApi.ts";
 import {useState} from "react";
-import CommentInput, {CommentAction} from "../../comment-input/CommentInput.tsx";
+import CommentInput, {CommentAction} from "./comment-input/CommentInput.tsx";
 
 interface CommentProps {
     comment: ISampleComment;

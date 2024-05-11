@@ -2,9 +2,9 @@
     height: 60px;
     padding: 0.5rem 1rem;
     display: flex;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
-    background: #fafafa;
+    align-items: center;    
+    border-bottom: 1px solid var(--border-color);
+    background: var(--primary-background-color);
 }
 
 .headerPanel > * {

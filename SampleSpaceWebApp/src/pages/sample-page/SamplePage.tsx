@@ -12,7 +12,7 @@ import {IoIosShareAlt} from "react-icons/io";
 import Icon from "../../components/icon/Icon.tsx";
 import Comment from "../../components/sample/comment/Comment.tsx";
 import UserAvatar from "../../components/user-avatar/UserAvatar.tsx";
-import CommentInput from "../../components/comment-input/CommentInput.tsx";
+import CommentInput from "../../components/sample/comment/comment-input/CommentInput.tsx";
 import useAuth from "../../hook/useAuth.ts";
 import samplePageClasses from "./SamplePage.module.css";
 import NotFoundPage from "../not-found/NotFoundPage.tsx";
@@ -35,7 +35,9 @@ export default function SamplePage() {
     } = useSamplePlayer()
     const [playlistsPanelIsActive, setPlaylistsPanelIsActive] = useState<boolean>(false)
     const playlistsPanelRef = useRef(null);
-    useClickOutside(playlistsPanelRef, () => {setPlaylistsPanelIsActive(false)});
+    useClickOutside(playlistsPanelRef, () => {
+        setPlaylistsPanelIsActive(false)
+    });
 
     async function fetchSample() {
         if (sampleGuid) {
@@ -138,7 +140,7 @@ export default function SamplePage() {
                                 </Icon>
                             </Link>
                         </div>
-                        
+
                         <div className={"horizontalPanel"}>
                             <Button visualType={ButtonVisualType.icon}
                                     onClick={() => {
@@ -149,17 +151,18 @@ export default function SamplePage() {
                                 </Icon>
                             </Button>
 
-                            <div ref={playlistsPanelRef} className={samplePageClasses.playlistPanelContainer}>
-                                <Button visualType={ButtonVisualType.icon}
-                                        onClick={() => {
-                                            setPlaylistsPanelIsActive(prevState => !prevState)
-                                        }}>
-                                    <Icon>
-                                        <MdAdd/>
-                                    </Icon>
-                                </Button>
-                                <PlaylistSamplePanel isActive={playlistsPanelIsActive} sampleGuid={sampleGuid!}/>
-                            </div>
+                            {user &&
+                                <div ref={playlistsPanelRef} className={samplePageClasses.playlistPanelContainer}>
+                                    <Button visualType={ButtonVisualType.icon}
+                                            onClick={() => {
+                                                setPlaylistsPanelIsActive(prevState => !prevState)
+                                            }}>
+                                        <Icon>
+                                            <MdAdd/>
+                                        </Icon>
+                                    </Button>
+                                    <PlaylistSamplePanel isActive={playlistsPanelIsActive} sampleGuid={sampleGuid!}/>
+                                </div>}
                         </div>
                     </div>
 

@@ -4,6 +4,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
+    --primary-color: #759;
+    --primary-background-color: #f5f5f5;
+    --secondary-background-color: #e2e2e2;
+    --border-color: #ccc;
+    --shadow-color: #1b1b1b;
+    --secondary-font-color: #8d8d8d;
+    --error-font-color: #ff3333;
 }
 
 body {
