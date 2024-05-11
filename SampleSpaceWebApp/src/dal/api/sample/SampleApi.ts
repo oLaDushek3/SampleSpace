@@ -30,6 +30,19 @@ export default class SampleApi extends ApiBase {
             })
     }
 
+    static async getByPlaylist(playlistGuid: string): Promise<Array<ISample>> {
+
+        let url = this.baseAddress + `sample/get-by-playlist?playlist-guid=${playlistGuid}`
+
+        return await axios.get(url)
+            .then(async res => {
+                return res.data;
+            })
+            .catch(() => {
+                return [];
+            })
+    }
+    
     static async getSample(sampleGuid: string): Promise<ISample | null> {
 
         let url = this.baseAddress + `sample/get-sample?sample-guid=${sampleGuid}`

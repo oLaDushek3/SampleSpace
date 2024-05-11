@@ -54,11 +54,15 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     const [currentTime, setCurrentTime] = useState(0);
     const [currentActionAtTheEnd, setCurrentActionAtTheEnd] = useLocalStorageState<ActionAtTheEnd>("actionAtTheEnd", {defaultValue: ActionAtTheEnd.playSkipForward});
     const [currentVolume, setCurrentVolume] = useLocalStorageState<number>("volume", {defaultValue: 0.5});
-
+    
     const handleSamplePlayerList = (samplePlayerList: ISamplePlayer[]) => {
         setSamplePlayerList(samplePlayerList);
     }
-
+    
+    useEffect(() => {
+        handlePause();
+    }, [samplePlayerList]);
+    
     const handlePlayingSamplePlayer = (samplePlayer: ISamplePlayer) => {
         if (playingSamplePlayer)
             playingSamplePlayer.isActive = false;

@@ -1,12 +1,13 @@
 import {createPortal} from "react-dom";
-import React, {useEffect, useRef} from "react";
+import {ReactNode, useEffect, useRef} from "react";
 import './Modal.module.css'
 
-interface ModalProps extends React.ComponentProps<'dialog'>{
+interface ModalProps{
     open: boolean;
+    children: ReactNode
 }
 
-export default function Modal({open, ...props}: ModalProps) {
+export default function Modal({open, children}: ModalProps) {
     const dialog = useRef<HTMLDialogElement>(null);
     const portalDiv = document.getElementById('modal')!;
     
@@ -19,8 +20,7 @@ export default function Modal({open, ...props}: ModalProps) {
     }, [open])
     
     return createPortal(
-        <dialog ref={dialog}
-                {...props}/>,
+        <dialog ref={dialog} children={children}/>,
         portalDiv
     )
 }

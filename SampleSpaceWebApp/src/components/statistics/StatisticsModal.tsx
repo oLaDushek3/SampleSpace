@@ -91,12 +91,12 @@ export default function StatisticsModal({samples = [], onClose}: StatisticsModal
 
 
             <div className={statisticsModalClasses.buttonPanel}>
-                <Button isPrimary={true}
+                <Button primary={true}
                         onClick={getWordFile}>
                     Скачать docx
                 </Button>
 
-                <Button isPrimary={true}
+                <Button primary={true}
                         onClick={getExcelFile}>
                     Скачать xlsx
                 </Button>

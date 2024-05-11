@@ -11,7 +11,7 @@
     --border-color: #ccc;
     --shadow-color: #1b1b1b;
     --secondary-font-color: #8d8d8d;
-    --error-font-color: #ff3333;
+    --warning-color: #ff5555;
 }
 
 body {

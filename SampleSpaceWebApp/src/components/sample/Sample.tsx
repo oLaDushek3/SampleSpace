@@ -46,7 +46,7 @@ export default function Sample({samplePlayer}: SampleProps) {
 
                 <div className={sampleClasses.track + " horizontalPanel"}>
                     <Button visualType={ButtonVisualType.withIcon}
-                            isPrimary={true}
+                            primary={true}
                             onClick={handlePlayback}>
                         {samplePlayer.isActive && isPlaying ? <IoPause/> : <IoPlay/>}
                     </Button>

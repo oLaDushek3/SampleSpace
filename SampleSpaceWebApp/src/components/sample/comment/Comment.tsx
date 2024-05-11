@@ -50,7 +50,7 @@ export default function Comment({comment, updateCallBack}: CommentProps) {
 
                             {user?.userGuid == comment.userGuid &&
                                 <div className={commentClasses.toolsPanel + " horizontalPanel"}>
-                                    <Button isPrimary={false}
+                                    <Button primary={false}
                                             visualType={ButtonVisualType.icon}
                                             onClick={handleDeleteComment}>
                                         <Icon height={18} isPrimary={false}>
@@ -58,7 +58,7 @@ export default function Comment({comment, updateCallBack}: CommentProps) {
                                         </Icon>
                                     </Button>
 
-                                    <Button isPrimary={false}
+                                    <Button primary={false}
                                             visualType={ButtonVisualType.icon}
                                             onClick={() => setEditingActive(true)}>
                                         <Icon height={18} isPrimary={false}>

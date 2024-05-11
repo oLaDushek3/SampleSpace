@@ -48,56 +48,56 @@ export default class PlaylistApi extends ApiBase {
             })
     }
 
-    static async editPlaylist(playlistGuid: string, name: string): Promise<string> {
+    static async editPlaylist(playlistGuid: string, name: string): Promise<boolean> {
 
         let url = this.baseAddress + "playlist/edit-playlist";
 
         let blank: IEditPlaylistBlank = {playlistGuid, name};
 
         return await axios.put(url, blank)
-            .then(async res => {
-                return res.data;
+            .then(_ => {
+                return true;
             })
             .catch(() => {
                 return false;
             })
     }
 
-    static async addSampleToPlaylist(playlistGuid: string, sampleGuid: string): Promise<string> {
+    static async addSampleToPlaylist(playlistGuid: string, sampleGuid: string): Promise<boolean> {
 
         let url = this.baseAddress + "playlist/add-sample-to-playlist";
         
         let blank: IAddSampleToPlaylistBlank = {playlistGuid, sampleGuid};
         
         return await axios.post(url, blank)
-            .then(async res => {
-                return res.data;
+            .then(_ => {
+                return true;
             })
             .catch(() => {
                 return false;
             })
     }
 
-    static async deleteSampleFromPlaylist(playlistGuid: string, sampleGuid: string): Promise<string> {
+    static async deleteSampleFromPlaylist(playlistGuid: string, sampleGuid: string): Promise<boolean> {
 
         let url = this.baseAddress + `playlist/delete-sample-from-playlist?playlist-guid=${playlistGuid}&sample-guid=${sampleGuid}`;
 
         return await axios.delete(url)
-            .then(async res => {
-                return res.data;
+            .then(_ => {
+                return true;
             })
             .catch(() => {
                 return false;
             })
     }
 
-    static async deletePlaylist(playlistGuid: string): Promise<string> {
+    static async deletePlaylist(playlistGuid: string): Promise<boolean> {
 
         let url = this.baseAddress + `playlist/delete-playlist?playlist-guid=${playlistGuid}`;
 
         return await axios.delete(url)
-            .then(async res => {
-                return res.data;
+            .then(_ => {
+                return true;
             })
             .catch(() => {
                 return false;

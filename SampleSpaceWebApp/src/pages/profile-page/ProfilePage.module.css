@@ -11,3 +11,11 @@
     height: 225px;
     border-radius: 15px;
 }
+
+.playlistsPanel {
+    align-items: center;
+}
+
+.playlistsPanel .playlists {
+    overflow: auto;    
+}

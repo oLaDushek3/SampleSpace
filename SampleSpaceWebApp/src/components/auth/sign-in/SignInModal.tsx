@@ -37,7 +37,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
         if (response) {
             onClose();
-            signIn(response)
+            signIn(response);
         } else {
             setError("Ошибка авторизации");
             return
@@ -46,8 +46,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
     return (
         <div ref={wrapperRef} 
-             className={signInModalClasses.signIn + " verticalPanel"} 
-             onClick={e => (e.currentTarget === e.target) && onClose()}>
+             className={signInModalClasses.signIn + " verticalPanel"}>
             <h2>Авторизация</h2>
 
             <form className={"verticalPanel"} 
@@ -71,7 +70,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
-                <Button isPrimary={true}
+                <Button primary={true}
                         alone={true}>
                     Войти
                 </Button>

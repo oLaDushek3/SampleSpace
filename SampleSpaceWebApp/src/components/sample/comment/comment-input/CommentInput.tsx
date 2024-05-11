@@ -58,7 +58,7 @@ export default function CommentInput({value = "", action = CommentAction.create,
                 {commentValue?.trim() &&
                     <Button type="button"
                             visualType={ButtonVisualType.withIcon}
-                            isPrimary={true}
+                            primary={true}
                             onClick={handleSubmit}>
                         <IoSend/>
                     </Button>
@@ -67,7 +67,7 @@ export default function CommentInput({value = "", action = CommentAction.create,
                 {action === CommentAction.edit &&
                     <Button type="button"
                             visualType={ButtonVisualType.withIcon}
-                            isPrimary={false}
+                            primary={false}
                             onClick={handleCancel}>
                         <IoCloseOutline/>
                     </Button>}

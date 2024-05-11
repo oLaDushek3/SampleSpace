@@ -8,7 +8,7 @@ interface IconProps {
 }
 
 export default function Icon({height = 24, isPrimary = true, children}: IconProps) {
-    let classes: string = iconClasses.icon; 
+    let classes: string = iconClasses.icon;
     
     if(isPrimary){
         classes += ` ${iconClasses.primary}`

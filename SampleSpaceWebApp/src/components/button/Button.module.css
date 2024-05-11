@@ -9,6 +9,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex-shrink: 0;
 }
 
 .button:hover {
@@ -22,6 +23,11 @@
 
 .primary {
     background: var(--primary-color);
+    color: #fff;
+}
+
+.warning {
+    background: var(--warning-color);
     color: #fff;
 }
 
