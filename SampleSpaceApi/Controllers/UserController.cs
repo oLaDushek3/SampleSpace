@@ -40,7 +40,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser.Nickname, loginUser.Email));
     }
     
-    [HttpPost("get-user-by-nickname")]
+    [HttpGet("get-user-by-nickname")]
     public async Task<IActionResult> GetUser(string nickname)
     {
         var (user, error) = await userService.GetUser(nickname);

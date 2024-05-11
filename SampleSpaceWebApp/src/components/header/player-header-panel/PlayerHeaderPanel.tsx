@@ -98,29 +98,29 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
                 </div>}
 
             <div className={playerHeaderPanelClasses.playbackControlPanel + " horizontalPanel"}>
-                <Button isActive={playingSamplePlayer?.sample != null && !playingSampleIsFirst}
+                <Button active={playingSamplePlayer?.sample != null && !playingSampleIsFirst}
                         visualType={ButtonVisualType.withIcon}
-                        isPrimary={true}
+                        primary={true}
                         onClick={handlePlaySkipPrevious}>
                     <IoPlaySkipBack/>
                 </Button>
 
-                <Button isActive={playingSamplePlayer?.sample != null}
+                <Button active={playingSamplePlayer?.sample != null}
                         visualType={ButtonVisualType.withIcon}
-                        isPrimary={true}
+                        primary={true}
                         onClick={handlePlayPause}>
                     {isPlaying && isPlaying ? <IoPause/> : <IoPlay/>}
                 </Button>
 
-                <Button isActive={playingSamplePlayer?.sample != null && !playingSampleIsLast}
+                <Button active={playingSamplePlayer?.sample != null && !playingSampleIsLast}
                         visualType={ButtonVisualType.withIcon}
-                        isPrimary={true}
+                        primary={true}
                         onClick={handlePlaySkipForward}>
                     <IoPlaySkipForward/>
                 </Button>
 
                 <Button visualType={ButtonVisualType.withIcon}
-                        isPrimary={true}
+                        primary={true}
                         onClick={handleActionAtTheEndButton}>
                     {currentActionAtTheEnd === ActionAtTheEnd.pause ?
                         <IoPause/> : currentActionAtTheEnd === ActionAtTheEnd.playSkipForward ? <IoPlayForward/> :

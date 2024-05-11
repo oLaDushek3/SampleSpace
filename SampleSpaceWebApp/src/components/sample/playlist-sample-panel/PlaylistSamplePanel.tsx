@@ -18,7 +18,7 @@ export default function PlaylistSamplePanel({isActive = false, sampleGuid}: Play
 
     useEffect(() => {
         if (isActive)
-            setClasses(playlistSamplePanelClasses.playlistPanel + " " + playlistSamplePanelClasses.active);
+            setClasses(`${playlistSamplePanelClasses.playlistPanel} ${playlistSamplePanelClasses.active}`);
         else
             setClasses(playlistSamplePanelClasses.playlistPanel);
 
@@ -53,7 +53,7 @@ export default function PlaylistSamplePanel({isActive = false, sampleGuid}: Play
     
     return (
         <div className={classes}>
-            {playlists.map(playlist => <Button isPrimary={playlist.contain}
+            {playlists.map(playlist => <Button primary={playlist.contain}
                                                alone={true}
                                                children={playlist.playlist.name}
                                                onClick={playlist.contain ? 

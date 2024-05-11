@@ -41,7 +41,7 @@ export default class UserApi extends ApiBase {
 
         let url = this.baseAddress + `user/get-user-by-nickname?nickname=${nickname}`;
 
-        return await axios.post(url)
+        return await axios.get(url)
             .then(async res => {
                 return res.data;
             })

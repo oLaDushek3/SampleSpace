@@ -1,5 +1,5 @@
 import buttonClasses from './Button.module.css'
-import React from "react";
+import React, {ReactNode} from "react";
 
 export enum ButtonVisualType {
     simple,
@@ -14,23 +14,61 @@ const styles = {
 }
 
 interface ButtonProps extends React.ComponentProps<'button'> {
-    isActive?: boolean;
+    active?: boolean;
     visualType?: ButtonVisualType;
-    isPrimary?: boolean;
+    primary?: boolean;
+    warning?: boolean;
     alone?: boolean;
 }
 
-export default function Button({isActive = true, isPrimary = false, alone = false, visualType = ButtonVisualType.simple, ...pops}: ButtonProps) {
+interface RadioButtonProps {
+    active?: boolean;
+    visualType?: ButtonVisualType;
+    selected?: boolean;
+    onSelected: () => void;
+    children: ReactNode;
+}
+
+export default function Button({
+                                   active = true,
+                                   primary = false,
+                                   warning = false,
+                                   alone = false,
+                                   visualType = ButtonVisualType.simple,
+                                   ...pops
+                               }: ButtonProps) {
     let classes: string = styles[visualType];
+
+    if (!active) classes += ` ${buttonClasses.inactive}`
+
+    if (primary) classes += ` ${buttonClasses.primary}`
     
-    if(!isActive) classes += ` ${buttonClasses.inactive}`
-    
-    if(isPrimary) classes += ` ${buttonClasses.primary}`;
-    
-    if(alone) classes += ` ${buttonClasses.alone}`;
-    
+    if (warning) classes += ` ${buttonClasses.warning}`;
+
+    if (alone) classes += ` ${buttonClasses.alone}`;
+
     return (
         <button className={classes}
                 {...pops} />
+    )
+}
+
+export function RadioButton({
+                                active = true,
+                                visualType = ButtonVisualType.simple,
+                                selected = false,
+                                onSelected,
+                                children
+                            }: RadioButtonProps) {
+    let classes: string = styles[visualType];
+
+    if (!active) classes += ` ${buttonClasses.inactive}`
+
+    if (selected) classes += ` ${buttonClasses.primary}`;
+
+    return (
+        <button className={classes} onClick={onSelected}>
+            {children}
+        </button>
     )
 }

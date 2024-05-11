@@ -44,8 +44,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
 
     return (
         <div ref={wrapperRef} 
-             className={signUpModalClasses.signUp + " verticalPanel"} 
-             onClick={e => (e.currentTarget === e.target) && onClose()}>
+             className={signUpModalClasses.signUp + " verticalPanel"} >
             <h2>Регистрация</h2>
 
             <form className={"verticalPanel"} 
@@ -77,7 +76,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
 
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
-                <Button isPrimary={true}
+                <Button primary={true}
                         alone={true}>
                     Продолжить
                 </Button>

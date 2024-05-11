@@ -100,7 +100,7 @@ export default function SamplePage() {
 
                     <div className={samplePageClasses.track + " horizontalPanel"}>
                         <Button visualType={ButtonVisualType.withIcon}
-                                isPrimary={true}
+                                primary={true}
                                 onClick={handlePlayback}>
                             {samplePlayer?.isActive && isPlaying ? <IoPause/> : <IoPlay/>}
                         </Button>
