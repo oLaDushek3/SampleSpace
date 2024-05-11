@@ -37,10 +37,11 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
                 PlaylistGuid = reader.GetGuid(reader.GetOrdinal("playlist_guid")),
                 UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                 Name = reader.GetString(reader.GetOrdinal("name")),
+                CanBeModified = reader.GetBoolean(reader.GetOrdinal("can_be_modified")),
             };
 
             var (playlist, playlistError) = Playlist.Create(playlistEntity.PlaylistGuid, playlistEntity.UserGuid,
-                playlistEntity.Name);
+                playlistEntity.Name, playlistEntity.CanBeModified);
 
             if (!string.IsNullOrEmpty(playlistError))
                 return (null, playlistError);
@@ -87,10 +88,11 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
                     PlaylistGuid = reader.GetGuid(reader.GetOrdinal("playlist_guid")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Name = reader.GetString(reader.GetOrdinal("name")),
+                    CanBeModified = reader.GetBoolean(reader.GetOrdinal("can_be_modified")),
                 };
 
                 var (playlist, playlistError) = Playlist.Create(playlistEntity.PlaylistGuid, playlistEntity.UserGuid,
-                    playlistEntity.Name);
+                    playlistEntity.Name, playlistEntity.CanBeModified);
 
                 if (!string.IsNullOrEmpty(playlistError))
                     return (null, playlistError);
