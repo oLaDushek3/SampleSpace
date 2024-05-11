@@ -1,4 +1,4 @@
-.settings {
+.playerPanel {
     z-index: 2;
     position: absolute;
     background-color: #e2e2e2;
@@ -15,7 +15,7 @@
     transition: 0.4s;
 }
 
-.settings.active {
+.playerPanel.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);

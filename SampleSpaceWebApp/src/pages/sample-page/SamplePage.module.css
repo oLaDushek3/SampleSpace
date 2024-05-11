@@ -17,8 +17,12 @@
 }
 
 .mainSpace {
-    overflow: hidden;
     flex: 1;
+}
+
+.header {
+    width: 300px;
+    overflow: hidden;
 }
 
 .track {
@@ -30,6 +34,19 @@
     flex: 1;
     accent-color: #759;
     outline: none;
+}
+
+.toolsPanel {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.playlistPanelContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .userPanel {

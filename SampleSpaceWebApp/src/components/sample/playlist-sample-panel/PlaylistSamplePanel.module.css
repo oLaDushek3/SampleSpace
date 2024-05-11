@@ -1,0 +1,27 @@
+.playlistPanel {
+    z-index: 2;
+    position: absolute;
+    background-color: #E2E2E2;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 0.75rem;
+    top: 35px;
+    right: 0;
+    width: 225px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: 0.4s;
+    overflow: hidden;
+}
+
+.playlistPanel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.playlistPanel > *:not(:last-child) {
+    margin-bottom: 5px;
+}

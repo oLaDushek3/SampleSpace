@@ -254,9 +254,9 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
         }
     }
 
-    public async Task<(bool successfully, string error)> DeleteSample(Guid playlistSampleGuid)
+    public async Task<(bool successfully, string error)> DeleteSample(Guid playlistGuid, Guid sampleGuid)
     {
-        var queryString = "delete from playlist_samples where playlist_guid = $1";
+        var queryString = "delete from playlist_samples where playlist_guid = $1 and sample_guid = $2";
 
         var connection = GetConnection();
 
@@ -264,7 +264,8 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
         {
             Parameters =
             {
-                new NpgsqlParameter { Value = playlistSampleGuid },
+                new NpgsqlParameter { Value = playlistGuid },
+                new NpgsqlParameter { Value = sampleGuid },
             }
         };
         try
@@ -273,7 +274,7 @@ public class PlaylistRepository(IConfiguration configuration) : BaseRepository(c
 
             var successfully = await command.ExecuteNonQueryAsync() > 0;
 
-            return (successfully, string.Empty);
+            return successfully ? (successfully, string.Empty) : (successfully, "Sample not found");
         }
         catch (Exception exception)
         {

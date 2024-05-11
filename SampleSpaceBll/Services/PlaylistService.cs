@@ -73,9 +73,9 @@ public class PlaylistService(IPlaylistRepository playlistRepository, ISampleRepo
         return await playlistRepository.AddSample(playlistSample);
     }
 
-    public async Task<(bool successfully, string error)> DeleteSampleFromPlaylist(Guid playlistSampleGuid)
+    public async Task<(bool successfully, string error)> DeleteSampleFromPlaylist(Guid playlistGuid, Guid sampleGuid)
     {
-        return await playlistRepository.DeleteSample(playlistSampleGuid);
+        return await playlistRepository.DeleteSample(playlistGuid, sampleGuid);
     }
 
     public async Task<(bool successfully, string error)> DeletePlaylist(Guid playlistGuid)

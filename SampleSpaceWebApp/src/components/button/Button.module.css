@@ -6,6 +6,9 @@
     transition: all 0.3s;
     font-weight: bold;
     background: #e2e2e2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .button:hover {

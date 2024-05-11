@@ -8,11 +8,6 @@ export default function LoadingSpinner() {
             <div className={loadingSpinnerClasses.wave}></div>
             <div className={loadingSpinnerClasses.wave}></div>
             <div className={loadingSpinnerClasses.wave}></div>
-            <div className={loadingSpinnerClasses.wave}></div>
-            <div className={loadingSpinnerClasses.wave}></div>
-            <div className={loadingSpinnerClasses.wave}></div>
-            <div className={loadingSpinnerClasses.wave}></div>
-            <div className={loadingSpinnerClasses.wave}></div>
         </div>
     )
 }

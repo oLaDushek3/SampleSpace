@@ -17,8 +17,8 @@ export default function Header() {
     const searchQuery = searchParams.get("search-query")
     const {user} = useAuth()
     const [playerPanelIsActive, setPlayerPanelIsActive] = useState<boolean>(false)
-    const wrapperRef = useRef(null);
-    useClickOutside(wrapperRef, () => {setPlayerPanelIsActive(false)});
+    const playerPanelContainerRef = useRef(null);
+    useClickOutside(playerPanelContainerRef, () => {setPlayerPanelIsActive(false)});
 
     const handleSearch = (searchQuery: string) => {
         navigate({pathname: "/search", search: `?search-query=${searchQuery}`});
@@ -33,7 +33,7 @@ export default function Header() {
 
             <Search searchQuery={searchQuery ? searchQuery : ""} callBack={handleSearch}/>
 
-            <div ref={wrapperRef} className={headerClasses.playerPanelContainer}>
+            <div ref={playerPanelContainerRef} className={headerClasses.playerPanelContainer}>
                 <Button visualType={ButtonVisualType.withIcon}
                         onClick={() => {
                             setPlayerPanelIsActive(prevState => !prevState)

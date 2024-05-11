@@ -16,7 +16,7 @@ public interface IPlaylistRepository
     
     public Task<(bool successfully, string error)> CheckSampleContain(Guid playlistGuid, Guid sampleGuid);
     
-    public Task<(bool successfully, string error)> DeleteSample(Guid playlistSampleGuid);
+    public Task<(bool successfully, string error)> DeleteSample(Guid playlistGuid, Guid sampleGuid);
     
     public Task<(bool successfully, string error)> Delete(Guid playlistGuid);
 }

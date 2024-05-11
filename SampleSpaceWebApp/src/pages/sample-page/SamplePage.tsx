@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import SampleCommentApi from "../../dal/api/sample-comment/SampleCommentApi.ts";
 import ISamplePlayer from "../../models/ISamplePlayer.ts";
 import Button, {ButtonVisualType} from "../../components/button/Button.tsx";
@@ -6,9 +6,11 @@ import {IoPause, IoPlay} from "react-icons/io5";
 import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import {Link, useParams} from "react-router-dom";
 import SampleApi from "../../dal/api/sample/SampleApi.ts";
-import {SlSocialVkontakte, SlSocialSpotify, SlSocialSoundcloud} from "react-icons/sl";
+import {SlSocialSoundcloud, SlSocialSpotify, SlSocialVkontakte} from "react-icons/sl";
+import {MdAdd} from "react-icons/md";
+import {IoIosShareAlt} from "react-icons/io";
 import Icon from "../../components/icon/Icon.tsx";
-import Comment from "../../components/comment/Comment.tsx";
+import Comment from "../../components/sample/comment/Comment.tsx";
 import UserAvatar from "../../components/user-avatar/UserAvatar.tsx";
 import CommentInput from "../../components/comment-input/CommentInput.tsx";
 import useAuth from "../../hook/useAuth.ts";
@@ -16,10 +18,12 @@ import samplePageClasses from "./SamplePage.module.css";
 import NotFoundPage from "../not-found/NotFoundPage.tsx";
 import LoadingSpinner from "../../components/loading-spinner/LoadingSpinner.tsx";
 import ISampleComment from "../../dal/entities/ISampleComment.ts";
+import useClickOutside from "../../hook/useClickOutside.ts";
+import PlaylistSamplePanel from "../../components/sample/playlist-sample-panel/PlaylistSamplePanel.tsx";
 
 export default function SamplePage() {
-    const {user} = useAuth();
     const {sampleGuid} = useParams<{ sampleGuid: string }>();
+    const {user} = useAuth();
     const [samplePlayer, setSamplePlayer] = useState<ISamplePlayer | null>()
     const [sampleComments, setSampleComments] = useState<ISampleComment[]>()
     const {
@@ -29,10 +33,13 @@ export default function SamplePage() {
         currentTime,
         isPlaying
     } = useSamplePlayer()
+    const [playlistsPanelIsActive, setPlaylistsPanelIsActive] = useState<boolean>(false)
+    const playlistsPanelRef = useRef(null);
+    useClickOutside(playlistsPanelRef, () => {setPlaylistsPanelIsActive(false)});
 
     async function fetchSample() {
         if (sampleGuid) {
-            const response = await SampleApi.getSample(sampleGuid!);
+            const response = await SampleApi.getSample(sampleGuid);
             setSamplePlayer(response !== null ? {sample: response, isActive: false} : null);
         }
     }
@@ -83,8 +90,8 @@ export default function SamplePage() {
                 <img className={samplePageClasses.cover} src={samplePlayer?.sample.coverLink} alt="Cover image"/>
 
                 <div className={samplePageClasses.mainSpace + " verticalPanel"}>
-                    <div>
-                        <p style={{fontSize: "20px", fontWeight: "bold"}} 
+                    <div className={samplePageClasses.header}>
+                        <p style={{fontSize: "20px", fontWeight: "bold"}}
                            className={"singleLineText"}>{samplePlayer.sample.name}</p>
                         <p className={"singleLineText"}>{samplePlayer?.sample.artist}</p>
                     </div>
@@ -111,25 +118,51 @@ export default function SamplePage() {
                                 : formatDuration(samplePlayer.sample.duration)}</p>}
                     </div>
 
-                    <div className={"horizontalPanel"}>
-                        <Link to={samplePlayer?.sample.vkontakteLink} target="_blank">
-                            <Icon>
-                                <SlSocialVkontakte/>
-                            </Icon>
-                        </Link>
+                    <div className={samplePageClasses.toolsPanel}>
+                        <div className={"horizontalPanel"}>
+                            <Link to={samplePlayer?.sample.vkontakteLink} target="_blank" title="Vkontakte">
+                                <Icon>
+                                    <SlSocialVkontakte/>
+                                </Icon>
+                            </Link>
 
-                        <Link to={samplePlayer?.sample.spotifyLink} target="_blank">
-                            <Icon>
-                                <SlSocialSpotify/>
-                            </Icon>
-                        </Link>
+                            <Link to={samplePlayer?.sample.spotifyLink} target="_blank">
+                                <Icon>
+                                    <SlSocialSpotify/>
+                                </Icon>
+                            </Link>
 
-                        <Link to={samplePlayer?.sample.soundcloudLink} target="_blank">
-                            <Icon>
-                                <SlSocialSoundcloud/>
-                            </Icon>
-                        </Link>
+                            <Link to={samplePlayer?.sample.soundcloudLink} target="_blank">
+                                <Icon>
+                                    <SlSocialSoundcloud/>
+                                </Icon>
+                            </Link>
+                        </div>
+                        
+                        <div className={"horizontalPanel"}>
+                            <Button visualType={ButtonVisualType.icon}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(window.location.href);
+                                    }}>
+                                <Icon>
+                                    <IoIosShareAlt/>
+                                </Icon>
+                            </Button>
+
+                            <div ref={playlistsPanelRef} className={samplePageClasses.playlistPanelContainer}>
+                                <Button visualType={ButtonVisualType.icon}
+                                        onClick={() => {
+                                            setPlaylistsPanelIsActive(prevState => !prevState)
+                                        }}>
+                                    <Icon>
+                                        <MdAdd/>
+                                    </Icon>
+                                </Button>
+                                <PlaylistSamplePanel isActive={playlistsPanelIsActive} sampleGuid={sampleGuid!}/>
+                            </div>
+                        </div>
                     </div>
+
 
                     <div className={samplePageClasses.userPanel + " horizontalPanel"}>
                         <Link to={`/${samplePlayer?.sample.user.nickname}`}>
@@ -139,6 +172,7 @@ export default function SamplePage() {
                             <p>{samplePlayer?.sample.user.nickname}</p>
                         </Link>
                     </div>
+
                 </div>
             </div>
 

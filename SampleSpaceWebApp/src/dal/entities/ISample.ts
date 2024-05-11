@@ -1,13 +1,12 @@
-import {Guid} from "guid-typescript";
 import IUser from "./IUser.ts";
 
 export default interface ISample {
-    sampleGuid: Guid;
+    sampleGuid: string;
     sampleLink: string;
     coverLink: string;
     name: string;
     artist: string;
-    userGuid: Guid
+    userGuid: string
     duration: number;
     vkontakteLink: string;
     spotifyLink: string;

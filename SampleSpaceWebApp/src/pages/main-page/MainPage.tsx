@@ -12,7 +12,7 @@ export default function MainPage() {
     }
 
     useEffect(() => {
-        fetchSamples();
+        void fetchSamples();
     }, [])
     
     return(

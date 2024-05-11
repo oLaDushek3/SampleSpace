@@ -1,12 +1,11 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
-import {Guid} from "guid-typescript";
 import ICreateSampleCommentBlank from "../blanks/sample-comment/ICreateSampleCommentBlank.ts";
 import ISampleComment from "../../entities/ISampleComment.ts";
 import IEditSampleCommentBlank from "../blanks/sample-comment/IEditSampleCommentBlank.ts";
 
 export default class SampleCommentApi extends ApiBase {
-    static async getSampleComments(sampleGuid: Guid): Promise<Array<ISampleComment>> {
+    static async getSampleComments(sampleGuid: string): Promise<Array<ISampleComment>> {
 
         let url = this.baseAddress + `sample-comment/get-comments?sample-guid=${sampleGuid}`;
 
@@ -19,9 +18,9 @@ export default class SampleCommentApi extends ApiBase {
             })
     }
     
-    static async createNewComment(sampleGuid: Guid, userGuid: Guid, comment: string): Promise<Guid> {
+    static async createNewComment(sampleGuid: string, userGuid: string, comment: string): Promise<string> {
 
-        let url = this.baseAddress + "sample-comment/create-new-comment";
+        let url = this.baseAddress + "sample-comment/create-comment";   
         
         let blank: ICreateSampleCommentBlank = {sampleGuid, userGuid, comment};
 
@@ -34,7 +33,7 @@ export default class SampleCommentApi extends ApiBase {
             })
     }
 
-    static async editComment(commentGuid: Guid, comment: string): Promise<boolean> {
+    static async editComment(commentGuid: string, comment: string): Promise<boolean> {
 
         let url = this.baseAddress + "sample-comment/edit-comment";
 
@@ -49,7 +48,7 @@ export default class SampleCommentApi extends ApiBase {
             })
     }
     
-    static async deleteComment(commentGuid: Guid): Promise<boolean> {
+    static async deleteComment(commentGuid: string): Promise<boolean> {
         
         let url = this.baseAddress + `sample-comment/delete-comment?comment-guid=${commentGuid}`;
 

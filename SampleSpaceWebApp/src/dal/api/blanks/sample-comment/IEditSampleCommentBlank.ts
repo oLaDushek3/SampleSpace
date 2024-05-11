@@ -1,6 +1,4 @@
-import {Guid} from "guid-typescript";
-
 export default interface IEditSampleCommentBlank {
-    commentGuid: Guid;
+    commentGuid: string;
     comment: string;
 }

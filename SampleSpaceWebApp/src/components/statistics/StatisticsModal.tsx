@@ -1,5 +1,8 @@
-import ISample from "../../dal/models/ISample.ts";
 import statisticsModalClasses from "./StatisticsModal.module.css";
+import SampleApi from "../../dal/api/sample/SampleApi.ts";
+import Button from "../button/Button.tsx";
+import ISample from "../../dal/entities/ISample.ts";
+import useAuth from "../../hook/useAuth.ts";
 import {Bar} from "react-chartjs-2";
 import {
     Chart,
@@ -27,8 +30,6 @@ import {
     Title,
     Tooltip
 } from 'chart.js';
-import SampleApi from "../../dal/api/sample/SampleApi.ts";
-import Button from "../button/Button.tsx";
 
 Chart.register(
     ArcElement,
@@ -62,13 +63,14 @@ interface StatisticsModalProps {
 }
 
 export default function StatisticsModal({samples = [], onClose}: StatisticsModalProps) {
+    const {user} = useAuth();
     
     async function getWordFile() {
-        await SampleApi.generateWord("fed85493-ccc8-42e9-9b17-1b770ac06393");
+        await SampleApi.generateWord(user!.userGuid);
     }
 
     async function getExcelFile() {
-        await SampleApi.generateExcel("fed85493-ccc8-42e9-9b17-1b770ac06393");
+        await SampleApi.generateExcel(user!.userGuid);
     }
     
     return (
