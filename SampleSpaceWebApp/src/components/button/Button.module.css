@@ -5,7 +5,7 @@
     cursor: pointer;
     transition: all 0.3s;
     font-weight: bold;
-    background: #e2e2e2;
+    background: var(--secondary-background-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -21,7 +21,7 @@
 }
 
 .primary {
-    background: #759;
+    background: var(--primary-color);
     color: #fff;
 }
 
@@ -51,5 +51,5 @@
 }
 
 .icon:hover {
-    background: #e2e2e2;
+    background: var(--secondary-background-color);
 }

@@ -7,7 +7,7 @@
 .wave {
     width: 5px;
     height: 50px;
-    background: #759;
+    background: var(--primary-color);
     margin: 10px;
     animation: wave 1s linear infinite;
     border-radius: 20px;

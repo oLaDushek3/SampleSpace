@@ -4,5 +4,5 @@
 }
 
 .primary {
-    color: #759;
+    color: var(--primary-color);
 }

@@ -1,8 +1,8 @@
 import commentInputClasses from "./CommentInput.module.css";
 import {FormEvent, useRef, useState} from "react";
-import Button, {ButtonVisualType} from "../button/Button.tsx";
+import Button, {ButtonVisualType} from "../../../button/Button.tsx";
 import { IoSend, IoCloseOutline } from "react-icons/io5";
-import ErrorMessage from "../error-message/ErrorMessage.tsx";
+import ErrorMessage from "../../../error-message/ErrorMessage.tsx";
 
 export enum CommentAction {
     create,
@@ -26,7 +26,6 @@ export default function CommentInput({value = "", action = CommentAction.create,
 
         if(commentValue?.length > 200){
             setError("Максимум 200 символов");
-            setTimeout(() => setError(""), 3500)
             return;
         }
         
@@ -74,7 +73,7 @@ export default function CommentInput({value = "", action = CommentAction.create,
                     </Button>}
             </form>
             
-            {error && <ErrorMessage error={error}/>}
+            {error && <ErrorMessage error={error} setError={setError}/>}
         </div>
     )
 }
