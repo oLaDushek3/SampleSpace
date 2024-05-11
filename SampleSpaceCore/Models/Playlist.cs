@@ -4,11 +4,12 @@ public class Playlist
 {
     private const int MaxNameLength = 75;
 
-    private Playlist(Guid playlistGuid, Guid userGuid, string name)
+    private Playlist(Guid playlistGuid, Guid userGuid, string name, bool canBeModified)
     {
         PlaylistGuid = playlistGuid;
         UserGuid = userGuid;
         Name = name;
+        CanBeModified = canBeModified;
     }
 
     public Guid PlaylistGuid { get; private set; }
@@ -17,12 +18,14 @@ public class Playlist
 
     public string Name { get; private set; }
 
-    public static (Playlist? playlist, string Error) Create(Guid playlistGuid, Guid userGuid, string name)
+    public bool CanBeModified { get; private set; }
+
+    public static (Playlist? playlist, string Error) Create(Guid playlistGuid, Guid userGuid, string name, bool canBeModified = true)
     {
         if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
             return (null, "Nickname cannot be empty or longer then 75 symbols");
 
-        var playlist = new Playlist(playlistGuid, userGuid, name);
+        var playlist = new Playlist(playlistGuid, userGuid, name, canBeModified);
 
         return (playlist, string.Empty);
     }

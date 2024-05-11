@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Playlist;
 using SampleSpaceCore.Abstractions.Services;
@@ -81,7 +80,7 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         //
         // if (new Guid(loginUserGuid) != comment!.UserGuid)
         //     return Forbid();
-
+        
         var (modifiedPlaylist, modifiedError) = playlist!.Edit(request.Name);
         
         if(!string.IsNullOrEmpty(modifiedError))
@@ -168,17 +167,14 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     public async Task<IActionResult> DeletePlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid)
     {
         var (playlist, getError) = await playlistService.GetPlaylist(playlistGuid);
-        
-        if(!string.IsNullOrEmpty(getError))
-            return  BadRequest(getError);
 
         // Раскомментировать после развертывания на сервере
         // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
         //
         // if (new Guid(loginUserGuid) != comment!.UserGuid)
         //     return Forbid();
-
-        var (successfully, deleteError) = await playlistService.DeletePlaylist(playlistGuid);
+        
+        var (successfully, deleteError) = await playlistService.DeletePlaylist(playlist!);
         
         if(!string.IsNullOrEmpty(deleteError))
             return  BadRequest(deleteError);

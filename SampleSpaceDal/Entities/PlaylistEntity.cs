@@ -7,4 +7,6 @@ public class PlaylistEntity
     public Guid UserGuid { get; set; }
 
     public string Name { get; set; } = string.Empty;
+
+    public bool CanBeModified { get; set; } = true;
 }
