@@ -35,6 +35,20 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         return Ok(samples); 
     }
     
+    [HttpGet("get-by-playlist")]
+    public async Task<IActionResult> GetByPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid)
+    {
+        var (samples, error) = await sampleService.GetByPlaylist(playlistGuid);
+
+        if (!string.IsNullOrEmpty(error))
+            return BadRequest(error);
+        
+        if (samples == null || samples.Count == 0)
+            return NotFound();
+        
+        return Ok(samples); 
+    }
+    
     [HttpGet("get-sample")]
     public async Task<IActionResult> GetSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
