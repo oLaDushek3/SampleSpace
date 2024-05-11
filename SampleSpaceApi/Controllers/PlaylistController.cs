@@ -140,9 +140,9 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     // Раскомментировать после развертывания на сервере
     //[Authorize]
     [HttpDelete("delete-sample-from-playlist")]
-    public async Task<IActionResult> DeleteSampleFromPlaylist([FromQuery(Name = "playlist-sample-guid")] Guid playlistSampleGuid)
+    public async Task<IActionResult> DeleteSampleFromPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid, [FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
-        var (playlist, getError) = await playlistService.GetPlaylist(playlistSampleGuid);
+        var (playlist, getError) = await playlistService.GetPlaylist(playlistGuid);
         
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
@@ -153,7 +153,7 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         // if (new Guid(loginUserGuid) != playlist!.UserGuid)
         //     return Forbid();
         
-        var (successfully, deleteError) = await playlistService.DeleteSampleFromPlaylist(playlistSampleGuid);
+        var (successfully, deleteError) = await playlistService.DeleteSampleFromPlaylist(playlistGuid, sampleGuid);
         
         if(!string.IsNullOrEmpty(deleteError))
             return  BadRequest(deleteError);

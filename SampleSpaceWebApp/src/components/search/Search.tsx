@@ -4,6 +4,7 @@ import {CiSearch} from "react-icons/ci";
 import {IoCloseOutline} from "react-icons/io5";
 import Button, {ButtonVisualType} from "../button/Button.tsx";
 import searchClasses from "./Search.module.css"
+
 interface SearchProps {
     searchQuery?: string;
     callBack: (searchQuery: string) => void;

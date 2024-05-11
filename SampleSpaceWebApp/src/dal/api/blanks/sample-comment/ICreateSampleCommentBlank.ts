@@ -1,7 +1,5 @@
-import {Guid} from "guid-typescript";
-
 export default interface ICreateSampleCommentBlank {
-    sampleGuid: Guid;
-    userGuid: Guid;
+    sampleGuid: string;
+    userGuid: string;
     comment: string;
 }

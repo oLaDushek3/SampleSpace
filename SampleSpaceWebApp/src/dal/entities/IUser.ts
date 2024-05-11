@@ -1,7 +1,5 @@
-import {Guid} from "guid-typescript";
-
 export default interface IUser {
-    userGuid: Guid
+    userGuid: string
     nickname: string;
     email: string;
     password: string;

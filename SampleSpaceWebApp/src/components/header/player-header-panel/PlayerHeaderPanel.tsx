@@ -12,7 +12,7 @@ interface PlayerHeaderPanelProps {
 }
 
 export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelProps) {
-    const [classes, setClasses] = useState(playerHeaderPanelClasses.settings)
+    const [classes, setClasses] = useState(playerHeaderPanelClasses.playerPanel)
     const [playingSampleIsFirst, setPlayingSampleIsFirst] = useState(false)
     const [playingSampleIsLast, setPlayingSampleIsLast] = useState(false)
     const [volumeClasses, setVolumeClasses] = useState(playerHeaderPanelClasses.volume)
@@ -31,9 +31,9 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
 
     useEffect(() => {
         if (isActive)
-            setClasses(playerHeaderPanelClasses.settings + " " + playerHeaderPanelClasses.active);
+            setClasses(playerHeaderPanelClasses.playerPanel + " " + playerHeaderPanelClasses.active);
         else
-            setClasses(playerHeaderPanelClasses.settings);
+            setClasses(playerHeaderPanelClasses.playerPanel);
 
     }, [isActive]);
 

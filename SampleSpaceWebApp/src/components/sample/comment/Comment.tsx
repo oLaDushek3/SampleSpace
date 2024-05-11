@@ -1,16 +1,15 @@
-import ISampleComment from "../../dal/entities/ISampleComment.ts";
+import ISampleComment from "../../../dal/entities/ISampleComment.ts";
 import commentClasses from "./Comment.module.css";
 import {Link} from "react-router-dom";
-import UserAvatar from "../user-avatar/UserAvatar.tsx";
-import ShortDate from "../date/ShortDate.tsx";
-import Icon from "../icon/Icon.tsx";
-import {IoCloseOutline} from "react-icons/io5";
-import {MdEdit} from "react-icons/md";
-import Button, {ButtonVisualType} from "../button/Button.tsx";
-import useAuth from "../../hook/useAuth.ts";
-import SampleCommentApi from "../../dal/api/sample-comment/SampleCommentApi.ts";
+import UserAvatar from "../../user-avatar/UserAvatar.tsx";
+import ShortDate from "../../date/ShortDate.tsx";
+import Icon from "../../icon/Icon.tsx";
+import {MdEdit, MdClose} from "react-icons/md";
+import Button, {ButtonVisualType} from "../../button/Button.tsx";
+import useAuth from "../../../hook/useAuth.ts";
+import SampleCommentApi from "../../../dal/api/sample-comment/SampleCommentApi.ts";
 import {useState} from "react";
-import CommentInput, {CommentAction} from "../comment-input/CommentInput.tsx";
+import CommentInput, {CommentAction} from "../../comment-input/CommentInput.tsx";
 
 interface CommentProps {
     comment: ISampleComment;
@@ -55,7 +54,7 @@ export default function Comment({comment, updateCallBack}: CommentProps) {
                                             visualType={ButtonVisualType.icon}
                                             onClick={handleDeleteComment}>
                                         <Icon height={18} isPrimary={false}>
-                                            <IoCloseOutline/>
+                                            <MdClose/>
                                         </Icon>
                                     </Button>
 

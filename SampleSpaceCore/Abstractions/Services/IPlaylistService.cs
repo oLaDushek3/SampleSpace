@@ -18,7 +18,7 @@ public interface IPlaylistService
     
     public Task<(bool successfully, string error)> AddSampleToPlaylist(PlaylistSample playlistSample);
 
-    public Task<(bool successfully, string error)> DeleteSampleFromPlaylist(Guid playlistSampleGuid);
+    public Task<(bool successfully, string error)> DeleteSampleFromPlaylist(Guid playlistGuid, Guid sampleGuid);
     
     public Task<(bool successfully, string error)> DeletePlaylist(Guid playlistGuid);
 }
