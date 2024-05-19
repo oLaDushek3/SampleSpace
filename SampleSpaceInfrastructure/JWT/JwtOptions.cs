@@ -1,4 +1,4 @@
-namespace SampleSpaceInfrastructure;
+namespace SampleSpaceInfrastructure.JWT;
 
 public class JwtOptions
 {

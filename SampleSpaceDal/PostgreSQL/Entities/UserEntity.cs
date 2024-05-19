@@ -1,4 +1,4 @@
-﻿namespace SampleSpaceDal.Entities;
+﻿namespace SampleSpaceDal.PostgreSQL.Entities;
 
 public class UserEntity
 {

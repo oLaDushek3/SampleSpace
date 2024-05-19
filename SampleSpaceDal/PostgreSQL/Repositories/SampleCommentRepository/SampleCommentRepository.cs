@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Models;
-using SampleSpaceDal.Entities;
+using SampleSpaceDal.PostgreSQL.Entities;
 
-namespace SampleSpaceDal.Repositories.SampleCommentRepository;
+namespace SampleSpaceDal.PostgreSQL.Repositories.SampleCommentRepository;
 
 public class SampleCommentRepository(IConfiguration configuration) : BaseRepository(configuration),
     ISampleCommentRepository

@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Models;
-using SampleSpaceDal.Entities;
+using SampleSpaceDal.PostgreSQL.Entities;
 
-namespace SampleSpaceDal.Repositories.PlaylistRepository;
+namespace SampleSpaceDal.PostgreSQL.Repositories.PlaylistRepository;
 
 public class PlaylistRepository(IConfiguration configuration) : BaseRepository(configuration), IPlaylistRepository
 {

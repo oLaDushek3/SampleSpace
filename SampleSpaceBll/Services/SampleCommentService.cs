@@ -1,4 +1,4 @@
-using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Abstractions.Services;
 using SampleSpaceCore.Models;
 
