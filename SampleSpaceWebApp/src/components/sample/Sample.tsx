@@ -56,8 +56,7 @@ export default function Sample({samplePlayer}: SampleProps) {
                            max={samplePlayer.sample.duration}
                            step="0.001"
                            value={samplePlayer.isActive ? currentTime : 0}
-                           onChange={samplePlayer.isActive ? handleSeek : () => {
-                           }}/>
+                           onChange={samplePlayer.isActive ? handleSeek : () => {}}/>
 
                     <p>{samplePlayer.isActive
                         ? formatDuration(currentTime)

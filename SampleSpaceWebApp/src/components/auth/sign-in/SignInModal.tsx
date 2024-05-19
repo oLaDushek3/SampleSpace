@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import Button from "../../button/Button.tsx";
 import ErrorMessage from "../../error-message/ErrorMessage.tsx";
 import UserApi from "../../../dal/api/user/UserApi.ts";
@@ -17,19 +17,12 @@ export default function SignInModal({onClose}: SignInModalProps) {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const {signIn} = useAuth();
-    
-
-    useEffect(() =>{
-        setNickname("");
-        setPassword("");
-        setError("");
-    }, [onClose])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (nickname.trim().length === 0 || password.trim().length === 0) {
-            setError("Не корректные данные");
+            setError("Не все поля заполнены");
             return
         }
 
@@ -47,7 +40,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
     return (
         <div ref={wrapperRef} 
              className={signInModalClasses.signIn + " verticalPanel"}>
-            <h2>Авторизация</h2>
+            <p style={{fontSize: "24px", fontWeight: "bold"}}>Авторизация</p>
 
             <form className={"verticalPanel"} 
                   onSubmit={handleSubmit}>
@@ -71,7 +64,8 @@ export default function SignInModal({onClose}: SignInModalProps) {
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
                 <Button primary={true}
-                        alone={true}>
+                        alone={true} 
+                        onClick={handleSubmit}>
                     Войти
                 </Button>
 

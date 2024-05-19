@@ -4,8 +4,7 @@ import UserApi from "../../dal/api/user/UserApi.ts";
 import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import profilePageClasses from "./ProfilePage.module.css";
 import SampleList from "../../components/sample-list/SampleList.tsx";
-import Button, {ButtonVisualType, RadioButton} from "../../components/button/Button.tsx";
-import {MdAdd, MdEdit} from "react-icons/md";
+import Button, {RadioButton} from "../../components/button/Button.tsx";
 import useAuth from "../../hook/useAuth.ts";
 import IUser from "../../dal/entities/IUser.ts";
 import ISample from "../../dal/entities/ISample.ts";
@@ -13,30 +12,36 @@ import LoadingSpinner from "../../components/loading-spinner/LoadingSpinner.tsx"
 import NotFoundPage from "../not-found/NotFoundPage.tsx";
 import PlaylistApi from "../../dal/api/playlist/PlaylistApi.ts";
 import IPlaylist from "../../dal/entities/IPlaylist.ts";
-import Icon from "../../components/icon/Icon.tsx";
+import PlaylistToolsProfilePanel
+    from "../../components/playlist/playlist-tools-profile-panel/PlaylistToolsProfilePanel.tsx";
 import Modal from "../../components/modal/Modal.tsx";
-import CreatePlaylistModal from "../../components/playlist/create-playlist/CreatePlaylistModal.tsx";
-import EditPlaylistModal from "../../components/playlist/edit-playlist/EditPlaylistModal.tsx";
+import StatisticsModal from "../../components/statistics/StatisticsModal.tsx";
 
-interface ProfilePageProps {
-}
-
-export default function ProfilePage({}: ProfilePageProps) {
+export default function ProfilePage() {
     const {nickname} = useParams<{ nickname: string }>();
     const [user, setUser] = useState<IUser | null>();
     const {signOut} = useAuth()
     const [userPlaylists, setUserPlaylists] = useState<IPlaylist[]>();
     const [selectedPlaylist, setSelectedPlaylist] = useState<IPlaylist>();
     const [playlistSamples, setPlaylistSamples] = useState<ISample[]>();
-    const [createPlaylistIsOpen, setCreatePlaylistIsOpen] = useState(false)
-    const [editPlaylistIsOpen, setEditPlaylistIsOpen] = useState(false)
 
-    //const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
+    const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
     async function fetchUser() {
         const response = await UserApi.getUser(nickname!);
         setUser(response);
     }
+
+    const [userSamples, setUserSamples] = useState<Array<ISample>>()
+
+    async function fetchUserSamples() {
+        const response = await SampleApi.getUserSamples(user!.userGuid);
+        setUserSamples(response);
+    }
+
+    useEffect(() => {
+        fetchUserSamples();
+    }, [user]);
 
     async function fetchUserPlaylist() {
         const response = await PlaylistApi.getUserPlaylists(user!.userGuid.toString())
@@ -79,10 +84,10 @@ export default function ProfilePage({}: ProfilePageProps) {
                         <h2>{user?.email}</h2>
 
                         <div className="horizontalPanel">
-                            {/*<Button primary={true}*/}
-                            {/*        onClick={() => setStatisticsIsOpen(true)}>*/}
-                            {/*    Статистика*/}
-                            {/*</Button>*/}
+                            <Button primary={true}
+                                    onClick={() => setStatisticsIsOpen(true)}>
+                                Статистика
+                            </Button>
 
                             <Button primary={true}
                                     onClick={() => signOut()}>
@@ -93,26 +98,15 @@ export default function ProfilePage({}: ProfilePageProps) {
                 </div>
 
                 <div className={profilePageClasses.playlistsPanel + " horizontalPanel"}>
-                    <Button visualType={ButtonVisualType.withIcon}
-                            onClick={() => setCreatePlaylistIsOpen(true)}>
-                        <Icon>
-                            <MdAdd/>
-                        </Icon>
-                    </Button>
 
-                    {selectedPlaylist &&
-                        <Button visualType={ButtonVisualType.withIcon}
-                                active={selectedPlaylist?.canBeModified}
-                                onClick={() => setEditPlaylistIsOpen(true)}>
-                            <Icon>
-                                <MdEdit/>
-                            </Icon>
-                        </Button>}
+                    <PlaylistToolsProfilePanel selectedPlaylist={selectedPlaylist!} onCreate={fetchUserPlaylist}
+                                               onEdit={fetchUserPlaylist}/>
+
                     <div className={profilePageClasses.playlists + " horizontalPanel"}>
                         {userPlaylists ?
                             <>
                                 {/*<RadioButton onSelected={}/>*/}
-                                
+
                                 {userPlaylists?.map(playlist => <RadioButton
                                     onSelected={() => setSelectedPlaylist(playlist)}
                                     selected={selectedPlaylist === playlist}
@@ -126,18 +120,9 @@ export default function ProfilePage({}: ProfilePageProps) {
                 {playlistSamples && <SampleList samples={playlistSamples}/>}
             </div>
 
-            {/*<Modal open={statisticsIsOpen}>*/}
-            {/*    <StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
-            {/*</Modal>*/}
-
-            <Modal open={createPlaylistIsOpen || editPlaylistIsOpen}>
-                {createPlaylistIsOpen && <CreatePlaylistModal onClose={() => setCreatePlaylistIsOpen(false)}
-                                                              onCreate={fetchUserPlaylist}/>}
-                {editPlaylistIsOpen && <EditPlaylistModal playlist={selectedPlaylist!}
-                                                          onClose={() => setEditPlaylistIsOpen(false)}
-                                                          onEdit={fetchUserPlaylist}/>}
+            <Modal open={statisticsIsOpen}>
+                <StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>
             </Modal>
         </>
-
     )
 }

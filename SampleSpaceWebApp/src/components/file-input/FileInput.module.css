@@ -1,0 +1,24 @@
+.dropArea {
+    display: inline-block; 
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.fileInput {
+    display: flex;
+    flex-direction: column;
+    min-width: 175px;
+    min-height: 175px;
+    padding: 0.75rem;
+    background: var(--primary-background-color);
+    border: 2px dashed var(--border-color);
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.fileInput > * {
+    justify-content: center;
+}

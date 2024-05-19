@@ -3,7 +3,7 @@ import {Dispatch, SetStateAction, useEffect} from "react";
 
 interface ErrorMessageProps {
     error : string;
-    setError: Dispatch<SetStateAction<string>>
+    setError: Dispatch<SetStateAction<string>>;
 }
 
 export default function ErrorMessage({error, setError}: ErrorMessageProps) {
