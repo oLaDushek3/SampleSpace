@@ -86,7 +86,7 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         return () => {
             audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
         };
-    }, [playingSamplePlayer]);
+    }, [playingSamplePlayer, currentActionAtTheEnd]);
     
     const handlePlay = () => {
         void audioRef.current!.play();
@@ -110,6 +110,7 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         setCurrentTime(audioRef.current!.currentTime);
 
         if (audioRef.current!.currentTime === audioRef.current!.duration) {
+            console.log(ActionAtTheEnd[currentActionAtTheEnd]);
             if (currentActionAtTheEnd === ActionAtTheEnd.pause) {
                 handlePause();
                 return
