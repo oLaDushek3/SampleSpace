@@ -20,7 +20,9 @@ export default function Modal({open, children}: ModalProps) {
     }, [open])
     
     return createPortal(
-        <dialog ref={dialog} children={children}/>,
+        <dialog ref={dialog}>
+            {open && children}
+        </dialog>,
         portalDiv
     )
 }

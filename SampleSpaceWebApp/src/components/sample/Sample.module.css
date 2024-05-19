@@ -29,9 +29,3 @@
     align-items: center;
     font-size: 14px;
 }
-
-.track > input[type="range"] {
-    flex: 1;
-    accent-color: #759;
-    outline: none;
-}

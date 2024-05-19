@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import Button from "../../button/Button.tsx";
 import ErrorMessage from "../../error-message/ErrorMessage.tsx";
 import UserApi from "../../../dal/api/user/UserApi.ts";
@@ -16,19 +16,12 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-
-    useEffect(() =>{
-        setNickname("");
-        setEmail("");
-        setPassword("");
-        setError("");
-    }, [onClose])
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         if (nickname.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0) {
-            setError("Не корректные данные");
+            setError("Не все поля заполнены");
             return
         }
         
@@ -45,7 +38,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     return (
         <div ref={wrapperRef} 
              className={signUpModalClasses.signUp + " verticalPanel"} >
-            <h2>Регистрация</h2>
+            <p style={{fontSize: "24px", fontWeight: "bold"}}>Регистрация</p>
 
             <form className={"verticalPanel"} 
                   onSubmit={handleSubmit}>
@@ -77,7 +70,8 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
                 <Button primary={true}
-                        alone={true}>
+                        alone={true}
+                        onClick={handleSubmit}>
                     Продолжить
                 </Button>
 

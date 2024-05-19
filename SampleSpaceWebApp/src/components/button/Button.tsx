@@ -48,7 +48,7 @@ export default function Button({
     if (alone) classes += ` ${buttonClasses.alone}`;
 
     return (
-        <button className={classes}
+        <button className={classes} type={"button"}
                 {...pops} />
     )
 }

@@ -2,7 +2,7 @@
     height: 60px;
     padding: 0.5rem 1rem;
     display: flex;
-    align-items: center;    
+    align-items: center;
     border-bottom: 1px solid var(--border-color);
     background: var(--primary-background-color);
 }
@@ -11,6 +11,10 @@
     height: 100%;
     width: auto;
     object-fit: cover;
+}
+
+.createSamplePanel {
+    display: flex;
 }
 
 .search {

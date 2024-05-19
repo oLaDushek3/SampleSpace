@@ -2,9 +2,9 @@ import axios from 'axios';
 import ApiBase from "../ApiBase";
 import IPlaylist from "../../entities/IPlaylist.ts";
 import IPlaylistRelativeSample from "../../entities/IPlaylistRelativeSample.ts";
-import IEditPlaylistBlank from "../blanks/sample-comment/playlist-blank/IEditPlaylistBlank.ts";
-import IAddSampleToPlaylistBlank from "../blanks/sample-comment/playlist-blank/IAddSampleToPlaylistBlank.ts";
-import ICreatePlaylistBlank from "../blanks/sample-comment/playlist-blank/ICreatePlaylistBlank.ts";
+import ICreatePlaylistBlank from "../blanks/playlist/ICreatePlaylistBlank.ts";
+import IEditPlaylistBlank from "../blanks/playlist/IEditPlaylistBlank.ts";
+import IAddSampleToPlaylistBlank from "../blanks/playlist/IAddSampleToPlaylistBlank.ts";
 
 export default class PlaylistApi extends ApiBase {
     static async getUserPlaylists(userGuid: string): Promise<Array<IPlaylist>> {

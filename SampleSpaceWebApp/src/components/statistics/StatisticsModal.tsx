@@ -74,7 +74,7 @@ export default function StatisticsModal({samples = [], onClose}: StatisticsModal
     }
     
     return (
-        <div className={statisticsModalClasses.statisticsPanel}>
+        <div className={statisticsModalClasses.statisticsPanel + " verticalPanel"}>
             {samples?.length > 0 ?
                 <Bar data={{
                     labels: samples!.map((sample) => sample.name),
@@ -90,7 +90,7 @@ export default function StatisticsModal({samples = [], onClose}: StatisticsModal
                 <h1>Статистика отсутствует</h1>}
 
 
-            <div className={statisticsModalClasses.buttonPanel}>
+            <div className={statisticsModalClasses.buttonPanel + " horizontalPanel"}>
                 <Button primary={true}
                         onClick={getWordFile}>
                     Скачать docx

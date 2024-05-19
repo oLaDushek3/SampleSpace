@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import useClickOutside from "../../../hook/useClickOutside.ts";
 import PlaylistApi from "../../../dal/api/playlist/PlaylistApi.ts";
 import useAuth from "../../../hook/useAuth.ts";
@@ -18,13 +18,9 @@ export default function CreatePlaylistModal({onClose, onCreate}: CreatePlaylistM
     const [error, setError] = useState("");
     const {user} = useAuth();
 
-    useEffect(() => {
-        setName("");
-    }, [onClose]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        
         if (name.trim().length === 0) {
             setError("Не корректные данные");
             return
@@ -44,7 +40,7 @@ export default function CreatePlaylistModal({onClose, onCreate}: CreatePlaylistM
     return (
         <div ref={wrapperRef}
              className={createPlaylistModalClasses.createPlaylist + " verticalPanel"}>
-            <h2>Создание плейлиста</h2>
+            <p style={{fontSize: "24px", fontWeight: "bold"}}>Создание плейлиста</p>
 
             <form className={"verticalPanel"}
                   onSubmit={handleSubmit}>
@@ -60,7 +56,8 @@ export default function CreatePlaylistModal({onClose, onCreate}: CreatePlaylistM
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
                 <Button primary={true}
-                        alone={true}>
+                        alone={true} 
+                        onClick={handleSubmit}>
                     Создать
                 </Button>
 

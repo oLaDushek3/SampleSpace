@@ -10,6 +10,7 @@ import Button, {ButtonVisualType} from "../button/Button.tsx";
 import {IoSettingsOutline} from "react-icons/io5";
 import {useRef, useState} from "react";
 import useClickOutside from "../../hook/useClickOutside.ts";
+import CreateSampleHeaderPanel from "./CreateSampleHeaderPanel.tsx";
 
 export default function Header() {
     const navigate = useNavigate()
@@ -31,13 +32,13 @@ export default function Header() {
                  style={{height: "25px", cursor: "pointer"}}
                  onClick={() => navigate("/")}/>
 
+            {user && <CreateSampleHeaderPanel/>}
+
             <Search searchQuery={searchQuery ? searchQuery : ""} callBack={handleSearch}/>
 
             <div ref={playerPanelContainerRef} className={headerClasses.playerPanelContainer}>
                 <Button visualType={ButtonVisualType.withIcon}
-                        onClick={() => {
-                            setPlayerPanelIsActive(prevState => !prevState)
-                        }}>
+                        onClick={() => setPlayerPanelIsActive(prevState => !prevState)}>
                     <IoSettingsOutline/>
                 </Button>
                 <PlayerHeaderPanel isActive={playerPanelIsActive}/>

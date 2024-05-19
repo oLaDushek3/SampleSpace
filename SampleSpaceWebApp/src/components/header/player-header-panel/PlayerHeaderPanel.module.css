@@ -7,7 +7,7 @@
     padding: 0.75rem;
     top: 60px;
     right: 0;
-    max-width: 315px;
+    max-width: 330px;
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
     opacity: 0;
     visibility: hidden;
@@ -36,16 +36,24 @@
     justify-content: center;
 }
 
+.volumePanel {
+    display: flex;
+    flex-direction: row;
+}
+
+.volumePanel > *:not(:last-child){
+    margin-right: 0.25rem;
+}
+
 .volume {
-    accent-color: var(--primary-color);
     visibility: hidden;
     width: 0;
     transform: translateX(-20px);
     transition: visibility 0.2s, width 0.4s, transform 0.4s;
 }
 
-.volume.active {
+.volume.volumeActive {
     visibility: visible;
-    width: 75px;
+    width: 100px;
     transform: translateX(0px);
 }

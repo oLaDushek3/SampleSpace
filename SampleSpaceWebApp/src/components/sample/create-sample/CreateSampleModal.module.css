@@ -1,0 +1,11 @@
+.createSample {
+    padding: 1rem;
+    width: 525px;
+}
+
+.samplePanel .cover {
+    /*border-radius: 10px;*/
+    /*height: 175px;*/
+    /*width: 175px;*/
+    /*object-fit: cover;*/
+}

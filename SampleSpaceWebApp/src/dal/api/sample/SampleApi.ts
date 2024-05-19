@@ -42,7 +42,7 @@ export default class SampleApi extends ApiBase {
                 return [];
             })
     }
-    
+
     static async getSample(sampleGuid: string): Promise<ISample | null> {
 
         let url = this.baseAddress + `sample/get-sample?sample-guid=${sampleGuid}`
@@ -99,6 +99,33 @@ export default class SampleApi extends ApiBase {
         return await axios.get(url)
             .then(async () => {
                 window.open(url)
+                return true;
+            }).catch(() => {
+                return false;
+            })
+    }
+
+    static async createSample(uploadedSampleFile: File, sampleStart: number, sampleEnd: number, 
+                              coverBlob: Blob, sampleName: string, sampleArtist: string, 
+                              userGuid: string, vkontakteLink: string, spotifyLink: string, 
+                              soundcloudLink: string): Promise<boolean> {
+        let url = this.baseAddress + `sample/create-sample`
+
+        const formData = new FormData();
+        formData.append('SampleFile', uploadedSampleFile);
+        formData.append('SampleStart', sampleStart.toString());
+        formData.append('SampleEnd', sampleEnd.toString());
+        formData.append('CoverFile', coverBlob);
+        formData.append('Name', sampleName);
+        formData.append('Artist', sampleArtist);
+        formData.append('UserGuid', userGuid);
+        formData.append('VkontakteLink', vkontakteLink);
+        formData.append('SpotifyLink', spotifyLink);
+        formData.append('SoundcloudLink', soundcloudLink);
+
+
+        return await axios.post(url, formData)
+            .then(async () => {
                 return true;
             }).catch(() => {
                 return false;

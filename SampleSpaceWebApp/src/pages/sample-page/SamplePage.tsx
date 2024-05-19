@@ -122,23 +122,26 @@ export default function SamplePage() {
 
                     <div className={samplePageClasses.toolsPanel}>
                         <div className={"horizontalPanel"}>
-                            <Link to={samplePlayer?.sample.vkontakteLink} target="_blank" title="Vkontakte">
-                                <Icon>
-                                    <SlSocialVkontakte/>
-                                </Icon>
-                            </Link>
+                            {samplePlayer.sample.vkontakteLink &&
+                                <Link to={samplePlayer.sample.vkontakteLink} target="_blank">
+                                    <Icon>
+                                        <SlSocialVkontakte/>
+                                    </Icon>
+                                </Link>}
 
-                            <Link to={samplePlayer?.sample.spotifyLink} target="_blank">
-                                <Icon>
-                                    <SlSocialSpotify/>
-                                </Icon>
-                            </Link>
+                            {samplePlayer.sample.spotifyLink &&
+                                <Link to={samplePlayer?.sample.spotifyLink} target="_blank">
+                                    <Icon>
+                                        <SlSocialSpotify/>
+                                    </Icon>
+                                </Link>}
 
-                            <Link to={samplePlayer?.sample.soundcloudLink} target="_blank">
-                                <Icon>
-                                    <SlSocialSoundcloud/>
-                                </Icon>
-                            </Link>
+                            {samplePlayer.sample.soundcloudLink &&
+                                <Link to={samplePlayer?.sample.soundcloudLink} target="_blank">
+                                    <Icon>
+                                        <SlSocialSoundcloud/>
+                                    </Icon>
+                                </Link>}
                         </div>
 
                         <div className={"horizontalPanel"}>
@@ -165,8 +168,7 @@ export default function SamplePage() {
                                 </div>}
                         </div>
                     </div>
-
-
+                    
                     <div className={samplePageClasses.userPanel + " horizontalPanel"}>
                         <Link to={`/${samplePlayer?.sample.user.nickname}`}>
                             <UserAvatar src={samplePlayer?.sample.user.avatarPath} height={42}/>

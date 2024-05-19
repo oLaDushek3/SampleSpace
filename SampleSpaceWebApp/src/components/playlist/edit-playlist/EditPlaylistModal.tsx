@@ -70,7 +70,7 @@ export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlayl
     return (
         <div ref={wrapperRef}
              className={editPlaylistModalClasses.editPlaylist + " verticalPanel"}>
-            <h2>Редактирование плейлиста</h2>
+            <p style={{fontSize: "24px", fontWeight: "bold"}}>Редактирование плейлиста</p>
 
             <form className={"verticalPanel"}
                   onSubmit={handleSubmit}>

@@ -55,7 +55,7 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
     }
 
     const handleVolumeMouseEnter = () => {
-        setVolumeClasses(playerHeaderPanelClasses.volume + " " + playerHeaderPanelClasses.active);
+        setVolumeClasses(playerHeaderPanelClasses.volume + " " + playerHeaderPanelClasses.volumeActive);
     }
 
     const handleVolumeMouseLeave = () => {
@@ -127,7 +127,7 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
                             <FaRepeat/>}
                 </Button>
 
-                <div className={"horizontalPanel"}
+                <div className={playerHeaderPanelClasses.volumePanel}
                      onMouseEnter={handleVolumeMouseEnter}
                      onMouseLeave={handleVolumeMouseLeave}>
                     <Icon>
