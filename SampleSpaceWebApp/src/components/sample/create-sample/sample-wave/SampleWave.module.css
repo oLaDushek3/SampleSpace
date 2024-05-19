@@ -1,0 +1,48 @@
+.waveContainerInactive {
+    display: none;
+}
+
+.waveContainerActive {
+    display: block;
+}
+
+.toolsPanel {
+    align-items: center;
+    flex: 1;
+}
+
+.volumePanel {
+    display: flex;
+    flex-direction: row;
+}
+
+.volumePanel > *:not(:last-child) {
+    margin-right: 0.25rem;
+}
+
+/*.volume {*/
+/*    max-width: 100px;*/
+/*}*/
+
+.volume {
+    visibility: hidden;
+    width: 0;
+    transform: translateX(-20px);
+    transition: visibility 0.2s, width 0.4s, transform 0.4s;
+}
+
+.volume.volumeActive {
+    visibility: visible;
+    width: 100px;
+    transform: translateX(0px);
+}
+
+.zoom {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+.zoom > *:not(:last-child) {
+    margin-right: 0.25rem;
+}
