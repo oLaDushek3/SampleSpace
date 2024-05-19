@@ -1,6 +1,7 @@
 import {ChangeEvent, createContext, ReactNode, useEffect, useRef, useState} from "react";
 import useLocalStorageState from 'use-local-storage-state'
 import ISamplePlayer from "../models/ISamplePlayer.ts";
+import {useLocation} from 'react-router-dom';
 
 export enum ActionAtTheEnd {
     pause,
@@ -54,11 +55,17 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     const [currentTime, setCurrentTime] = useState(0);
     const [currentActionAtTheEnd, setCurrentActionAtTheEnd] = useLocalStorageState<ActionAtTheEnd>("actionAtTheEnd", {defaultValue: ActionAtTheEnd.playSkipForward});
     const [currentVolume, setCurrentVolume] = useLocalStorageState<number>("volume", {defaultValue: 0.5});
-    
+    const location = useLocation();
+
+    useEffect(() => {
+        setPlayingSamplePlayer(null);
+        setSamplePlayerList(null);
+    }, [location]);
+
     const handleSamplePlayerList = (samplePlayerList: ISamplePlayer[]) => {
         setSamplePlayerList(samplePlayerList);
     }
-    
+
     useEffect(() => {
         handlePause();
     }, [samplePlayerList]);
@@ -74,8 +81,15 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         setIsPlaying(true);
     }
 
+    useEffect(() => {
+        audioRef.current?.addEventListener("timeupdate", handleTimeUpdate);
+        return () => {
+            audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
+        };
+    }, [playingSamplePlayer]);
+    
     const handlePlay = () => {
-        audioRef.current!.play();
+        void audioRef.current!.play();
         setIsPlaying(true);
     };
 
@@ -96,17 +110,17 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         setCurrentTime(audioRef.current!.currentTime);
 
         if (audioRef.current!.currentTime === audioRef.current!.duration) {
-            if(currentActionAtTheEnd === ActionAtTheEnd.pause){
+            if (currentActionAtTheEnd === ActionAtTheEnd.pause) {
                 handlePause();
                 return
             }
-            
-            if(currentActionAtTheEnd === ActionAtTheEnd.playSkipForward){
+
+            if (currentActionAtTheEnd === ActionAtTheEnd.playSkipForward) {
                 handlePlaySkipForward();
                 return
             }
 
-            if(currentActionAtTheEnd === ActionAtTheEnd.repeat){
+            if (currentActionAtTheEnd === ActionAtTheEnd.repeat) {
                 audioRef.current!.currentTime = 0;
                 handlePlay();
                 return;
@@ -122,14 +136,6 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     const handleActionAtTheEnd = (action: ActionAtTheEnd) => {
         setCurrentActionAtTheEnd(action);
     }
-    
-    const handleVolume = (e: ChangeEvent<HTMLInputElement>) => {
-        setCurrentVolume(+e.currentTarget.value);
-    }
-
-    useEffect(() => {
-        audioRef.current!.volume = +currentVolume;
-    }, [currentVolume]);
 
     const handlePlaySkipForward = () => {
         const index = samplePlayerList?.indexOf(playingSamplePlayer!)
@@ -153,12 +159,13 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         handlePlayingSamplePlayer(samplePlayerList![samplePlayerList!.indexOf(playingSamplePlayer!) - 1]);
     };
 
+    const handleVolume = (e: ChangeEvent<HTMLInputElement>) => {
+        setCurrentVolume(+e.currentTarget.value);
+    }
+
     useEffect(() => {
-        audioRef.current?.addEventListener("timeupdate", handleTimeUpdate);
-        return () => {
-            audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
-        };
-    }, [playingSamplePlayer]);
+        audioRef.current!.volume = +currentVolume;
+    }, [currentVolume]);
 
     const value = {
         samplePlayerList: samplePlayerList,
