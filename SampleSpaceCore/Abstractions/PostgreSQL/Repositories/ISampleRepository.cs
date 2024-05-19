@@ -1,6 +1,7 @@
 using SampleSpaceCore.Models;
+using SampleSpaceCore.Models.Sample;
 
-namespace SampleSpaceCore.Abstractions.Repositories;
+namespace SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 
 public interface ISampleRepository
 {
@@ -15,4 +16,8 @@ public interface ISampleRepository
     public Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid);
 
     public Task<(bool successfully, string error)> AddAnListens(Guid sampleGuid);
+    
+    public Task<(Guid? sampleGuid, string error)> Create(Sample sample);
+    
+    public Task<(bool successfully, string error)> Delete(Guid sampleGuid);
 }

@@ -2,15 +2,20 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SampleSpaceBll.Abstractions.Auth;
+using SampleSpaceBll.Abstractions.Sample;
 using SampleSpaceBll.Services;
-using SampleSpaceCore.Abstractions;
-using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Abstractions.Services;
-using SampleSpaceDal.Repositories.PlaylistRepository;
-using SampleSpaceDal.Repositories.SampleCommentRepository;
-using SampleSpaceDal.Repositories.SampleRepository;
-using SampleSpaceDal.Repositories.UserRepository;
+using SampleSpaceDal.CloudStorage;
+using SampleSpaceDal.PostgreSQL.Repositories.PlaylistRepository;
+using SampleSpaceDal.PostgreSQL.Repositories.SampleCommentRepository;
+using SampleSpaceDal.PostgreSQL.Repositories.UserRepository;
 using SampleSpaceInfrastructure;
+using SampleSpaceInfrastructure.JWT;
+using IPostgreSQLSampleRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repositories.ISampleRepository;
+using PostgreSQLSampleRepository = SampleSpaceDal.PostgreSQL.Repositories.SampleRepository.SampleRepository;
+using ICloudStorageSampleRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.ISampleRepository;
+using CloudStorageSampleRepository = SampleSpaceDal.CloudStorage.Repositories.SampleRepository.SampleRepository;
 
 void AddApiAuthentication(IServiceCollection services, IConfiguration configuration)
 {
@@ -43,10 +48,14 @@ void AddApiAuthentication(IServiceCollection services, IConfiguration configurat
 
 void ConfigureRepositories(IServiceCollection services)
 {
+    //PostgreSQL
     services.AddScoped<IUsersRepository, UsersRepository>();
-    services.AddScoped<ISampleRepository, SampleRepository>();
+    services.AddScoped<IPostgreSQLSampleRepository, PostgreSQLSampleRepository>();
     services.AddScoped<ISampleCommentRepository, SampleCommentRepository>();
     services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+    
+    //CloudStorage
+    services.AddScoped<ICloudStorageSampleRepository, CloudStorageSampleRepository>();
 }
 
 void ConfigureServices(IServiceCollection services)
@@ -61,6 +70,7 @@ void ConfigureInfrastructure(IServiceCollection services)
 {
     services.AddScoped<IPasswordHasher, PasswordHasher>();
     services.AddScoped<IJwtProvider, JwtProvider>();
+    services.AddScoped<ISampleTrimmer, SampleTrimmer>();
 }
 
 void ConfigureCors(IServiceCollection services)
@@ -92,6 +102,7 @@ ConfigureInfrastructure(services);
 ConfigureCors(services);
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+services.Configure<CloudStorageOptions>(configuration.GetSection(nameof(CloudStorageOptions)));
 
 services.AddControllers();
 

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
-namespace SampleSpaceDal.Repositories;
+namespace SampleSpaceDal.PostgreSQL.Repositories;
 
 public class BaseRepository
 {

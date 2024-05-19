@@ -1,5 +1,5 @@
 ﻿using SampleSpaceBll.Abstractions.Auth;
-using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Abstractions.Services;
 using SampleSpaceCore.Models;
 

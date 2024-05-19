@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using SampleSpaceCore.Abstractions.Repositories;
+using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Models;
-using SampleSpaceDal.Entities;
+using SampleSpaceCore.Models.Sample;
+using SampleSpaceDal.PostgreSQL.Entities;
 
-namespace SampleSpaceDal.Repositories.SampleRepository;
+namespace SampleSpaceDal.PostgreSQL.Repositories.SampleRepository;
 
 public class SampleRepository(IConfiguration configuration) : BaseRepository(configuration), ISampleRepository
 {
@@ -34,11 +35,15 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Duration = reader.GetDouble(reader.GetOrdinal("duration")),
-                    VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link")),
-                    SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link")),
-                    SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link")),
-                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"))
                 };
+
+                if(!reader.IsDBNull(reader.GetOrdinal("vkontakte_link")))
+                    sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("spotify_link")))
+                    sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("soundcloud_link")))
+                    sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
 
                 var (sample, error) = Sample.Create(sampleEntity.SampleGuid, sampleEntity.SampleLink,
                     sampleEntity.CoverLink, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
@@ -94,11 +99,15 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Duration = reader.GetDouble(reader.GetOrdinal("duration")),
-                    VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link")),
-                    SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link")),
-                    SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link")),
-                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"))
                 };
+
+                if(!reader.IsDBNull(reader.GetOrdinal("vkontakte_link")))
+                    sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("spotify_link")))
+                    sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("soundcloud_link")))
+                    sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
 
                 var (sample, error) = Sample.Create(sampleEntity.SampleGuid, sampleEntity.SampleLink,
                     sampleEntity.CoverLink, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
@@ -157,11 +166,15 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Duration = reader.GetDouble(reader.GetOrdinal("duration")),
-                    VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link")),
-                    SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link")),
-                    SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link")),
-                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"))
                 };
+                
+                if(!reader.IsDBNull(reader.GetOrdinal("vkontakte_link")))
+                    sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("spotify_link")))
+                    sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("soundcloud_link")))
+                    sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
 
                 var (sample, error) = Sample.Create(sampleEntity.SampleGuid, sampleEntity.SampleLink,
                     sampleEntity.CoverLink, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
@@ -209,9 +222,10 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             if (!reader.HasRows)
                 return (null, "Sample not found");
             
-            var sampleEntity = new SampleEntity();
 
             await reader.ReadAsync();
+
+            var sampleEntity = new SampleEntity();
             
             sampleEntity.SampleGuid = reader.GetGuid(reader.GetOrdinal("sample_guid"));
             sampleEntity.SampleLink = reader.GetString(reader.GetOrdinal("sample_link"));
@@ -220,9 +234,12 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             sampleEntity.Artist = reader.GetString(reader.GetOrdinal("artist"));
             sampleEntity.UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid"));
             sampleEntity.Duration = reader.GetDouble(reader.GetOrdinal("duration"));
-            sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
-            sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
-            sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
+            if(!reader.IsDBNull(reader.GetOrdinal("vkontakte_link")))
+                sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+            if(!reader.IsDBNull(reader.GetOrdinal("spotify_link")))
+                sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+            if(!reader.IsDBNull(reader.GetOrdinal("soundcloud_link")))
+                sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
             sampleEntity.NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"));
 
             sampleEntity.User = new UserEntity
@@ -287,11 +304,15 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
                     Artist = reader.GetString(reader.GetOrdinal("artist")),
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Duration = reader.GetDouble(reader.GetOrdinal("duration")),
-                    VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link")),
-                    SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link")),
-                    SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link")),
-                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens"))
                 };
+
+                if(!reader.IsDBNull(reader.GetOrdinal("vkontakte_link")))
+                    sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("spotify_link")))
+                    sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+                if(!reader.IsDBNull(reader.GetOrdinal("soundcloud_link")))
+                    sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
 
                 var (sample, error) = Sample.Create(sampleEntity.SampleGuid, sampleEntity.SampleLink,
                     sampleEntity.CoverLink, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
@@ -329,6 +350,83 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             Parameters = { new NpgsqlParameter { Value = sampleGuid } }
         };
 
+        try
+        {
+            await connection.OpenAsync();
+
+            var successfully = await command.ExecuteNonQueryAsync() > 0;
+
+            return successfully ? (successfully, string.Empty) : (successfully, "Sample not found");
+        }
+        catch (Exception exception)
+        {
+            return (false, exception.Message);
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    public async Task<(Guid? sampleGuid, string error)> Create(Sample sample)
+    {
+        var queryString = "insert into samples " +
+                          "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning sample_guid";
+
+        var connection = GetConnection();
+
+        var command = new NpgsqlCommand(queryString, connection)
+        {
+            Parameters =
+            {
+                new NpgsqlParameter() { Value = sample.SampleGuid },
+                new NpgsqlParameter() { Value = sample.SampleLink },
+                new NpgsqlParameter() { Value = sample.CoverLink },
+                new NpgsqlParameter() { Value = sample.Name },
+                new NpgsqlParameter() { Value = sample.Artist },
+                new NpgsqlParameter() { Value = sample.NumberOfListens },
+                new NpgsqlParameter() { Value = sample.UserGuid },
+                new NpgsqlParameter() { Value = sample.Duration },
+                new NpgsqlParameter() { Value = sample.VkontakteLink != null ? sample.VkontakteLink : DBNull.Value },
+                new NpgsqlParameter() { Value = sample.SpotifyLink != null ? sample.SpotifyLink : DBNull.Value },
+                new NpgsqlParameter() { Value = sample.SoundcloudLink != null ? sample.SoundcloudLink : DBNull.Value }
+            }
+        };
+
+        try
+        {
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            await reader.ReadAsync();
+
+            var sampleGuid = reader.GetGuid(reader.GetOrdinal("sample_guid"));
+
+            await reader.CloseAsync();
+
+            return (sampleGuid, string.Empty);
+        }
+        catch (Exception exception)
+        {
+            return (null, exception.Message);
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    public async Task<(bool successfully, string error)> Delete(Guid sampleGuid)
+    {
+        var queryString = "delete from samples where playlist_guid = $1";
+
+        var connection = GetConnection();
+
+        var command = new NpgsqlCommand(queryString, connection)
+        {
+            Parameters = { new NpgsqlParameter { Value = sampleGuid } }
+        };
         try
         {
             await connection.OpenAsync();

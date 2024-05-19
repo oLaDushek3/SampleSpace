@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using SampleSpaceBll.Abstractions.Auth;
 using SampleSpaceCore.Models;
 
-namespace SampleSpaceInfrastructure;
+namespace SampleSpaceInfrastructure.JWT;
 
 public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
 {

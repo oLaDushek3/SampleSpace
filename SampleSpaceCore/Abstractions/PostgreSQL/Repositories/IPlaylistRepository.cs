@@ -1,6 +1,6 @@
 using SampleSpaceCore.Models;
 
-namespace SampleSpaceCore.Abstractions.Repositories;
+namespace SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 
 public interface IPlaylistRepository
 {
