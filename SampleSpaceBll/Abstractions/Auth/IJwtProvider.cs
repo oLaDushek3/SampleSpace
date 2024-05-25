@@ -4,5 +4,5 @@ namespace SampleSpaceBll.Abstractions.Auth;
 
 public interface IJwtProvider
 {
-    public string GenerateToken(User user);
+    public Task<string> GenerateToken(User user);
 }

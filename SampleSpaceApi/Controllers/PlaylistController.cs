@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Playlist;
 using SampleSpaceCore.Abstractions.Services;
@@ -38,15 +40,15 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     }
     
     // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpPost("create-playlist")]
     public async Task<IActionResult> CreatePlaylist(CreatePlaylistRequest request)
     {
         //Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != request.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != request.UserGuid)
+            return Forbid();
         
         var (requestPlaylist, requestError) =
             Playlist.Create(Guid.NewGuid(), request.UserGuid, request.Name);
@@ -167,11 +169,14 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
     public async Task<IActionResult> DeletePlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid)
     {
         var (playlist, getError) = await playlistService.GetPlaylist(playlistGuid);
-
+        
+        if(!string.IsNullOrEmpty(getError))
+            return  BadRequest(getError);
+        
         // Раскомментировать после развертывания на сервере
         // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
         //
-        // if (new Guid(loginUserGuid) != comment!.UserGuid)
+        // if (new Guid(loginUserGuid) != playlist!.UserGuid)
         //     return Forbid();
         
         var (successfully, deleteError) = await playlistService.DeletePlaylist(playlist!);

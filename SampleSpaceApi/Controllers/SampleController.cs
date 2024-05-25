@@ -1,11 +1,8 @@
 using System.Globalization;
-using Aspose.Cells;
-using Aspose.Words;
-using Aspose.Words.Drawing.Charts;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Sample;
 using SampleSpaceCore.Abstractions.Services;
-using SampleSpaceCore.Models;
 using SampleSpaceCore.Models.Sample;
 
 namespace SampleSpaceApi.Controllers;
@@ -14,6 +11,7 @@ namespace SampleSpaceApi.Controllers;
 [Route("api/sample")]
 public class SampleController(ISampleService sampleService) : ControllerBase
 {
+    [EnableCors]
     [HttpGet("get-all-samples")]
     public async Task<IActionResult> GetAllSamples()
     {
