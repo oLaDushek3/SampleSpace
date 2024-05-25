@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.User;
@@ -19,7 +20,7 @@ public class UserController(IUserService userService) : ControllerBase
         if (!string.IsNullOrEmpty(requestError))
             return BadRequest(requestError);
 
-        var (signUpUserGuid, signUpError) = await userService.SigUp(requestUser!);
+        var (signUpUserGuid, signUpError) = await userService.SignUp(requestUser!);
 
         if (!string.IsNullOrEmpty(signUpError))
             return BadRequest(signUpError);
@@ -30,14 +31,25 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpPost("sign-in")]
     public async Task<IActionResult> SignIn(LoginUserRequest request)
     {
-        var (loginUser, token, error) = await userService.SigIn(request.Nickname, request.Password);
+        var (loginUser, error) = await userService.SignIn(Response, request.Nickname, request.Password);
         
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
         
-        HttpContext.Response.Cookies.Append("jwt", token!);
+        HttpContext.Response.Cookies.Append("jwt", "!test!");
         
         return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser.Nickname, loginUser.Email));
+    }
+    
+    [HttpPost("sign-out")]
+    public new async Task<IActionResult> SignOut()
+    {
+        var (successfully, error) = await userService.SignOut(HttpContext);
+        
+        if (!string.IsNullOrEmpty(error))
+            return BadRequest(error);
+        
+        return Ok();
     }
     
     [HttpGet("get-user-by-nickname")]
@@ -55,8 +67,9 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet("sig-in-auth")]
     public async Task<IActionResult> SigInAuth()
     {
-        var user = User;
-        var id = user.FindFirst(ClaimTypes.Authentication)?.Value;
+        var test = HttpContext.Request.Cookies["jwt"];
+        return Ok(test);
+        var id = User.FindFirst(ClaimTypes.Authentication)?.Value;
         return Ok(id);
     }
 }

@@ -1,49 +1,68 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using SampleSpaceBll.Abstractions.Auth;
 using SampleSpaceBll.Abstractions.Sample;
 using SampleSpaceBll.Services;
 using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
+using SampleSpaceCore.Abstractions.Redis.Repositories;
 using SampleSpaceCore.Abstractions.Services;
 using SampleSpaceDal.CloudStorage;
 using SampleSpaceDal.PostgreSQL.Repositories.PlaylistRepository;
 using SampleSpaceDal.PostgreSQL.Repositories.SampleCommentRepository;
 using SampleSpaceDal.PostgreSQL.Repositories.UserRepository;
+using SampleSpaceDal.Redis.Repositories.AuthTokensRepository;
 using SampleSpaceInfrastructure;
+using SampleSpaceInfrastructure.AuthScheme;
+using SampleSpaceInfrastructure.AuthScheme.Cookie;
+using SampleSpaceInfrastructure.AuthScheme.Token;
 using SampleSpaceInfrastructure.JWT;
 using IPostgreSQLSampleRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repositories.ISampleRepository;
 using PostgreSQLSampleRepository = SampleSpaceDal.PostgreSQL.Repositories.SampleRepository.SampleRepository;
 using ICloudStorageSampleRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.ISampleRepository;
 using CloudStorageSampleRepository = SampleSpaceDal.CloudStorage.Repositories.SampleRepository.SampleRepository;
 
+// void AddApiAuthentication(IServiceCollection services, IConfiguration configuration)
+// {
+//     var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
+//
+//     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+//     {
+//         options.TokenValidationParameters = new TokenValidationParameters
+//         {
+//             ValidateIssuer = false,
+//             ValidateAudience = false,
+//             ValidateLifetime = true,
+//             ValidateIssuerSigningKey = true,
+//             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+//         };
+//
+//         options.Events = new JwtBearerEvents
+//         {
+//             OnMessageReceived = context =>
+//             {
+//                 context.Token = context.Request.Cookies["jwt"];
+//
+//                 return Task.CompletedTask;
+//             }
+//         };
+//     });
+//
+//     services.AddAuthentication();
+//     services.AddSingleton<AuthTokensOptions>(_ => GetOptions(configuration));
+// }
+
+AuthTokensOptions GetOptions(IConfiguration configuration)
+{
+    return configuration.GetSection("AuthTokensOptions").Get<AuthTokensOptions>()!;
+}
+
 void AddApiAuthentication(IServiceCollection services, IConfiguration configuration)
 {
-    var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
-
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-        };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                context.Token = context.Request.Cookies["jwt"];
-
-                return Task.CompletedTask;
-            }
-        };
-    });
+    services.AddAuthentication(AuthTokensDefault.AuthenticationScheme).AddAuthTokens(
+        AuthTokensDefault.AuthenticationScheme,
+        _ => GetOptions(configuration));
 
     services.AddAuthentication();
+    
+    services.AddSingleton<AuthTokensOptions>(_ => GetOptions(configuration));
 }
 
 void ConfigureRepositories(IServiceCollection services)
@@ -56,6 +75,9 @@ void ConfigureRepositories(IServiceCollection services)
     
     //CloudStorage
     services.AddScoped<ICloudStorageSampleRepository, CloudStorageSampleRepository>();
+    
+    //Redis
+    services.AddScoped<IAuthTokensRepository, AuthTokensRepository>();
 }
 
 void ConfigureServices(IServiceCollection services)
@@ -71,6 +93,8 @@ void ConfigureInfrastructure(IServiceCollection services)
     services.AddScoped<IPasswordHasher, PasswordHasher>();
     services.AddScoped<IJwtProvider, JwtProvider>();
     services.AddScoped<ISampleTrimmer, SampleTrimmer>();
+    services.AddScoped<ITokenManager, TokenManager>();
+    services.AddScoped<ICookieManager, CookieManager>();
 }
 
 void ConfigureCors(IServiceCollection services)
@@ -84,6 +108,15 @@ void ConfigureCors(IServiceCollection services)
                     .AllowAnyHeader()
                     .AllowAnyOrigin();
             });
+    });
+}
+
+void ConfigureRedis(IServiceCollection services)
+{
+    services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = "158.160.169.2:6379";
+        options.InstanceName = "sample";
     });
 }
 
@@ -101,7 +134,10 @@ ConfigureInfrastructure(services);
 
 ConfigureCors(services);
 
+ConfigureRedis(services);
+
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+services.Configure<AuthTokensOptions>(configuration.GetSection(nameof(AuthTokensOptions)));
 services.Configure<CloudStorageOptions>(configuration.GetSection(nameof(CloudStorageOptions)));
 
 services.AddControllers();

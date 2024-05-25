@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="AWSSDK.S3" Version="3.7.306" />
+      <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.0-preview.4.24266.19" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0-preview.2.24128.5" />
       <PackageReference Include="Npgsql" Version="8.0.2" />
     </ItemGroup>
