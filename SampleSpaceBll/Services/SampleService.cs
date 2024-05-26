@@ -1,6 +1,5 @@
 using SampleSpaceBll.Abstractions.Sample;
 using SampleSpaceCore.Abstractions.Services;
-using SampleSpaceCore.Models;
 using SampleSpaceCore.Models.Sample;
 using IPostgreSQLSampleRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repositories.ISampleRepository;
 using ICloudStorageSampleRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.ISampleRepository;

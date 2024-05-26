@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SampleSpaceBll.Abstractions.Auth;
 using SampleSpaceCore.Models;
+using SampleSpaceCore.Models.User;
 
 namespace SampleSpaceInfrastructure.JWT;
 

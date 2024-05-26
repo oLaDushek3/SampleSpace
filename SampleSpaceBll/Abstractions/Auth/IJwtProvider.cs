@@ -1,4 +1,5 @@
 using SampleSpaceCore.Models;
+using SampleSpaceCore.Models.User;
 
 namespace SampleSpaceBll.Abstractions.Auth;
 

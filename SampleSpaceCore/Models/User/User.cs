@@ -1,4 +1,4 @@
-﻿namespace SampleSpaceCore.Models;
+﻿namespace SampleSpaceCore.Models.User;
 
 public class User
 {
@@ -25,6 +25,8 @@ public class User
 
     public void ChangePassword(string newPassword) => Password = newPassword;
 
+    public void PutAvatarPath(string avatarPath) => AvatarPath = avatarPath;
+    
     public static (User? User, string Error) Create(Guid userGuid, string nickname, string email, string? password,
         string? avatarPath = null)
     {

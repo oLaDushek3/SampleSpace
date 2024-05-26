@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Npgsql;
 using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Models;
+using SampleSpaceCore.Models.User;
 using SampleSpaceDal.PostgreSQL.Entities;
 
 namespace SampleSpaceDal.PostgreSQL.Repositories.UserRepository;
