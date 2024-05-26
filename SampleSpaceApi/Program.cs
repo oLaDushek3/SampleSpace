@@ -7,7 +7,6 @@ using SampleSpaceCore.Abstractions.Services;
 using SampleSpaceDal.CloudStorage;
 using SampleSpaceDal.PostgreSQL.Repositories.PlaylistRepository;
 using SampleSpaceDal.PostgreSQL.Repositories.SampleCommentRepository;
-using SampleSpaceDal.PostgreSQL.Repositories.UserRepository;
 using SampleSpaceDal.Redis.Repositories.AuthTokensRepository;
 using SampleSpaceInfrastructure;
 using SampleSpaceInfrastructure.AuthScheme;
@@ -18,6 +17,10 @@ using IPostgreSQLSampleRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repo
 using PostgreSQLSampleRepository = SampleSpaceDal.PostgreSQL.Repositories.SampleRepository.SampleRepository;
 using ICloudStorageSampleRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.ISampleRepository;
 using CloudStorageSampleRepository = SampleSpaceDal.CloudStorage.Repositories.SampleRepository.SampleRepository;
+using IPostgreSQLUsersRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repositories.IUsersRepository;
+using PostgreSQLUsersRepository = SampleSpaceDal.PostgreSQL.Repositories.UserRepository.UsersRepository;
+using ICloudStorageUserRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.IUserRepository;
+using CloudStorageUserRepository = SampleSpaceDal.CloudStorage.Repositories.UserRepository.UserRepository;
 
 // void AddApiAuthentication(IServiceCollection services, IConfiguration configuration)
 // {
@@ -68,13 +71,14 @@ void AddApiAuthentication(IServiceCollection services, IConfiguration configurat
 void ConfigureRepositories(IServiceCollection services)
 {
     //PostgreSQL
-    services.AddScoped<IUsersRepository, UsersRepository>();
+    services.AddScoped<IPostgreSQLUsersRepository, PostgreSQLUsersRepository>();
     services.AddScoped<IPostgreSQLSampleRepository, PostgreSQLSampleRepository>();
     services.AddScoped<ISampleCommentRepository, SampleCommentRepository>();
     services.AddScoped<IPlaylistRepository, PlaylistRepository>();
     
     //CloudStorage
     services.AddScoped<ICloudStorageSampleRepository, CloudStorageSampleRepository>();
+    services.AddScoped<ICloudStorageUserRepository, CloudStorageUserRepository>();
     
     //Redis
     services.AddScoped<IAuthTokensRepository, AuthTokensRepository>();
@@ -115,7 +119,7 @@ void ConfigureRedis(IServiceCollection services)
 {
     services.AddStackExchangeRedisCache(options =>
     {
-        options.Configuration = "158.160.169.2:6379";
+        options.Configuration = "158.160.171.79:6379";
         options.InstanceName = "sample";
     });
 }

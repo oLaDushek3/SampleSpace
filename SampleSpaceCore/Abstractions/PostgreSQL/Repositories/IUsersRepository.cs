@@ -1,4 +1,5 @@
 using SampleSpaceCore.Models;
+using SampleSpaceCore.Models.User;
 
 namespace SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 
