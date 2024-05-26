@@ -1,7 +1,5 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import UserApi from "../../dal/api/user/UserApi.ts";
-import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import profilePageClasses from "./ProfilePage.module.css";
 import SampleList from "../../components/sample-list/SampleList.tsx";
 import Button, {RadioButton} from "../../components/button/Button.tsx";
@@ -10,47 +8,57 @@ import IUser from "../../dal/entities/IUser.ts";
 import ISample from "../../dal/entities/ISample.ts";
 import LoadingSpinner from "../../components/loading-spinner/LoadingSpinner.tsx";
 import NotFoundPage from "../not-found/NotFoundPage.tsx";
-import PlaylistApi from "../../dal/api/playlist/PlaylistApi.ts";
 import IPlaylist from "../../dal/entities/IPlaylist.ts";
 import PlaylistToolsProfilePanel
     from "../../components/playlist/playlist-tools-profile-panel/PlaylistToolsProfilePanel.tsx";
-import Modal from "../../components/modal/Modal.tsx";
-import StatisticsModal from "../../components/statistics/StatisticsModal.tsx";
+import useUserApi from "../../dal/api/user/useUserApi.ts";
+import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
+import usePlaylistApi from "../../dal/api/playlist/usePlaylistApi.ts";
+import UserAvatar from "../../components/user-avatar/UserAvatar.tsx";
 
 export default function ProfilePage() {
+    const {getUser, signOut} = useUserApi();
+    const {getByPlaylist, getUserSamples} = useSampleApi();
+    const {getUserPlaylists} = usePlaylistApi();
+
     const {nickname} = useParams<{ nickname: string }>();
     const [user, setUser] = useState<IUser | null>();
-    const {signOut} = useAuth()
+    const {loginUser, delUser} = useAuth()
     const [userPlaylists, setUserPlaylists] = useState<IPlaylist[]>();
     const [selectedPlaylist, setSelectedPlaylist] = useState<IPlaylist>();
     const [playlistSamples, setPlaylistSamples] = useState<ISample[]>();
 
-    const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
+    // const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
+    // const [userSamples, setUserSamples] = useState<Array<ISample>>()
+
+    // async function fetchUserSamples() {
+    //     const response = await getUserSamples(user!.userGuid);
+    //     setUserSamples(response);
+    // }
+
+    // useEffect(() => {
+    //     void fetchUserSamples();
+    // }, [user]);
+
+    const handleSignOut = async () => {
+        await signOut();
+        delUser();
+    }
+    
     async function fetchUser() {
-        const response = await UserApi.getUser(nickname!);
+        const response = await getUser(nickname!);
         setUser(response);
     }
 
-    const [userSamples, setUserSamples] = useState<Array<ISample>>()
-
-    async function fetchUserSamples() {
-        const response = await SampleApi.getUserSamples(user!.userGuid);
-        setUserSamples(response);
-    }
-
-    useEffect(() => {
-        fetchUserSamples();
-    }, [user]);
-
     async function fetchUserPlaylist() {
-        const response = await PlaylistApi.getUserPlaylists(user!.userGuid.toString())
+        const response = await getUserPlaylists(user!.userGuid.toString())
         setUserPlaylists(response)
         setSelectedPlaylist(response[0]);
     }
 
     async function fetchPlaylistSamples() {
-        const response = await SampleApi.getByPlaylist(selectedPlaylist!.playlistGuid);
+        const response = await getByPlaylist(selectedPlaylist!.playlistGuid);
         setPlaylistSamples(response);
     }
 
@@ -58,6 +66,10 @@ export default function ProfilePage() {
         void fetchUser();
     }, []);
 
+    useEffect(() => {
+        void fetchUser();
+    }, [nickname]);
+    
     useEffect(() => {
         if (user != null)
             void fetchUserPlaylist();
@@ -78,29 +90,32 @@ export default function ProfilePage() {
         <>
             <div className={profilePageClasses.profilePanel}>
                 <div className="horizontalPanel">
-                    <img className={profilePageClasses.avatar} src={user?.avatarPath} alt={"avatar"}/>
+                    <UserAvatar height={225} src={user.avatarPath}/>
                     <div className="verticalPanel">
-                        <h1>{user?.nickname}</h1>
-                        <h2>{user?.email}</h2>
+                        <h1>{user.nickname}</h1>
+                        <h2>{user.email}</h2>
 
-                        <div className="horizontalPanel">
-                            <Button primary={true}
-                                    onClick={() => setStatisticsIsOpen(true)}>
-                                Статистика
-                            </Button>
+                        {user.userGuid === loginUser?.userGuid &&
+                            <div className="horizontalPanel">
+                                {/*<Button primary={true}*/}
+                                {/*        onClick={() => setStatisticsIsOpen(true)}>*/}
+                                {/*    Статистика*/}
+                                {/*</Button>*/}
 
-                            <Button primary={true}
-                                    onClick={() => signOut()}>
-                                Выйти
-                            </Button>
-                        </div>
+                                <Button primary={false}
+                                        onClick={handleSignOut}>
+                                    Выйти
+                                </Button>
+                            </div>}
+
                     </div>
                 </div>
 
                 <div className={profilePageClasses.playlistsPanel + " horizontalPanel"}>
 
-                    <PlaylistToolsProfilePanel selectedPlaylist={selectedPlaylist!} onCreate={fetchUserPlaylist}
-                                               onEdit={fetchUserPlaylist}/>
+                    {user.userGuid === loginUser?.userGuid &&
+                        <PlaylistToolsProfilePanel selectedPlaylist={selectedPlaylist!} onCreate={fetchUserPlaylist}
+                                                   onEdit={fetchUserPlaylist}/>}
 
                     <div className={profilePageClasses.playlists + " horizontalPanel"}>
                         {userPlaylists ?
@@ -120,9 +135,10 @@ export default function ProfilePage() {
                 {playlistSamples && <SampleList samples={playlistSamples}/>}
             </div>
 
-            <Modal open={statisticsIsOpen}>
-                <StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>
-            </Modal>
+
+            {/*<Modal open={statisticsIsOpen}>*/}
+            {/*    <StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
+            {/*</Modal>*/}
         </>
     )
 }

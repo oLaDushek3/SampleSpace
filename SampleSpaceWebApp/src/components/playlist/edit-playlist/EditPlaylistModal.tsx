@@ -1,12 +1,12 @@
 import React, {RefObject, useRef, useState} from "react";
 import useClickOutside from "../../../hook/useClickOutside.ts";
-import PlaylistApi from "../../../dal/api/playlist/PlaylistApi.ts";
 import ErrorMessage from "../../error-message/ErrorMessage.tsx";
 import Button from "../../button/Button.tsx";
 import editPlaylistModalClasses from "./EditPlaylistModal.module.css";
 import Modal from "../../modal/Modal.tsx";
 import ConfirmModal from "../../dialog/confirm/ConfirmModal.tsx";
 import IPlaylist from "../../../dal/entities/IPlaylist.ts";
+import usePlaylistApi from "../../../dal/api/playlist/usePlaylistApi.ts";
 
 interface EditPlaylistModalProps {
     playlist: IPlaylist;
@@ -15,6 +15,7 @@ interface EditPlaylistModalProps {
 }
 
 export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlaylistModalProps) {
+    const {deletePlaylist, editPlaylist} = usePlaylistApi();
     const wrapperRef = useRef(null);
     const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
     useClickOutside(clickOutsideRef, onClose);
@@ -30,7 +31,7 @@ export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlayl
             return
         }
 
-        const response = await PlaylistApi.editPlaylist(playlist.playlistGuid, name);
+        const response = await editPlaylist(playlist.playlistGuid, name);
 
         if (response) {
             onClose();
@@ -51,7 +52,7 @@ export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlayl
     const handleDeleteConfirm = async () => {
         setConfirmIsOpen(false);
 
-        const response = await PlaylistApi.deletePlaylist(playlist.playlistGuid);
+        const response = await deletePlaylist(playlist.playlistGuid);
         
         if (response) {
             onClose();

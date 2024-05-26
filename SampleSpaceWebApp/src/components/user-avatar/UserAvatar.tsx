@@ -1,30 +1,43 @@
 import userAvatarClasses from "./UserAvatar.module.css";
-import { CiUser } from "react-icons/ci";
+import {CiUser} from "react-icons/ci";
 import {useEffect, useState} from "react";
-import Icon from "../icon/Icon.tsx";
+import { IconContext } from "react-icons";
 
 interface UserAvatarProps {
-    src?: string;
+    src: string;
     height: number;
 }
 
-export default function UserAvatar({src = "", height}: UserAvatarProps) {
-    const [imageSource, setImageSource] = useState(src)
-    const [correctSrc, setCorrectSrc] = useState(true)
-
+export default function UserAvatar({src, height}: UserAvatarProps) {
+    const [imageSource, setImageSource] = useState(src);
+    const [correctSrc, setCorrectSrc] = useState(false);
+    const [classes, setClasses] = useState(userAvatarClasses.userAvatar);
+    
     useEffect(() => {
         setImageSource(src);
-        setCorrectSrc(true);
+        if(src !== null)
+            setCorrectSrc(true);
+        else
+            setCorrectSrc(false);
     }, [src]);
+
+    useEffect(() => {
+        if(!correctSrc)
+            setClasses(`${userAvatarClasses.userAvatar} ${userAvatarClasses.invalidSrc}`)
+        else
+            setClasses(`${userAvatarClasses.userAvatar}`)
+    }, [correctSrc]);
     
     return (
-        <>
+        <div style={{height: height ? height : "100%"}} 
+             className={classes}>
             {correctSrc ?
-                <img style={{height: height}} className={userAvatarClasses.userAvatar} src={imageSource} alt={"avatar"} onError={() => setCorrectSrc(false)}/> :
-                <Icon height={height}>
+                <img src={imageSource} alt={"avatar"}
+                     onError={() => setCorrectSrc(false)}/> :
+                <IconContext.Provider value={{size: "100%" }}>
                     <CiUser/>
-                </Icon>
+                </IconContext.Provider>
             }
-        </>
+        </div>
     )
 }

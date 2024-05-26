@@ -1,13 +1,14 @@
 import {useEffect, useState} from "react";
 import ISample from '../../dal/entities/ISample.ts';
-import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import SampleList from "../../components/sample-list/SampleList.tsx";
+import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
 
 export default function MainPage() {
+    const {getAllSamples} = useSampleApi();
     const [samples, setSamples] = useState<ISample[]>([])
 
     async function fetchSamples() {
-        const response = await SampleApi.getAllSamples();
+        const response = await getAllSamples();
         setSamples(response);
     }
 

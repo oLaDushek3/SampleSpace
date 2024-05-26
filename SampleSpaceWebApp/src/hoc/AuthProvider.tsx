@@ -3,15 +3,15 @@ import IUser from "../dal/entities/IUser.ts"
 import useLocalStorageState from 'use-local-storage-state'
 
 interface AuthContextType {
-    user: IUser | null,
-    signIn: Function,
-    signOut: Function
+    loginUser: IUser | null,
+    setUser: Function,
+    delUser: Function
 }
 
 export const AuthContext = createContext<AuthContextType>({
-    user: null,
-    signIn: () => undefined,
-    signOut: () => undefined,
+    loginUser: null,
+    setUser: () => undefined,
+    delUser: () => undefined,
 });
 
 interface AuthProviderProps {
@@ -19,16 +19,17 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({children}: AuthProviderProps) {
-    const [user, setUser] = useLocalStorageState<IUser | null>('user', {defaultValue: null})
+    const [loginUser, setLoginUser] = useLocalStorageState<IUser | null>('user', {defaultValue: null})
 
-    const signIn = (loginUser: IUser) => {
-        setUser(loginUser)
-    }
-    const signOut = () => {
-        setUser(null)
+    const setUser = (loginUser: IUser) => {
+        setLoginUser(loginUser);
     }
     
-    const value= {user, signIn, signOut}
+    const delUser = () => {
+        setLoginUser(null);
+    }
+    
+    const value= {loginUser, setUser, delUser}
 
     return <AuthContext.Provider value={value}>
         {children}

@@ -1,11 +1,9 @@
 import {useEffect, useRef, useState} from "react";
-import SampleCommentApi from "../../dal/api/sample-comment/SampleCommentApi.ts";
 import ISamplePlayer from "../../models/ISamplePlayer.ts";
 import Button, {ButtonVisualType} from "../../components/button/Button.tsx";
 import {IoPause, IoPlay} from "react-icons/io5";
 import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import {Link, useParams} from "react-router-dom";
-import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import {SlSocialSoundcloud, SlSocialSpotify, SlSocialVkontakte} from "react-icons/sl";
 import {MdAdd} from "react-icons/md";
 import {IoIosShareAlt} from "react-icons/io";
@@ -20,10 +18,14 @@ import LoadingSpinner from "../../components/loading-spinner/LoadingSpinner.tsx"
 import ISampleComment from "../../dal/entities/ISampleComment.ts";
 import useClickOutside from "../../hook/useClickOutside.ts";
 import PlaylistSamplePanel from "../../components/sample/playlist-sample-panel/PlaylistSamplePanel.tsx";
+import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
+import useSampleCommentApi from "../../dal/api/sample-comment/useSampleCommentApi.ts";
 
 export default function SamplePage() {
+    const {getSample} = useSampleApi();
+    const {createNewComment, getSampleComments} = useSampleCommentApi();
     const {sampleGuid} = useParams<{ sampleGuid: string }>();
-    const {user} = useAuth();
+    const {loginUser} = useAuth();
     const [samplePlayer, setSamplePlayer] = useState<ISamplePlayer | null>()
     const [sampleComments, setSampleComments] = useState<ISampleComment[]>()
     const {
@@ -41,7 +43,7 @@ export default function SamplePage() {
 
     async function fetchSample() {
         if (sampleGuid) {
-            const response = await SampleApi.getSample(sampleGuid);
+            const response = await getSample(sampleGuid);
             setSamplePlayer(response !== null ? {sample: response, isActive: false} : null);
         }
     }
@@ -51,7 +53,7 @@ export default function SamplePage() {
     }, [sampleGuid]);
 
     async function fetchSampleComments() {
-        const response = await SampleCommentApi.getSampleComments(samplePlayer!.sample.sampleGuid);
+        const response = await getSampleComments(samplePlayer!.sample.sampleGuid);
         setSampleComments(response);
     }
 
@@ -75,7 +77,7 @@ export default function SamplePage() {
     }
 
     const handleAddComment = async (comment: string) => {
-        await SampleCommentApi.createNewComment(samplePlayer!.sample.sampleGuid, user!.userGuid, comment);
+        await createNewComment(samplePlayer!.sample.sampleGuid, loginUser!.userGuid, comment);
         await fetchSampleComments();
     }
 
@@ -154,7 +156,7 @@ export default function SamplePage() {
                                 </Icon>
                             </Button>
 
-                            {user &&
+                            {loginUser &&
                                 <div ref={playlistsPanelRef} className={samplePageClasses.playlistPanelContainer}>
                                     <Button visualType={ButtonVisualType.icon}
                                             onClick={() => {
@@ -195,7 +197,7 @@ export default function SamplePage() {
                 : <LoadingSpinner/>
             }
 
-            {user &&
+            {loginUser &&
                 <CommentInput submitCallBack={handleAddComment}/>
             }
         </div>

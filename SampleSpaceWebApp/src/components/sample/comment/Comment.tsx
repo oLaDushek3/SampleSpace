@@ -7,9 +7,9 @@ import Icon from "../../icon/Icon.tsx";
 import {MdEdit, MdClose} from "react-icons/md";
 import Button, {ButtonVisualType} from "../../button/Button.tsx";
 import useAuth from "../../../hook/useAuth.ts";
-import SampleCommentApi from "../../../dal/api/sample-comment/SampleCommentApi.ts";
 import {useState} from "react";
 import CommentInput, {CommentAction} from "./comment-input/CommentInput.tsx";
+import useSampleCommentApi from "../../../dal/api/sample-comment/useSampleCommentApi.ts";
 
 interface CommentProps {
     comment: ISampleComment;
@@ -17,17 +17,18 @@ interface CommentProps {
 }
 
 export default function Comment({comment, updateCallBack}: CommentProps) {
-    const {user} = useAuth();
+    const {deleteComment, editComment} = useSampleCommentApi();
+    const {loginUser} = useAuth();
     const [toolsPanelActive, setToolsPanelActive] = useState(false);
     const [editingActive, setEditingActive] = useState(false)
     
     const handleDeleteComment = async () => {
-        await SampleCommentApi.deleteComment(comment.sampleCommentGuid);
+        await deleteComment(comment.sampleCommentGuid);
         updateCallBack();
     }
     
     const handleEditComment = async (commentValue: string) => {
-        await SampleCommentApi.editComment(comment.sampleCommentGuid, commentValue);
+        await editComment(comment.sampleCommentGuid, commentValue);
         updateCallBack();
         setEditingActive(false);
     }
@@ -48,7 +49,7 @@ export default function Comment({comment, updateCallBack}: CommentProps) {
                                 <p>{comment.user.nickname}</p>
                             </Link>
 
-                            {user?.userGuid == comment.userGuid &&
+                            {loginUser?.userGuid == comment.userGuid &&
                                 <div className={commentClasses.toolsPanel + " horizontalPanel"}>
                                     <Button primary={false}
                                             visualType={ButtonVisualType.icon}
