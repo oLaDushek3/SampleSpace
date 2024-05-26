@@ -1,5 +1,18 @@
 .userAvatar {
+    box-sizing: border-box;
+    background: var(--secondary-background-color);
+    color: var(--primary-color);
     border-radius: 50%;
     display: flex;
     vertical-align: center;
+}
+
+.userAvatar > * {
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.userAvatar.invalidSrc {
+    padding: 5px;
 }

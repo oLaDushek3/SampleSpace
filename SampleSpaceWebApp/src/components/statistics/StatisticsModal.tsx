@@ -1,5 +1,4 @@
 import statisticsModalClasses from "./StatisticsModal.module.css";
-import SampleApi from "../../dal/api/sample/SampleApi.ts";
 import Button from "../button/Button.tsx";
 import ISample from "../../dal/entities/ISample.ts";
 import useAuth from "../../hook/useAuth.ts";
@@ -30,6 +29,7 @@ import {
     Title,
     Tooltip
 } from 'chart.js';
+import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
 
 Chart.register(
     ArcElement,
@@ -63,14 +63,15 @@ interface StatisticsModalProps {
 }
 
 export default function StatisticsModal({samples = [], onClose}: StatisticsModalProps) {
-    const {user} = useAuth();
+    const {generateExcel, generateWord} = useSampleApi();
+    const {loginUser} = useAuth();
     
     async function getWordFile() {
-        await SampleApi.generateWord(user!.userGuid);
+        await generateWord(loginUser!.userGuid);
     }
 
     async function getExcelFile() {
-        await SampleApi.generateExcel(user!.userGuid);
+        await generateExcel(loginUser!.userGuid);
     }
     
     return (

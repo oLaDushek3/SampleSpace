@@ -16,7 +16,7 @@ export default function Header() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const searchQuery = searchParams.get("search-query")
-    const {user} = useAuth()
+    const {loginUser} = useAuth()
     const [playerPanelIsActive, setPlayerPanelIsActive] = useState<boolean>(false)
     const playerPanelContainerRef = useRef(null);
     useClickOutside(playerPanelContainerRef, () => {setPlayerPanelIsActive(false)});
@@ -32,7 +32,7 @@ export default function Header() {
                  style={{height: "25px", cursor: "pointer"}}
                  onClick={() => navigate("/")}/>
 
-            {user && <CreateSampleHeaderPanel/>}
+            {loginUser && <CreateSampleHeaderPanel/>}
 
             <Search searchQuery={searchQuery ? searchQuery : ""} callBack={handleSearch}/>
 
@@ -44,7 +44,7 @@ export default function Header() {
                 <PlayerHeaderPanel isActive={playerPanelIsActive}/>
             </div>
 
-            {user ? <ProfileHeaderPanel user={user}/> : <AuthHeaderPanel/>}
+            {loginUser ? <ProfileHeaderPanel user={loginUser}/> : <AuthHeaderPanel/>}
         </header>
     )
 }

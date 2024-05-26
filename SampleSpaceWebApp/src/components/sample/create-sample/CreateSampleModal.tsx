@@ -8,8 +8,8 @@ import {convertFileToBuffer} from 'id3-parser/lib/util';
 import {IID3Tag} from "id3-parser/lib/interface";
 import FileInput, {FileInputAccept} from "../../file-input/FileInput.tsx";
 import SampleWave from "./sample-wave/SampleWave.tsx";
-import SampleApi from "../../../dal/api/sample/SampleApi.ts";
 import useAuth from "../../../hook/useAuth.ts";
+import useSampleApi from "../../../dal/api/sample/useSampleApi.ts";
 
 interface CreateSampleModalProps {
     onClose: () => void;
@@ -21,6 +21,7 @@ interface SampleRegion {
 }
 
 export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
+    const {createSample} = useSampleApi();
     const wrapperRef = useRef(null);
     const coverRef = useRef<HTMLImageElement>(null);
     useClickOutside(wrapperRef, onClose);
@@ -33,7 +34,7 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
     const [spotifyLink, setSpotifyLink] = useState("");
     const [soundcloudLink, setSoundcloudLink] = useState("");
     const [error, setError] = useState("");
-    const {user} = useAuth();
+    const {loginUser} = useAuth();
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,8 +43,8 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
             setError("Не все поля заполнены");
             return
         }
-        await SampleApi.createSample(uploadSample!, sampleRegion?.start, sampleRegion?.end, coverBlob,
-            name, artist, user!.userGuid, vkontakteLink, spotifyLink, soundcloudLink);
+        await createSample(uploadSample!, sampleRegion?.start, sampleRegion?.end, coverBlob,
+            name, artist, loginUser!.userGuid, vkontakteLink, spotifyLink, soundcloudLink);
 
         onClose();
     }

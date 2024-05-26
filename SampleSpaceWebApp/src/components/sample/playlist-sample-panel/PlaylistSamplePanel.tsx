@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
 import playlistSamplePanelClasses from "./PlaylistSamplePanel.module.css";
 import useAuth from "../../../hook/useAuth.ts";
-import PlaylistApi from "../../../dal/api/playlist/PlaylistApi.ts";
 import Button from "../../button/Button.tsx";
 import LoadingSpinner from "../../loading-spinner/LoadingSpinner.tsx";
 import IPlaylistRelativeSample from "../../../dal/entities/IPlaylistRelativeSample.ts";
+import usePlaylistApi from "../../../dal/api/playlist/usePlaylistApi.ts";
 
 interface PlaylistSamplePanelProps {
     isActive: boolean;
@@ -12,9 +12,10 @@ interface PlaylistSamplePanelProps {
 }
 
 export default function PlaylistSamplePanel({isActive = false, sampleGuid}: PlaylistSamplePanelProps) {
+    const {addSampleToPlaylist, deleteSampleFromPlaylist, getUserPlaylistsRelativeSample} = usePlaylistApi();
     const [classes, setClasses] = useState(playlistSamplePanelClasses.playlistPanel)
     const [playlists, setPlaylists] = useState<IPlaylistRelativeSample[]>()
-    const {user} = useAuth();
+    const {loginUser} = useAuth();
 
     useEffect(() => {
         if (isActive)
@@ -25,7 +26,7 @@ export default function PlaylistSamplePanel({isActive = false, sampleGuid}: Play
     }, [isActive]);
 
     async function fetchPlaylists() {
-        const response = await PlaylistApi.getUserPlaylistsRelativeSample(user!.userGuid, sampleGuid);
+        const response = await getUserPlaylistsRelativeSample(loginUser!.userGuid, sampleGuid);
         setPlaylists(response);
     }
 
@@ -42,12 +43,12 @@ export default function PlaylistSamplePanel({isActive = false, sampleGuid}: Play
     }
 
     const handleAddSampleToPlaylist = async (playlistGuid: string) => {
-        void await PlaylistApi.addSampleToPlaylist(playlistGuid, sampleGuid);
+        void await addSampleToPlaylist(playlistGuid, sampleGuid);
         void fetchPlaylists();
     }
 
     const handleRemoveSampleToPlaylist = async (playlistGuid: string) => {
-        void await PlaylistApi.deleteSampleFromPlaylist(playlistGuid, sampleGuid);
+        void await deleteSampleFromPlaylist(playlistGuid, sampleGuid);
         void fetchPlaylists();
     }
     

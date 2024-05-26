@@ -1,10 +1,10 @@
 import React, {useRef, useState} from "react";
 import useClickOutside from "../../../hook/useClickOutside.ts";
-import PlaylistApi from "../../../dal/api/playlist/PlaylistApi.ts";
 import useAuth from "../../../hook/useAuth.ts";
 import ErrorMessage from "../../error-message/ErrorMessage.tsx";
 import Button from "../../button/Button.tsx";
 import createPlaylistModalClasses from "./CreatePlaylistModal.module.css";
+import usePlaylistApi from "../../../dal/api/playlist/usePlaylistApi.ts";
 
 interface CreatePlaylistModalProps {
     onClose: () => void;
@@ -12,11 +12,12 @@ interface CreatePlaylistModalProps {
 }
 
 export default function CreatePlaylistModal({onClose, onCreate}: CreatePlaylistModalProps) {
+    const {createPlaylist} = usePlaylistApi();
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, onClose);
     const [name, setName] = useState("");
     const [error, setError] = useState("");
-    const {user} = useAuth();
+    const {loginUser} = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,7 +27,7 @@ export default function CreatePlaylistModal({onClose, onCreate}: CreatePlaylistM
             return
         }
 
-        const response = await PlaylistApi.createPlaylist(user!.userGuid, name);
+        const response = await createPlaylist(loginUser!.userGuid, name);
 
         if (response) {
             onClose();

@@ -1,22 +1,23 @@
 import React, {useRef, useState} from "react";
 import Button from "../../button/Button.tsx";
 import ErrorMessage from "../../error-message/ErrorMessage.tsx";
-import UserApi from "../../../dal/api/user/UserApi.ts";
 import useAuth from "../../../hook/useAuth.ts";
 import useClickOutside from "../../../hook/useClickOutside.ts";
 import signInModalClasses from "./SignInModal.module.css"
+import useUserApi from "../../../dal/api/user/useUserApi.ts";
 
 interface SignInModalProps {
     onClose: () => void;
 }
 
 export default function SignInModal({onClose}: SignInModalProps) {
+    const {signIn} = useUserApi();
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, onClose);
     const [nickname, setNickname] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const {signIn} = useAuth();
+    const {setUser} = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,17 +27,17 @@ export default function SignInModal({onClose}: SignInModalProps) {
             return
         }
 
-        const response = await UserApi.signIn(nickname, password);
+        const response = await signIn(nickname, password);
 
         if (response) {
             onClose();
-            signIn(response);
+            setUser(response);
         } else {
             setError("Ошибка авторизации");
             return
         }
     }
-
+    
     return (
         <div ref={wrapperRef} 
              className={signInModalClasses.signIn + " verticalPanel"}>
@@ -44,6 +45,7 @@ export default function SignInModal({onClose}: SignInModalProps) {
 
             <form className={"verticalPanel"} 
                   onSubmit={handleSubmit}>
+                
                 <label htmlFor="nickname">Имя пользователя</label>
                 <input id="nickname"
                        className="text-input"
