@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using SampleSpaceBll.Abstractions.Auth;
+using SampleSpaceBll.Abstractions.AuthScheme;
 using SampleSpaceBll.Models;
 
 namespace SampleSpaceInfrastructure.AuthScheme.Cookie;

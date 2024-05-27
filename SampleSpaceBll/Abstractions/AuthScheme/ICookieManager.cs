@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using SampleSpaceBll.Models;
 
-namespace SampleSpaceBll.Abstractions.Auth;
+namespace SampleSpaceBll.Abstractions.AuthScheme;
 
 public interface ICookieManager
 {

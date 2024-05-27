@@ -2,10 +2,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using SampleSpaceBll.Models;
 
-namespace SampleSpaceBll.Abstractions.Auth;
+namespace SampleSpaceBll.Abstractions.AuthScheme;
 
 public interface ITokenManager
 {
+    public string CreateResetToken(Guid userGuid);
+    
     public Tokens CreateTokens(Guid userGuid);
 
     public Task SaveTokens(HttpResponse response, Tokens tokens, Guid userId);
@@ -18,7 +20,7 @@ public interface ITokenManager
 
     public Guid GetUserIdFromToken(string token);
     
-    public bool CheckAccessTokenValid(string token);
+    public bool CheckTokenValid(string token);
 
-    public bool CheckAccessTokenActive(string token);
+    public bool CheckTokenActive(string token);
 }

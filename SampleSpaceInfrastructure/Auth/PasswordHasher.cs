@@ -1,6 +1,6 @@
 ﻿using SampleSpaceBll.Abstractions.Auth;
 
-namespace SampleSpaceInfrastructure;
+namespace SampleSpaceInfrastructure.Auth;
 
 public class PasswordHasher : IPasswordHasher
 {
