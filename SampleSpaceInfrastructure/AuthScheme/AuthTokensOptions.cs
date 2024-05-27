@@ -29,6 +29,8 @@ public class AuthTokensOptions : AuthenticationSchemeOptions
     public int RefreshTokenExpiresInDays { get; set; }
 
     public int AccessTokenExpiresInMinutes { get; set; }
+    
+    public int ResetTokenExpiresInHours { get; set; }
 
     #endregion
     

@@ -1,7 +1,7 @@
 using NAudio.Wave;
 using SampleSpaceBll.Abstractions.Sample;
 
-namespace SampleSpaceInfrastructure;
+namespace SampleSpaceInfrastructure.Sample;
 
 public class SampleTrimmer : ISampleTrimmer
 {

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using SampleSpaceBll.Abstractions.Auth;
+using SampleSpaceBll.Abstractions.AuthScheme;
 using SampleSpaceBll.Models;
 using SampleSpaceCore.Abstractions.Redis.Repositories;
 using SampleSpaceCore.Models;
@@ -28,6 +28,26 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
         };
     }
 
+    public string CreateResetToken(Guid userGuid)
+    {
+        Claim[] claims = { new(ClaimTypes.Authentication, userGuid.ToString()) };
+        
+        var signingCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.IssuerSigningKey)),
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: options.Issuer,
+            audience: options.Audience,
+            claims: claims,
+            signingCredentials: signingCredentials,
+            expires: DateTime.UtcNow.AddHours(options.ResetTokenExpiresInHours));
+
+        var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return tokenValue;
+    }
+    
     private string GenerateAccessToken(IEnumerable<Claim> claims)
     {
         var signingCredentials = new SigningCredentials(
@@ -120,12 +140,12 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
     {
         var claims = GetPrincipalFromToken(token);
 
-        var id = claims.FindFirst(ClaimTypes.Authentication)!.Value;
+        var guidString = claims.FindFirst(ClaimTypes.Authentication)!.Value;
 
-        return Guid.Parse(id);
+        return Guid.Parse(guidString);
     }
 
-    public bool CheckAccessTokenValid(string token)
+    public bool CheckTokenValid(string token)
     {
         var tokenValidationParameters = GetValidationParameters();
 
@@ -143,13 +163,13 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
 
             return true;
         }
-        catch (Exception e)
+        catch
         {
             return false;
         }
     }
 
-    public bool CheckAccessTokenActive(string token)
+    public bool CheckTokenActive(string token)
     {
         var handler = new JwtSecurityTokenHandler();
 

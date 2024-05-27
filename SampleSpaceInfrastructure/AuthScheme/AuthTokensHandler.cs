@@ -2,7 +2,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SampleSpaceBll.Abstractions.Auth;
+using SampleSpaceBll.Abstractions.AuthScheme;
 
 namespace SampleSpaceInfrastructure.AuthScheme;
 
@@ -25,9 +25,9 @@ public class AuthTokensHandler : AuthenticationHandler<AuthTokensOptions>
         if(tokens == null)
             return AuthenticateResult.Fail("Tokens Not Found");
 
-        if (_tokenManager.CheckAccessTokenValid(tokens.AccessToken))
+        if (_tokenManager.CheckTokenValid(tokens.AccessToken))
         {
-            var accessTokenIsActive = _tokenManager.CheckAccessTokenActive(tokens.AccessToken);
+            var accessTokenIsActive = _tokenManager.CheckTokenActive(tokens.AccessToken);
             var principal = _tokenManager.GetPrincipalFromToken(tokens.AccessToken);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
