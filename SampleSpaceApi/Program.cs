@@ -1,4 +1,6 @@
 using SampleSpaceBll.Abstractions.Auth;
+using SampleSpaceBll.Abstractions.AuthScheme;
+using SampleSpaceBll.Abstractions.Email;
 using SampleSpaceBll.Abstractions.Sample;
 using SampleSpaceBll.Services;
 using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
@@ -9,10 +11,12 @@ using SampleSpaceDal.PostgreSQL.Repositories.PlaylistRepository;
 using SampleSpaceDal.PostgreSQL.Repositories.SampleCommentRepository;
 using SampleSpaceDal.Redis.Repositories.AuthTokensRepository;
 using SampleSpaceInfrastructure;
+using SampleSpaceInfrastructure.Auth;
 using SampleSpaceInfrastructure.AuthScheme;
 using SampleSpaceInfrastructure.AuthScheme.Cookie;
 using SampleSpaceInfrastructure.AuthScheme.Token;
-using SampleSpaceInfrastructure.JWT;
+using SampleSpaceInfrastructure.Email;
+using SampleSpaceInfrastructure.Sample;
 using IPostgreSQLSampleRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repositories.ISampleRepository;
 using PostgreSQLSampleRepository = SampleSpaceDal.PostgreSQL.Repositories.SampleRepository.SampleRepository;
 using ICloudStorageSampleRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.ISampleRepository;
@@ -95,10 +99,10 @@ void ConfigureServices(IServiceCollection services)
 void ConfigureInfrastructure(IServiceCollection services)
 {
     services.AddScoped<IPasswordHasher, PasswordHasher>();
-    services.AddScoped<IJwtProvider, JwtProvider>();
-    services.AddScoped<ISampleTrimmer, SampleTrimmer>();
     services.AddScoped<ITokenManager, TokenManager>();
     services.AddScoped<ICookieManager, CookieManager>();
+    services.AddScoped<IEmailService, EmailService>();
+    services.AddScoped<ISampleTrimmer, SampleTrimmer>();
 }
 
 void ConfigureCors(IServiceCollection services)
@@ -119,7 +123,7 @@ void ConfigureRedis(IServiceCollection services)
 {
     services.AddStackExchangeRedisCache(options =>
     {
-        options.Configuration = "158.160.171.79:6379";
+        options.Configuration = "158.160.171.213:6379";
         options.InstanceName = "sample";
     });
 }
@@ -140,9 +144,9 @@ ConfigureCors(services);
 
 ConfigureRedis(services);
 
-services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthTokensOptions>(configuration.GetSection(nameof(AuthTokensOptions)));
 services.Configure<CloudStorageOptions>(configuration.GetSection(nameof(CloudStorageOptions)));
+services.Configure<EmailServiceOptions>(configuration.GetSection(nameof(EmailServiceOptions)));
 
 services.AddControllers();
 

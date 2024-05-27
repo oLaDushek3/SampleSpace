@@ -5,7 +5,7 @@ public class SampleComment
     private const int MaxCommentLength = 300;
 
     private SampleComment(Guid sampleCommentGuid, Guid sampleGuid, Guid userGuid, DateTime date, string comment,
-        User.User? user)
+        User? user)
     {
         SampleCommentGuid = sampleCommentGuid;
         SampleGuid = sampleGuid;
@@ -25,10 +25,10 @@ public class SampleComment
 
     public string Comment { get; private set; }
 
-    public User.User? User { get; private set; }
+    public User? User { get; private set; }
 
     public static (SampleComment? sampleComment, string Error) Create(Guid sampleCommentEntityGuid, Guid sampleGuid,
-        Guid userGuid, DateTime date, string comment, User.User? user)
+        Guid userGuid, DateTime date, string comment, User? user)
     {
         if (string.IsNullOrEmpty(comment) || comment.Length > 300)
             return (null, $"Comment cannot be empty or longer then {MaxCommentLength} symbols");

@@ -7,17 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0-preview.2.24128.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0-preview.2.24128.5"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Abstractions\PostgreSQL\" />
+        <Folder Include="Abstractions\PostgreSQL\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.1\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+            <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.1\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

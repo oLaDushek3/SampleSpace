@@ -55,7 +55,7 @@ public class PlaylistService(IPlaylistRepository playlistRepository, ISampleRepo
 
     public async Task<(bool successfully, string error)> EditPlaylist(Playlist playlist)
     {
-        if (!playlist!.CanBeModified)
+        if (!playlist.CanBeModified)
             return (false, "Playlist cannot be modified");
         
         return await playlistRepository.Edit(playlist);
@@ -83,7 +83,7 @@ public class PlaylistService(IPlaylistRepository playlistRepository, ISampleRepo
 
     public async Task<(bool successfully, string error)> DeletePlaylist(Playlist playlist)
     {
-        if (!playlist!.CanBeModified)
+        if (!playlist.CanBeModified)
             return (false, "Playlist cannot be deleted");
         
         return await playlistRepository.Delete(playlist.PlaylistGuid);

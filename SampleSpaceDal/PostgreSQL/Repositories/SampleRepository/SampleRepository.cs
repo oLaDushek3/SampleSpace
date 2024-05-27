@@ -3,7 +3,6 @@ using Npgsql;
 using SampleSpaceCore.Abstractions.PostgreSQL.Repositories;
 using SampleSpaceCore.Models;
 using SampleSpaceCore.Models.Sample;
-using SampleSpaceCore.Models.User;
 using SampleSpaceDal.PostgreSQL.Entities;
 
 namespace SampleSpaceDal.PostgreSQL.Repositories.SampleRepository;

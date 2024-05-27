@@ -83,12 +83,12 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         // if (new Guid(loginUserGuid) != comment!.UserGuid)
         //     return Forbid();
         
-        var (modifiedPlaylist, modifiedError) = playlist!.Edit(request.Name);
+        var modified= playlist!.Edit(request.Name);
         
-        if(!string.IsNullOrEmpty(modifiedError))
-            return  BadRequest(modifiedError);
+        if(!string.IsNullOrEmpty(modified.error))
+            return  BadRequest(modified.error);
         
-        var (successfully, editError) = await playlistService.EditPlaylist(modifiedPlaylist!);
+        var (successfully, editError) = await playlistService.EditPlaylist(playlist);
         
         if(!string.IsNullOrEmpty(editError))
             return  BadRequest(editError);
@@ -162,7 +162,6 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         return successfully ? Ok() : BadRequest("Server error");
     }
     
-    //Доработать проверку права доступа
     // Раскомментировать после развертывания на сервере
     //[Authorize]
     [HttpDelete("delete-playlist")]
