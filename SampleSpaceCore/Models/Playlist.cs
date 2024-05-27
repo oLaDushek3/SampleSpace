@@ -20,7 +20,7 @@ public class Playlist
 
     public bool CanBeModified { get; private set; }
 
-    public static (Playlist? playlist, string Error) Create(Guid playlistGuid, Guid userGuid, string name, bool canBeModified = true)
+    public static (Playlist? playlist, string error) Create(Guid playlistGuid, Guid userGuid, string name, bool canBeModified = true)
     {
         if (string.IsNullOrEmpty(name) || name.Length > MaxNameLength)
             return (null, "Nickname cannot be empty or longer then 75 symbols");
@@ -30,13 +30,13 @@ public class Playlist
         return (playlist, string.Empty);
     }
     
-    public (Playlist? playlist, string error) Edit(string newName)
+    public (bool successful, string error) Edit(string newName)
     {
         if(string.IsNullOrEmpty(newName) || newName.Length > MaxNameLength)
-            return (null, $"Name cannot be empty or longer then {MaxNameLength} symbols");
+            return (false, $"Name cannot be empty or longer then {MaxNameLength} symbols");
 
         Name = newName;
         
-        return (this, string.Empty);
+        return (true, string.Empty);
     }
 }

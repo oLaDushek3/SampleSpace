@@ -1,5 +1,5 @@
 namespace SampleSpaceApi.Contracts.User;
 
-public record LoginUserRequest(
+public record SignInUserRequest(
     string Nickname,
     string Password);

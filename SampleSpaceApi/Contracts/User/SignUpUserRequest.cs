@@ -1,6 +1,6 @@
 namespace SampleSpaceApi.Contracts.User;
 
-public record UserRequest(
+public record SignUpUserRequest(
     IFormFile? AvatarFile,
     string Nickname,
     string Email,

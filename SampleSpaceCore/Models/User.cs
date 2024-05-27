@@ -1,4 +1,4 @@
-﻿namespace SampleSpaceCore.Models.User;
+﻿namespace SampleSpaceCore.Models;
 
 public class User
 {
@@ -42,5 +42,24 @@ public class User
         var user = new User(userGuid, nickname, email, password, avatarPath);
 
         return (user, string.Empty);
+    }
+    
+    public (bool successful, string Error) Edit(string? nickname, string? email, string? avatarPath = null)
+    {
+        if (nickname != null)
+        {
+            if(nickname.Length > MaxNicknameLength)
+                return (false, "Nickname longer then 75 symbols");
+
+            Nickname = nickname;
+        }
+
+        if (email != null)
+            Email = email;
+
+        if (avatarPath != null)
+            AvatarPath = avatarPath;
+        
+        return (true, string.Empty);
     }
 }
