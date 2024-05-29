@@ -28,10 +28,10 @@ export default function useApiBase(): useApiBaseType {
                     delUser();
                 }
                 
-                if(responseStatus === 409)
-                    return responseStatus;
+                if(responseStatus === 400)
+                    return null;
                 
-                return null;
+                return responseStatus;
             })
     }
 
@@ -47,10 +47,10 @@ export default function useApiBase(): useApiBaseType {
                     delUser();
                 }
 
-                if(responseStatus === 409)
-                    return responseStatus;
-                
-                return null;
+                if(responseStatus === 400)
+                    return null;
+
+                return responseStatus;
             })
     }
 
@@ -66,10 +66,10 @@ export default function useApiBase(): useApiBaseType {
                     delUser();
                 }
 
-                if(responseStatus === 409)
-                    return responseStatus;
+                if(responseStatus === 400)
+                    return null;
 
-                return null;
+                return responseStatus;
             })
     }
 
@@ -85,10 +85,10 @@ export default function useApiBase(): useApiBaseType {
                     delUser();
                 }
 
-                if(responseStatus === 409)
-                    return responseStatus;
+                if(responseStatus === 400)
+                    return null;
 
-                return null;
+                return responseStatus;
             })
     }
     
