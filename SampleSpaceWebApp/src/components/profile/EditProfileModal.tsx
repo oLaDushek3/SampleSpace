@@ -1,22 +1,32 @@
 import editProfileClasses from "./EditProfileModal.module.css"
 import ErrorMessage from "../error-message/ErrorMessage.tsx";
 import Button from "../button/Button.tsx";
-import React, {useEffect, useRef, useState} from "react";
+import React, {RefObject, useEffect, useRef, useState} from "react";
 import useUserApi from "../../dal/api/user/useUserApi.ts";
 import FileInput, {FileInputAccept} from "../file-input/FileInput.tsx";
 import UserAvatar from "../user-avatar/UserAvatar.tsx";
 import useAuth from "../../hook/useAuth.ts";
 import IUser from "../../dal/entities/IUser.ts";
+import useClickOutside from "../../hook/useClickOutside.ts";
+import Modal from "../modal/Modal.tsx";
+import ConfirmModal from "../dialog/confirm/ConfirmModal.tsx";
 
 interface EditProfileModal {
     onCancel: () => void;
     onSuccess: (modifiedUser: IUser) => void;
+    onDelete: () => void;
 }
 
-export default function EditProfileModal({onCancel, onSuccess}: EditProfileModal) {
-    const {editUser} = useUserApi();
+export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditProfileModal) {
+    const {editUser, deleteUser} = useUserApi();
     const {loginUser, setUser} = useAuth();
+    
     const wrapperRef = useRef(null);
+    const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
+    useClickOutside(clickOutsideRef, onCancel);
+    
+    const [confirmIsOpen, setConfirmIsOpen] = useState(false);
+    
     const [avatarBlob, setAvatarBlob] = useState<Blob>();
     const [avatarSrc, setAvatarSrc] = useState(loginUser!.avatarPath ? loginUser!.avatarPath : "");
     const [nickname, setNickname] = useState(loginUser!.nickname);
@@ -42,6 +52,31 @@ export default function EditProfileModal({onCancel, onSuccess}: EditProfileModal
         }
     }
 
+    const handleDelete = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        setClickOutsideRef(null);
+        setConfirmIsOpen(true);
+    }
+
+    const handleDeleteConfirm = async () => {
+        setConfirmIsOpen(false);
+
+        const response = await deleteUser(loginUser!.userGuid);
+
+        if (response) {
+            onDelete();
+        } else {
+            setError("Ошибка удаления");
+            return
+        }
+    }
+
+    const handleDeleteCancelled = async () => {
+        setConfirmIsOpen(false)
+        setClickOutsideRef(wrapperRef);
+    }
+    
     useEffect(() => {
         if(avatarBlob)
             setAvatarSrc(URL.createObjectURL(avatarBlob));
@@ -90,8 +125,22 @@ export default function EditProfileModal({onCancel, onSuccess}: EditProfileModal
                     Сохранить
                 </Button>
 
+
+                <Button warning={true}
+                        alone={true}
+                        onClick={handleDelete}>
+                    Удалить аккаунт
+                </Button>
+                
                 <Button alone={true} onClick={onCancel}>Отмена</Button>
             </form>
+            
+            <Modal open={confirmIsOpen}>
+                {confirmIsOpen && <ConfirmModal message={"Аккаунт будет удален"}
+                                                onConfirm={handleDeleteConfirm}
+                                                onCancel={handleDeleteCancelled}/>}
+            </Modal>
+            
         </div>
     )
 }

@@ -11,11 +11,12 @@ interface useUserApiType {
     editUser: Function
     forgotPassword: Function,
     resetPassword: Function,
+    deleteUser: Function,
     getUser: Function
 }
 
 export default function useUserApi(): useUserApiType {
-    const {baseAddress, get, post, put} = useApiBase();
+    const {baseAddress, get, post, put, del} = useApiBase();
     
     const signUp = async (avatarBlob: Blob, nickname: string, email: string, password: string): Promise<boolean | string> => {
         let url = baseAddress + "user/sign-up";
@@ -63,11 +64,16 @@ export default function useUserApi(): useUserApiType {
         let blank: IResetPassword = {resetToken, newPassword};
         return await put(url, blank);
     }
+
+    const deleteUser = async (userGuid: string): Promise<IUser>  => {
+        let url = baseAddress + `user/delete-user?user-guid=${userGuid}`;
+        return await del(url);
+    }
     
     const getUser = async (nickname: string): Promise<IUser>  => {
         let url = baseAddress + `user/get-user-by-nickname?nickname=${nickname}`;
         return await get(url);
     }
     
-    return {signUp, signIn, signOut, editUser, forgotPassword, resetPassword, getUser};
+    return {signUp, signIn, signOut, editUser, forgotPassword, resetPassword, deleteUser, getUser};
 }

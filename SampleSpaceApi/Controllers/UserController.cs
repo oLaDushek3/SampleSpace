@@ -140,13 +140,13 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var (user, getError) = await userService.GetUserByGuid(userGuid);
         
-        // if(!string.IsNullOrEmpty(getError))
-        //     return  BadRequest(getError);
+        if(!string.IsNullOrEmpty(getError))
+            return  BadRequest(getError);
         
-        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
-        if (Guid.Parse(loginUserGuid) != userGuid)
-            return Forbid();
+        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        //
+        // if (Guid.Parse(loginUserGuid) != userGuid)
+        //     return Forbid();
         
         var (successfully, deleteError) = await userService.Delete(user!);
         

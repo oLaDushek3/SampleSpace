@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
     const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
-    
+
     // const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
     // const [userSamples, setUserSamples] = useState<Array<ISample>>()
@@ -47,7 +47,7 @@ export default function ProfilePage() {
     // useEffect(() => {
     //     void fetchUserSamples();
     // }, [user]);
-    
+
     const handleSignOutConfirm = async () => {
         setConfirmIsOpen(false);
         await signOut();
@@ -57,6 +57,12 @@ export default function ProfilePage() {
     const handleEditProfileOnSuccess = async (modifiedUser: IUser) => {
         setEditProfileIsOpen(false);
         navigate(`/${modifiedUser.nickname}`);
+    }
+
+    const handleEditProfileOnDelete = async () => {
+        await signOut();
+        delUser();
+        navigate(`/`);
     }
     
     async function fetchUser() {
@@ -72,7 +78,7 @@ export default function ProfilePage() {
             name: "Созданные",
             canBeModified: false
         });
-        
+
         setUserPlaylists(response);
         setSelectedPlaylist(response[0]);
     }
@@ -98,12 +104,12 @@ export default function ProfilePage() {
     }, [user]);
 
     useEffect(() => {
-        if (selectedPlaylist){
-            if(selectedPlaylist.playlistGuid === user!.userGuid){
+        if (selectedPlaylist) {
+            if (selectedPlaylist.playlistGuid === user!.userGuid) {
                 void fetchUserSamples(user!.userGuid);
                 return;
             }
-            
+
             void fetchPlaylistSamples(selectedPlaylist.playlistGuid);
         }
     }, [selectedPlaylist]);
@@ -113,7 +119,7 @@ export default function ProfilePage() {
 
     if (user === null)
         return <NotFoundPage/>
-    
+
     return (
         <>
             <div className={profilePageClasses.profilePanel}>
@@ -134,7 +140,7 @@ export default function ProfilePage() {
                                         onClick={() => setEditProfileIsOpen(true)}>
                                     Редактировать
                                 </Button>
-                                
+
                                 <Button warning={true}
                                         onClick={() => setConfirmIsOpen(true)}>
                                     Выйти
@@ -168,7 +174,9 @@ export default function ProfilePage() {
 
             <Modal open={editProfileIsOpen || confirmIsOpen}>
                 {/*<StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
-                {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)} onSuccess={handleEditProfileOnSuccess}/>}
+                {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)}
+                                                        onSuccess={handleEditProfileOnSuccess}
+                                                        onDelete={handleEditProfileOnDelete}/>}
                 {confirmIsOpen && <ConfirmModal message={"Будет выполнени выход из аккаунта"}
                                                 onConfirm={handleSignOutConfirm}
                                                 onCancel={() => setConfirmIsOpen(false)}/>}
