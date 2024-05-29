@@ -127,14 +127,14 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
     {
         var (successfully, error, errorCode) = await userService.ResetPassword(request.ResetToken, request.NewPassword);
-
+        
         if (errorCode == 400)
             return BadRequest("Server error");
         
         if (errorCode != 200)
-            return Forbid(error);
+            return Forbid();
         
-        return successfully ? Ok() : BadRequest("Server error");
+        return successfully ? Ok() : BadRequest($"Server error: {error}");
     }
     
     //[Authorize]

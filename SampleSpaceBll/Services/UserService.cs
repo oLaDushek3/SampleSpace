@@ -80,7 +80,15 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
 
     public async Task<(bool successfully, string error, int errorCode)> ResetPassword(string resetToken, string newPassword)
     {
-        var userGuid = tokenManager.GetUserIdFromToken(resetToken);
+        Guid userGuid;
+        try
+        {
+            userGuid = tokenManager.GetUserIdFromToken(resetToken);;
+        }
+        catch 
+        {
+            return (false, "Invalid token", 403);
+        }
 
         var (user, getError) = await postgreSqlUserRepository.GetByGuid(userGuid);
 

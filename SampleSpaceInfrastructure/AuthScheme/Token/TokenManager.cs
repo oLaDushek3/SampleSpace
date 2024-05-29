@@ -97,18 +97,18 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
 
     public async Task RefreshTokens(HttpResponse response, Tokens tokens)
     {
-        var userId = GetUserIdFromToken(tokens.AccessToken);
+        var userGuid = GetUserIdFromToken(tokens.AccessToken);
 
-        var cachedTokens = await authTokensRepository.GetTokens(userId, tokens.RefreshToken);
+        var cachedTokens = await authTokensRepository.GetTokens(userGuid!, tokens.RefreshToken);
 
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
 
-        await authTokensRepository.DeleteTokens(userId, cachedTokens.RefreshToken);
+        await authTokensRepository.DeleteTokens(userGuid!, cachedTokens.RefreshToken);
 
-        var newTokens = CreateTokens(userId);
+        var newTokens = CreateTokens(userGuid!);
 
-        await SaveTokens(response, newTokens, userId);
+        await SaveTokens(response, newTokens, userGuid!);
     }
 
     public async Task DeleteTokens(HttpContext context)
@@ -120,9 +120,9 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
         if (tokens == null)
             return;
 
-        var userId = GetUserIdFromToken(tokens.AccessToken);
+        var userGuid = GetUserIdFromToken(tokens.AccessToken);
 
-        await authTokensRepository.DeleteTokens(userId, tokens.RefreshToken);
+        await authTokensRepository.DeleteTokens(userGuid!, tokens.RefreshToken);
     }
 
     public ClaimsPrincipal GetPrincipalFromToken(string token)
