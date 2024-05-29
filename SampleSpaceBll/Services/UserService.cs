@@ -61,21 +61,21 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
         return (user, string.Empty);
     }
 
-    public async Task<(bool successfully, string error)> ForgotPassword(string email, string route)
+    public async Task<(User? user, string error)> ForgotPassword(string email, string route)
     {
         var (user, error) = await postgreSqlUserRepository.GetByEmail(email);
 
         if (!string.IsNullOrEmpty(error))
-            return (false, error);
+            return (null, error);
 
         if (user == null)
-            return (false, "User not found");
+            return (null, string.Empty);
 
         string resetToken = tokenManager.CreateResetToken(user.UserGuid);
 
         await SendResetEmail(email, resetToken, route);
 
-        return (true, string.Empty);
+        return (user, string.Empty);
     }
 
     public async Task<(bool successfully, string error)> ResetPassword(string resetToken, string newPassword)
