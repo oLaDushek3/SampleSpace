@@ -17,6 +17,7 @@ import usePlaylistApi from "../../dal/api/playlist/usePlaylistApi.ts";
 import UserAvatar from "../../components/user-avatar/UserAvatar.tsx";
 import Modal from "../../components/modal/Modal.tsx";
 import EditProfileModal from "../../components/profile/EditProfileModal.tsx";
+import ConfirmModal from "../../components/dialog/confirm/ConfirmModal.tsx";
 
 export default function ProfilePage() {
     const navigate = useNavigate()
@@ -32,6 +33,7 @@ export default function ProfilePage() {
     const [playlistSamples, setPlaylistSamples] = useState<ISample[]>();
 
     const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
+    const [confirmIsOpen, setConfirmIsOpen] = useState(false);
     
     // const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
@@ -46,7 +48,8 @@ export default function ProfilePage() {
     //     void fetchUserSamples();
     // }, [user]);
     
-    const handleSignOut = async () => {
+    const handleSignOutConfirm = async () => {
+        setConfirmIsOpen(false);
         await signOut();
         delUser();
     }
@@ -133,7 +136,7 @@ export default function ProfilePage() {
                                 </Button>
                                 
                                 <Button warning={true}
-                                        onClick={handleSignOut}>
+                                        onClick={() => setConfirmIsOpen(true)}>
                                     Выйти
                                 </Button>
                             </div>}
@@ -163,9 +166,12 @@ export default function ProfilePage() {
                 {playlistSamples && <SampleList samples={playlistSamples}/>}
             </div>
 
-            <Modal open={editProfileIsOpen}>
+            <Modal open={editProfileIsOpen || confirmIsOpen}>
                 {/*<StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
-                <EditProfileModal onCancel={() => setEditProfileIsOpen(false)} onSuccess={handleEditProfileOnSuccess}/>
+                {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)} onSuccess={handleEditProfileOnSuccess}/>}
+                {confirmIsOpen && <ConfirmModal message={"Будет выполнени выход из аккаунта"}
+                                                onConfirm={handleSignOutConfirm}
+                                                onCancel={() => setConfirmIsOpen(false)}/>}
             </Modal>
         </>
     )
