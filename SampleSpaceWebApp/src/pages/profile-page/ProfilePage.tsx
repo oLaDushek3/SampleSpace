@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import profilePageClasses from "./ProfilePage.module.css";
 import SampleList from "../../components/sample-list/SampleList.tsx";
 import Button, {RadioButton} from "../../components/button/Button.tsx";
@@ -15,8 +15,11 @@ import useUserApi from "../../dal/api/user/useUserApi.ts";
 import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
 import usePlaylistApi from "../../dal/api/playlist/usePlaylistApi.ts";
 import UserAvatar from "../../components/user-avatar/UserAvatar.tsx";
+import Modal from "../../components/modal/Modal.tsx";
+import EditProfileModal from "../../components/profile/EditProfileModal.tsx";
 
 export default function ProfilePage() {
+    const navigate = useNavigate()
     const {getUser, signOut} = useUserApi();
     const {getByPlaylist, getUserSamples} = useSampleApi();
     const {getUserPlaylists} = usePlaylistApi();
@@ -28,6 +31,8 @@ export default function ProfilePage() {
     const [selectedPlaylist, setSelectedPlaylist] = useState<IPlaylist>();
     const [playlistSamples, setPlaylistSamples] = useState<ISample[]>();
 
+    const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
+    
     // const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
     // const [userSamples, setUserSamples] = useState<Array<ISample>>()
@@ -40,10 +45,15 @@ export default function ProfilePage() {
     // useEffect(() => {
     //     void fetchUserSamples();
     // }, [user]);
-
+    
     const handleSignOut = async () => {
         await signOut();
         delUser();
+    }
+
+    const handleEditProfileOnSuccess = async (modifiedUser: IUser) => {
+        setEditProfileIsOpen(false);
+        navigate(`/${modifiedUser.nickname}`);
     }
     
     async function fetchUser() {
@@ -52,32 +62,47 @@ export default function ProfilePage() {
     }
 
     async function fetchUserPlaylist() {
-        const response = await getUserPlaylists(user!.userGuid.toString())
-        setUserPlaylists(response)
+        const response: IPlaylist[] = await getUserPlaylists(user!.userGuid.toString());
+        response.unshift({
+            playlistGuid: user!.userGuid,
+            userGuid: user!.userGuid,
+            name: "Созданные",
+            canBeModified: false
+        });
+        
+        setUserPlaylists(response);
         setSelectedPlaylist(response[0]);
     }
 
-    async function fetchPlaylistSamples() {
-        const response = await getByPlaylist(selectedPlaylist!.playlistGuid);
+    async function fetchPlaylistSamples(playlistGuid: string) {
+        const response = await getByPlaylist(playlistGuid);
+        setPlaylistSamples(response);
+    }
+
+    async function fetchUserSamples(userGuid: string) {
+        const response = await getUserSamples(userGuid);
         setPlaylistSamples(response);
     }
 
     useEffect(() => {
-        void fetchUser();
-    }, []);
-
-    useEffect(() => {
+        signOut();
         void fetchUser();
     }, [nickname]);
-    
+
     useEffect(() => {
         if (user != null)
             void fetchUserPlaylist();
     }, [user]);
 
     useEffect(() => {
-        if (selectedPlaylist)
-            void fetchPlaylistSamples();
+        if (selectedPlaylist){
+            if(selectedPlaylist.playlistGuid === user!.userGuid){
+                void fetchUserSamples(user!.userGuid);
+                return;
+            }
+            
+            void fetchPlaylistSamples(selectedPlaylist.playlistGuid);
+        }
     }, [selectedPlaylist]);
 
     if (user === undefined)
@@ -85,7 +110,7 @@ export default function ProfilePage() {
 
     if (user === null)
         return <NotFoundPage/>
-
+    
     return (
         <>
             <div className={profilePageClasses.profilePanel}>
@@ -103,6 +128,11 @@ export default function ProfilePage() {
                                 {/*</Button>*/}
 
                                 <Button primary={false}
+                                        onClick={() => setEditProfileIsOpen(true)}>
+                                    Редактировать
+                                </Button>
+                                
+                                <Button warning={true}
                                         onClick={handleSignOut}>
                                     Выйти
                                 </Button>
@@ -120,8 +150,6 @@ export default function ProfilePage() {
                     <div className={profilePageClasses.playlists + " horizontalPanel"}>
                         {userPlaylists ?
                             <>
-                                {/*<RadioButton onSelected={}/>*/}
-
                                 {userPlaylists?.map(playlist => <RadioButton
                                     onSelected={() => setSelectedPlaylist(playlist)}
                                     selected={selectedPlaylist === playlist}
@@ -135,10 +163,10 @@ export default function ProfilePage() {
                 {playlistSamples && <SampleList samples={playlistSamples}/>}
             </div>
 
-
-            {/*<Modal open={statisticsIsOpen}>*/}
-            {/*    <StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
-            {/*</Modal>*/}
+            <Modal open={editProfileIsOpen}>
+                {/*<StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
+                <EditProfileModal onCancel={() => setEditProfileIsOpen(false)} onSuccess={handleEditProfileOnSuccess}/>
+            </Modal>
         </>
     )
 }

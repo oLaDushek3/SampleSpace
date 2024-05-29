@@ -15,12 +15,12 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     const {signUp} = useUserApi();
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, onClose);
-    const [avatarBlob, setAvatarBlob] = useState<Blob>()
-    const [avatarSrc, setAvatarSrc] = useState("")
-    const [nickname, setNickname] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState("")
+    const [avatarBlob, setAvatarBlob] = useState<Blob>();
+    const [avatarSrc, setAvatarSrc] = useState("");
+    const [nickname, setNickname] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
