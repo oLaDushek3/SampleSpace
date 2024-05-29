@@ -16,12 +16,13 @@ interface EditPlaylistModalProps {
 
 export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlaylistModalProps) {
     const wrapperRef = useRef(null);
-    const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
+        const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
+    const [confirmIsOpen, setConfirmIsOpen] = useState(false);
     useClickOutside(clickOutsideRef, onClose);
+    
     const {deletePlaylist, editPlaylist} = usePlaylistApi();
     const [name, setName] = useState(playlist.name);
     const [error, setError] = useState("");
-    const [confirmIsOpen, setConfirmIsOpen] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

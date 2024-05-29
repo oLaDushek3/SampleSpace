@@ -21,8 +21,8 @@ export default function SampleList({samples = []}: SampleListProps) {
 
     return (
         <div className={sampleListClasses.list}>
-            {samplePlayer ? samplePlayerList?.map(samplePlayer => <Sample samplePlayer={samplePlayer}
-                                                                          key={samplePlayer.sample.sampleGuid.toString()}/>) :
+            {samples?.length != 0 ? samplePlayerList?.map(samplePlayer => <Sample samplePlayer={samplePlayer}
+                                                                             key={samplePlayer.sample.sampleGuid.toString()}/>) :
                 <h1>Ничего нет :c</h1>
             }
         </div>

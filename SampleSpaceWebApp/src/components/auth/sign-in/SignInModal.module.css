@@ -2,3 +2,12 @@
     padding: 1rem;
     width: 400px;
 }
+
+.forgotPassword {
+    color: var(--secondary-font-color)
+}
+
+.forgotPassword:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

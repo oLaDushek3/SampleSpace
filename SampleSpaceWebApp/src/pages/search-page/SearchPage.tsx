@@ -12,6 +12,8 @@ export default function SearchPage() {
     
     async function fetchSamples() {
         const response = await searchSamples(searchQuery!);
+        if(response === 404)
+            return;
         setSamples(response);
     }
 
