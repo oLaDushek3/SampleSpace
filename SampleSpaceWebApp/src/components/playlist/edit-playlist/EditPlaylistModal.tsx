@@ -15,10 +15,10 @@ interface EditPlaylistModalProps {
 }
 
 export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlaylistModalProps) {
-    const {deletePlaylist, editPlaylist} = usePlaylistApi();
     const wrapperRef = useRef(null);
     const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
     useClickOutside(clickOutsideRef, onClose);
+    const {deletePlaylist, editPlaylist} = usePlaylistApi();
     const [name, setName] = useState(playlist.name);
     const [error, setError] = useState("");
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
@@ -95,7 +95,7 @@ export default function EditPlaylistModal({playlist, onClose, onEdit}: EditPlayl
                 <Button warning={true} 
                         alone={true}
                         onClick={handleDelete}>
-                    Удалить
+                    Удалить плейлист
                 </Button>
 
                 <Button alone={true} onClick={onClose}>Назад</Button>
