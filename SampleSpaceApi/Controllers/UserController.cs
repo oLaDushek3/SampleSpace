@@ -115,12 +115,12 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
     {
-        var (successfully, error) = await userService.ForgotPassword(request.Email, request.Route);
+        var (user, error) = await userService.ForgotPassword(request.Email, request.Route);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
         
-        return successfully ? Ok() : BadRequest("Server error");
+        return user != null ? Ok() : NoContent();
     }
     
     [HttpPut("reset-password")]

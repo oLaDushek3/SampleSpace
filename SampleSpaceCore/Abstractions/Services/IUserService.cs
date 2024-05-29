@@ -11,7 +11,7 @@ public interface IUserService
 
     public Task<(User? loginUser, string error)> SignIn(HttpResponse response, string nickname, string password);
 
-    public Task<(bool successfully, string error)> ForgotPassword(string email, string origin);
+    public Task<(User? user, string error)> ForgotPassword(string email, string origin);
 
     public Task<(bool successfully, string error)> ResetPassword(string resetToken, string newPassword);
     
