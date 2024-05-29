@@ -7,6 +7,7 @@ import NotFoundPage from "./pages/not-found/NotFoundPage.tsx";
 import SamplePlayerProvider from "./hoc/SampleProvider.tsx";
 import SamplePage from "./pages/sample-page/SamplePage.tsx";
 import Root from "./components/root/Root.tsx";
+import ResetPasswordPage from "./pages/reset-password-page/ResetPasswordPage.tsx";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                         <Route path="sample/:sampleGuid" element={<SamplePage/>}/>
                         <Route path="gg" element={<div className="centered"><h1>Ну гг че</h1></div>}/>
                         <Route path=":nickname" element={<ProfilePage/>}/>
+                        <Route path="reset-password" element={<ResetPasswordPage/>}/>
                         <Route path="*" element={<NotFoundPage/>}/>
                     </Route>
                 </Routes>

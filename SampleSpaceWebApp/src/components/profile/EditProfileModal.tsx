@@ -17,15 +17,14 @@ interface EditProfileModal {
     onDelete: () => void;
 }
 
-export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditProfileModal) {
-    const {editUser, deleteUser} = useUserApi();
-    const {loginUser, setUser} = useAuth();
-    
+export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditProfileModal) {    
     const wrapperRef = useRef(null);
     const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
-    useClickOutside(clickOutsideRef, onCancel);
-    
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
+    useClickOutside(clickOutsideRef, onCancel);
+
+    const {editUser, deleteUser} = useUserApi();
+    const {loginUser, setUser} = useAuth();
     
     const [avatarBlob, setAvatarBlob] = useState<Blob>();
     const [avatarSrc, setAvatarSrc] = useState(loginUser!.avatarPath ? loginUser!.avatarPath : "");

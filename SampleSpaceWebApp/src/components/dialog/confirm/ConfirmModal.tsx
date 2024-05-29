@@ -13,10 +13,6 @@ export default function ConfirmModal({message, onConfirm, onCancel}: ConfirmModa
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, onCancel);
 
-    const handleConfirm = () => onConfirm();
-    
-    const handleCancel = () => onCancel();
-
     return (
         <div ref={wrapperRef}
              className={confirmModalClasses.confirm + " verticalPanel"}>
@@ -25,12 +21,12 @@ export default function ConfirmModal({message, onConfirm, onCancel}: ConfirmModa
 
             <Button primary={true}
                     alone={true} 
-                    onClick={handleConfirm}>
+                    onClick={onConfirm}>
                 Да
             </Button>
 
             <Button alone={true}
-                    onClick={handleCancel}>
+                    onClick={onCancel}>
                 Нет
             </Button>
         </div>
