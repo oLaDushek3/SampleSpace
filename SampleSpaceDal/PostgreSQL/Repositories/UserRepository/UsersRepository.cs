@@ -37,7 +37,7 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                 PasswordHash = reader.GetString(reader.GetOrdinal("password_hash")),
                 AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
                     ? reader.GetString(reader.GetOrdinal("avatar_path"))
-                    : null,
+                    : null
             };
 
             await reader.CloseAsync();

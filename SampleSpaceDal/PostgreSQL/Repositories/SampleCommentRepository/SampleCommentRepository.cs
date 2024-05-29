@@ -47,7 +47,9 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
                     UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                     Nickname = reader.GetString(reader.GetOrdinal("nickname")),
                     Email = reader.GetString(reader.GetOrdinal("email")),
-                    AvatarPath = reader.GetString(reader.GetOrdinal("avatar_path")),
+                    AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
+                        ? reader.GetString(reader.GetOrdinal("avatar_path"))
+                        : null
                 }
             };
 
@@ -116,7 +118,9 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
                         UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
                         Nickname = reader.GetString(reader.GetOrdinal("nickname")),
                         Email = reader.GetString(reader.GetOrdinal("email")),
-                        AvatarPath = reader.GetString(reader.GetOrdinal("avatar_path")),
+                        AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
+                            ? reader.GetString(reader.GetOrdinal("avatar_path"))
+                            : null
                     }
                 };
 
