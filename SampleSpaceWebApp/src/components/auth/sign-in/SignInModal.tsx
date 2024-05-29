@@ -14,9 +14,9 @@ export default function SignInModal({onClose}: SignInModalProps) {
     const {signIn} = useUserApi();
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, onClose);
-    const [nickname, setNickname] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState("")
+    const [nickname, setNickname] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const {setUser} = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {

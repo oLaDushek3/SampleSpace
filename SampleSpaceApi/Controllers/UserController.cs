@@ -71,18 +71,18 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     //[Authorize]
-    [HttpPost("edit-user")]
-    public async Task<IActionResult> EditUser(EditUserRequest request)
+    [HttpPut("edit-user")]
+    public async Task<IActionResult> EditUser([FromForm] EditUserRequest request)
     {
         var (user, getError) = await userService.GetUserByGuid(request.UserGuid);
 
-        // if (!string.IsNullOrEmpty(getError))
-        //     return BadRequest(getError);
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
 
-        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
-        if (Guid.Parse(loginUserGuid) != request.UserGuid)
-            return Forbid();
+        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        //
+        // if (Guid.Parse(loginUserGuid) != request.UserGuid)
+        //     return Forbid();
         
         var modified = user!.Edit(request.Nickname, request.Email);
 
@@ -109,7 +109,7 @@ public class UserController(IUserService userService) : ControllerBase
         if(!string.IsNullOrEmpty(editError))
             return  BadRequest(editError);
 
-        return successfully ? Ok() : BadRequest("Server error");
+        return successfully ? Ok(user) : BadRequest("Server error");
     }
     
     [HttpPost("forgot-password")]
@@ -123,7 +123,7 @@ public class UserController(IUserService userService) : ControllerBase
         return successfully ? Ok() : BadRequest("Server error");
     }
     
-    [HttpPost("reset-password")]
+    [HttpPut("reset-password")]
     public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
     {
         var (successfully, error) = await userService.ResetPassword(request.ResetToken, request.NewPassword);
