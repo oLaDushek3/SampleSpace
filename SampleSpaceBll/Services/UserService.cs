@@ -78,28 +78,33 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
         return (user, string.Empty);
     }
 
-    public async Task<(bool successfully, string error)> ResetPassword(string resetToken, string newPassword)
+    public async Task<(bool successfully, string error, int errorCode)> ResetPassword(string resetToken, string newPassword)
     {
         var userGuid = tokenManager.GetUserIdFromToken(resetToken);
 
-        var (user, error) = await postgreSqlUserRepository.GetByGuid(userGuid);
+        var (user, getError) = await postgreSqlUserRepository.GetByGuid(userGuid);
 
-        if (!string.IsNullOrEmpty(error))
-            return (false, error);
+        if (!string.IsNullOrEmpty(getError))
+            return (false, getError, 404);
 
         var resetTokenValid = tokenManager.CheckTokenValid(resetToken);
 
         if (user == null || !resetTokenValid)
-            return (false, "Invalid token");
+            return (false, "Invalid token", 403);
 
         var resetTokenActive = tokenManager.CheckTokenActive(resetToken);
 
         if (!resetTokenActive)
-            return (false, "Token expired");
+            return (false, "Token expired", 403);
         
         user.ChangePassword(passwordHasher.Generate(newPassword));
 
-        return await postgreSqlUserRepository.Edit(user);
+        var (successfully, saveError) = await postgreSqlUserRepository.Edit(user);
+
+        if (!string.IsNullOrEmpty(saveError))
+            return (false, saveError, 400);
+
+        return (true, string.Empty, 200);
     }
 
     public async Task<(bool successfully, string error)> SignOut(HttpContext context)
