@@ -120,7 +120,7 @@ public class UserController(IUserService userService) : ControllerBase
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
         
-        return user != null ? Ok() : NoContent();
+        return user != null ? Ok() : NotFound("User not found");
     }
     
     [HttpPut("reset-password")]
