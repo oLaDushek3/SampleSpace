@@ -31,7 +31,7 @@ export default function SampleList({samples}: SampleListProps) {
         <div className={sampleListClasses.list}>
             {samples!.length != 0 ? samplePlayerList?.map(samplePlayer => <Sample samplePlayer={samplePlayer}
                                                                              key={samplePlayer.sample.sampleGuid.toString()}/>) :
-                <h1 className={"centered"}>Ничего нет :c</h1>
+                <h1 className={"centeredWithHeader"}>Ничего нет :c</h1>
             }
         </div>
     )

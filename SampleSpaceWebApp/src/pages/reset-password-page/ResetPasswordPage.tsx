@@ -46,31 +46,36 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className={resetPasswordPageClasses.resetPasswordPage}>
-            <form className={"verticalPanel"}
-                  onSubmit={handleSubmit}>
+        <div className={"centered"}>
+            <div className={resetPasswordPageClasses.resetPasswordPage + " verticalPanel"}>
+                
+                <p style={{fontSize: "24px", fontWeight: "bold"}}>Смена пароля</p>
+                
+                <form className={"verticalPanel"}
+                      onSubmit={handleSubmit}>
 
-                <label htmlFor="password">Новый пароль</label>
-                <input id="password"
-                       className="text-input"
-                       placeholder="Введите новый пароль"
-                       type="password"
-                       value={password}
-                       onChange={e => setPassword(e.target.value)}/>
+                    <label htmlFor="password">Новый пароль</label>
+                    <input id="password"
+                           className="text-input"
+                           placeholder="Введите новый пароль"
+                           type="password"
+                           value={password}
+                           onChange={e => setPassword(e.target.value)}/>
 
-                {error && <ErrorMessage error={error} setError={setError}/>}
+                    {error && <ErrorMessage error={error} setError={setError}/>}
 
-                <Button primary={true}
-                        alone={true}
-                        onClick={handleSubmit}>
-                    Сохранить
-                </Button>
-            </form>
+                    <Button primary={true}
+                            alone={true}
+                            onClick={handleSubmit}>
+                        Сохранить
+                    </Button>
+                </form>
 
-            <Modal open={informIsOpen}>
-                <InformModal message={informMessage}
-                             onClose={handleInformOnClose}/>
-            </Modal>
+                <Modal open={informIsOpen}>
+                    <InformModal message={informMessage}
+                                 onClose={handleInformOnClose}/>
+                </Modal>
+            </div>
         </div>
     )
 }
