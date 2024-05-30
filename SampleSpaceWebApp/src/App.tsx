@@ -20,11 +20,11 @@ function App() {
                             <Route index element={<MainPage/>}/>
                             <Route path="search" element={<SearchPage/>}/>
                             <Route path="sample/:sampleGuid" element={<SamplePage/>}/>
-                            <Route path="gg" element={<div className="centered"><h1>Ну гг че</h1></div>}/>
+                            <Route path="gg" element={<div className="centeredWithHeader"><h1>Ну гг че</h1></div>}/>
                             <Route path=":nickname" element={<ProfilePage/>}/>
-                            <Route path="reset-password" element={<ResetPasswordPage/>}/>
                             <Route path="*" element={<NotFoundPage/>}/>
                         </Route>
+                        <Route path="reset-password" element={<ResetPasswordPage/>}/>
                     </Routes>
                 </InformModalProvider>
             </SamplePlayerProvider>
