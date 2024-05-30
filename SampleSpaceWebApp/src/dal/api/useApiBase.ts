@@ -1,6 +1,7 @@
 import axios from "axios";
 import useAuth from "../../hook/useAuth.ts";
 import {useNavigate} from "react-router-dom";
+import useInformModal from "../../hook/useInformModal.ts";
 
 interface useApiBaseType {
     baseAddress: string,
@@ -12,9 +13,10 @@ interface useApiBaseType {
 
 export default function useApiBase(): useApiBaseType {
     const {delUser} = useAuth();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const {showInform} = useInformModal();
 
-    const baseAddress = "http://localhost:5000/api/"
+    const baseAddress = "http://localhost:5000/api/";
 
     const get = async (url: string) => {
         return await axios.get(url)
@@ -23,10 +25,9 @@ export default function useApiBase(): useApiBaseType {
             })
             .catch((error) => {
                 const responseStatus = error.response.status;
-                if(responseStatus === 401){
-                    navigate({pathname: "/"});
-                    delUser();
-                }
+                
+                if(responseStatus === 401)
+                    handleUnauthorizedResponse();
                 
                 if(responseStatus === 400)
                     return null;
@@ -42,10 +43,9 @@ export default function useApiBase(): useApiBaseType {
             })
             .catch((error) => {
                 const responseStatus = error.response.status;
-                if(responseStatus === 401){
-                    navigate({pathname: "/"});
-                    delUser();
-                }
+                
+                if(responseStatus === 401)
+                    handleUnauthorizedResponse();
 
                 if(responseStatus === 400)
                     return null;
@@ -61,10 +61,9 @@ export default function useApiBase(): useApiBaseType {
             })
             .catch((error) => {
                 const responseStatus = error.response.status;
-                if(responseStatus === 401){
-                    navigate({pathname: "/"});
-                    delUser();
-                }
+                
+                if(responseStatus === 401)
+                    handleUnauthorizedResponse();
 
                 if(responseStatus === 400)
                     return null;
@@ -80,10 +79,9 @@ export default function useApiBase(): useApiBaseType {
             })
             .catch((error) => {
                 const responseStatus = error.response.status;
-                if(responseStatus === 401){
-                    navigate({pathname: "/"});
-                    delUser();
-                }
+                
+                if(responseStatus === 401)
+                    handleUnauthorizedResponse();
 
                 if(responseStatus === 400)
                     return null;
@@ -92,5 +90,11 @@ export default function useApiBase(): useApiBaseType {
             })
     }
     
+    const handleUnauthorizedResponse = () => {
+        navigate({pathname: "/"});
+        delUser();
+        showInform("Ошибка аутентификации");
+    }
+ 
     return {baseAddress, get, post: post, put: put, del: del};
 }
