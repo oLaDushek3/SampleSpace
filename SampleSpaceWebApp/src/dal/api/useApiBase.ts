@@ -24,15 +24,7 @@ export default function useApiBase(): useApiBaseType {
                 return res.data;
             })
             .catch((error) => {
-                const responseStatus = error.response.status;
-                
-                if(responseStatus === 401)
-                    handleUnauthorizedResponse();
-                
-                if(responseStatus === 400)
-                    return null;
-                
-                return responseStatus;
+                return handleAxiosError(error);
             })
     }
 
@@ -42,15 +34,7 @@ export default function useApiBase(): useApiBaseType {
                 return res.data ? res.data : true;
             })
             .catch((error) => {
-                const responseStatus = error.response.status;
-                
-                if(responseStatus === 401)
-                    handleUnauthorizedResponse();
-
-                if(responseStatus === 400)
-                    return null;
-
-                return responseStatus;
+                return handleAxiosError(error);
             })
     }
 
@@ -60,15 +44,7 @@ export default function useApiBase(): useApiBaseType {
                 return res.data ? res.data : true;
             })
             .catch((error) => {
-                const responseStatus = error.response.status;
-                
-                if(responseStatus === 401)
-                    handleUnauthorizedResponse();
-
-                if(responseStatus === 400)
-                    return null;
-
-                return responseStatus;
+                return handleAxiosError(error);
             })
     }
 
@@ -78,16 +54,25 @@ export default function useApiBase(): useApiBaseType {
                 return res.data ? res.data : true;
             })
             .catch((error) => {
-                const responseStatus = error.response.status;
-                
-                if(responseStatus === 401)
-                    handleUnauthorizedResponse();
-
-                if(responseStatus === 400)
-                    return null;
-
-                return responseStatus;
+                return handleAxiosError(error);
             })
+    }
+    
+    const handleAxiosError = (error : null | any) => {
+        if(error.code === "ERR_NETWORK"){
+            showInform("Техническая неисправность на сервере. Пожалуйста попробуйте позже");
+            return null;
+        }
+
+        const responseStatus = error.response.status;
+
+        if(responseStatus === 401)
+            handleUnauthorizedResponse();
+
+        if(responseStatus === 400)
+            return null;
+
+        return responseStatus;
     }
     
     const handleUnauthorizedResponse = () => {
