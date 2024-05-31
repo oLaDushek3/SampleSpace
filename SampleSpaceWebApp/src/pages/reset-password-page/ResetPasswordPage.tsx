@@ -6,6 +6,7 @@ import InformModal from "../../components/dialog/inform/InformModal.tsx";
 import React, {useState} from "react";
 import useUserApi from "../../dal/api/user/useUserApi.ts";
 import {useNavigate, useSearchParams} from "react-router-dom";
+import usePasswordValidation from "../../hook/usePasswordValidation.ts";
 
 export default function ResetPasswordPage() {
     const [informIsOpen, setInformIsOpen] = useState(false);
@@ -16,7 +17,9 @@ export default function ResetPasswordPage() {
     
     const [searchParams] = useSearchParams()
     const token = searchParams.get("token")
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const {validation, validationError} = usePasswordValidation();
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -27,6 +30,16 @@ export default function ResetPasswordPage() {
             return;
         }
 
+        if(password !== confirmPassword){
+            setError("Пароли не совпадают");
+            return;
+        }
+
+        if(!validation(password)){
+            setError(validationError);
+            return;
+        }
+        
         const response = await resetPassword(token, password);
 
         console.log(response);
@@ -61,6 +74,14 @@ export default function ResetPasswordPage() {
                            type="password"
                            value={password}
                            onChange={e => setPassword(e.target.value)}/>
+
+                    <label htmlFor="confirmPassword">Подтверждение пароля</label>
+                    <input id="confirmPassword"
+                           className="text-input"
+                           placeholder="Введите подтверждение пароля"
+                           type="password"
+                           value={confirmPassword}
+                           onChange={e => setConfirmPassword(e.target.value)}/>
 
                     {error && <ErrorMessage error={error} setError={setError}/>}
 
