@@ -6,20 +6,25 @@ import signUpModalClasses from "./SignUpModal.module.css"
 import useUserApi from "../../../dal/api/user/useUserApi.ts";
 import FileInput, {FileInputAccept} from "../../file-input/FileInput.tsx";
 import UserAvatar from "../../user-avatar/UserAvatar.tsx";
+import usePasswordValidation from "../../../hook/usePasswordValidation.ts";
 
 interface SignUpModalProps {
     onClose: () => void;
 }
 
 export default function SignUpModal({onClose}: SignUpModalProps) {
-    const {signUp} = useUserApi();
     const wrapperRef = useRef(null);
     useClickOutside(wrapperRef, onClose);
+
+    const {signUp} = useUserApi();
+    
     const [avatarBlob, setAvatarBlob] = useState<Blob>();
     const [avatarSrc, setAvatarSrc] = useState("");
     const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const {validation, validationError} = usePasswordValidation();
     const [error, setError] = useState("");
     
     const handleSubmit = async (e: React.FormEvent) => {
@@ -29,11 +34,21 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
             setError("Не все поля заполнены");
             return;
         }
+
+        if(password !== confirmPassword){
+            setError("Пароли не совпадают");
+            return;
+        }
         
+        if(!validation(password)){
+            setError(validationError);
+            return;
+        }
+
         const response = await signUp(avatarBlob, nickname, email, password);
         
         if(response === 409){
-            setError("Имя пользователя занято");
+            setError("Пользователь с таким именем или почтой уже существует");
             return;
         }
         
@@ -93,6 +108,14 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
                        type="password"
                        value={password}
                        onChange={e => setPassword(e.target.value)}/>
+
+                <label htmlFor="confirmPassword">Подтверждение пароля</label>
+                <input id="confirmPassword"
+                       className="text-input"
+                       placeholder="Введите подтверждение пароля"
+                       type="password"
+                       value={confirmPassword}
+                       onChange={e => setConfirmPassword(e.target.value)}/>
 
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
