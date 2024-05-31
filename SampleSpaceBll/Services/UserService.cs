@@ -11,7 +11,7 @@ namespace SampleSpaceBll.Services;
 
 public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
         ICloudStorageUserRepository cloudStorageUserRepository, IPasswordHasher passwordHasher,
-        ITokenManager tokenManager, IEmailService emailService)
+        IPasswordValidation passwordValidation, ITokenManager tokenManager, IEmailService emailService)
     : IUserService
 {
     public async Task<(string? avatarLink, string error)> UploadUserAvatar(Guid userGuid, Stream avatarStream)
@@ -19,6 +19,16 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
         var (avatarLink, error) = await cloudStorageUserRepository.Create(userGuid, avatarStream);
 
         return !string.IsNullOrEmpty(error) ? (null, error) : (avatarLink, string.Empty);
+    }
+
+    public (bool successfully, string error) PasswordValidation(string password)
+    {
+        var (valid, validError) = passwordValidation.Validation(password);
+
+        if (!valid)
+            return (false, validError);
+        
+        return (true, string.Empty);
     }
 
     public async Task<(Guid? userGuid, string error)> SignUp(User newUser)
@@ -78,19 +88,21 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
         return (user, string.Empty);
     }
 
-    public async Task<(bool successfully, string error, int errorCode)> ResetPassword(string resetToken, string newPassword)
+    public async Task<(bool successfully, string error, int errorCode)> ResetPassword(string resetToken,
+        string newPassword) 
     {
         Guid userGuid;
         try
         {
-            userGuid = tokenManager.GetUserIdFromToken(resetToken);;
+            userGuid = tokenManager.GetUserIdFromToken(resetToken);
+            ;
         }
-        catch 
+        catch
         {
             return (false, "Invalid token", 403);
         }
 
-        var (user, getError) = await postgreSqlUserRepository.GetByGuid(userGuid);
+        var (user, getError) = await postgreSqlUserRepository.GetByGuid(userGuid: userGuid);
 
         if (!string.IsNullOrEmpty(getError))
             return (false, getError, 404);
@@ -104,7 +116,7 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
 
         if (!resetTokenActive)
             return (false, "Token expired", 403);
-        
+
         user.ChangePassword(passwordHasher.Generate(newPassword));
 
         var (successfully, saveError) = await postgreSqlUserRepository.Edit(user);
@@ -131,6 +143,16 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
         return user == null ? (null, "User not found") : (user, string.Empty);
     }
 
+    public async Task<(User? loginUser, string error)> GetUserByEmail(string email)
+    {
+        var (user, error) = await postgreSqlUserRepository.GetByEmail(email);
+
+        if (!string.IsNullOrEmpty(error))
+            return (null, error);
+
+        return user == null ? (null, "User not found") : (user, string.Empty);
+    }
+
     public async Task<(User? loginUser, string error)> GetUserByGuid(Guid userGuid)
     {
         var (user, error) = await postgreSqlUserRepository.GetByGuid(userGuid);
@@ -145,7 +167,7 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
     {
         return await postgreSqlUserRepository.Edit(user);
     }
-    
+
     public async Task<(bool successfully, string error)> Delete(User user)
     {
         return await postgreSqlUserRepository.Delete(user.UserGuid);
@@ -159,8 +181,8 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
                             <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
 
         await emailService.Send(
-            to: email, 
-            subject: "Сброс пароля", 
+            to: email,
+            subject: "Сброс пароля",
             html: $@"<h4>Сброс Пароля</h4>
                     {message}");
     }

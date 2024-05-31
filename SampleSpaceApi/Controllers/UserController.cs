@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.User;
 using SampleSpaceCore.Abstractions.Services;
 
@@ -17,7 +16,17 @@ public class UserController(IUserService userService) : ControllerBase
 
         if (existUser.loginUser != null)
             return Conflict("User with this nickname already exists");
+        
+        existUser = await userService.GetUserByEmail(request.Email);
 
+        if (existUser.loginUser != null)
+            return Conflict("User with this email already exists");
+
+        var (passwordValid, passwordValidError) = userService.PasswordValidation(request.Password);
+
+        if (!passwordValid)
+            return BadRequest(passwordValidError);
+        
         var (user, userError) = SampleSpaceCore.Models.User.Create(Guid.NewGuid(), request.Nickname,
             request.Email, request.Password);
         

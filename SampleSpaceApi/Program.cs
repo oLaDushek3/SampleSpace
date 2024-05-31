@@ -99,6 +99,7 @@ void ConfigureServices(IServiceCollection services)
 void ConfigureInfrastructure(IServiceCollection services)
 {
     services.AddScoped<IPasswordHasher, PasswordHasher>();
+    services.AddScoped<IPasswordValidation, PasswordValidation>();
     services.AddScoped<ITokenManager, TokenManager>();
     services.AddScoped<ICookieManager, CookieManager>();
     services.AddScoped<IEmailService, EmailService>();
