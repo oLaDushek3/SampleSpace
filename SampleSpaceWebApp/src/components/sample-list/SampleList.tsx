@@ -15,7 +15,6 @@ export default function SampleList({samples}: SampleListProps) {
     const [samplePlayerList, setSamplePlayerList] = useState<ISamplePlayer[]>([]);
 
     useEffect(() => {
-        console.log(samples);
         if(samples){
             const samplePlayerListBuffer = samples?.map(sample => ({sample: sample, isActive: false}))
             setSamplePlayerList(samplePlayerListBuffer);
