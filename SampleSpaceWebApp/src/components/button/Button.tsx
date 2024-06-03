@@ -19,14 +19,7 @@ interface ButtonProps extends React.ComponentProps<'button'> {
     primary?: boolean;
     warning?: boolean;
     alone?: boolean;
-}
-
-interface RadioButtonProps {
-    active?: boolean;
-    visualType?: ButtonVisualType;
-    selected?: boolean;
-    onSelected: () => void;
-    children: ReactNode;
+    withHorizontalScroll?: boolean;
 }
 
 export default function Button({
@@ -34,6 +27,7 @@ export default function Button({
                                    primary = false,
                                    warning = false,
                                    alone = false,
+                                   withHorizontalScroll = false,
                                    visualType = ButtonVisualType.simple,
                                    ...pops
                                }: ButtonProps) {
@@ -46,6 +40,8 @@ export default function Button({
     if (warning) classes += ` ${buttonClasses.warning}`;
 
     if (alone) classes += ` ${buttonClasses.alone}`;
+    
+    if (withHorizontalScroll) classes += ` ${buttonClasses.horizontalScroll}`;
 
     return (
         <button className={classes} type={"button"}
@@ -53,8 +49,18 @@ export default function Button({
     )
 }
 
+interface RadioButtonProps {
+    active?: boolean;
+    visualType?: ButtonVisualType;
+    selected?: boolean;
+    onSelected: () => void;
+    children: ReactNode;
+    withHorizontalScroll?: boolean;
+}
+
 export function RadioButton({
                                 active = true,
+                                withHorizontalScroll = false,
                                 visualType = ButtonVisualType.simple,
                                 selected = false,
                                 onSelected,
@@ -65,6 +71,8 @@ export function RadioButton({
     if (!active) classes += ` ${buttonClasses.inactive}`
 
     if (selected) classes += ` ${buttonClasses.primary}`;
+
+    if (withHorizontalScroll) classes += ` ${buttonClasses.horizontalScroll}`;
 
     return (
         <button className={classes} onClick={onSelected}>

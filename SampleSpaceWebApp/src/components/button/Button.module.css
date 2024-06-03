@@ -9,7 +9,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex-shrink: 0;
+}
+
+.button, .screen {
+    box-sizing:border-box;
 }
 
 .button:hover {
@@ -33,6 +36,10 @@
 
 .alone {
     width: 100%;
+}
+
+.horizontalScroll {
+    flex-shrink: 0;
 }
 
 .withIcon {
