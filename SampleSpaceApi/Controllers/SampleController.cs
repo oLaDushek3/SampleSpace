@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Sample;
@@ -93,8 +94,7 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         return successfully ? Ok() : BadRequest("Server error");
     }
 
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpPost("create-sample")]
     [RequestSizeLimit(20_000_000)]
     public async Task<IActionResult> CreateSample([FromForm] CreateSampleRequest createSampleRequest)

@@ -39,12 +39,10 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         return Ok(playlists); 
     }
     
-    // Раскомментировать после развертывания на сервере
     [Authorize]
     [HttpPost("create-playlist")]
     public async Task<IActionResult> CreatePlaylist(CreatePlaylistRequest request)
     {
-        //Раскомментировать после развертывания на сервере
         var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
         
         if (new Guid(loginUserGuid) != request.UserGuid)
@@ -67,8 +65,7 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         return Ok(playlists); 
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpPut("edit-playlist")]
     public async Task<IActionResult> EditPlaylist(EditPlaylistRequest request)
     {
@@ -77,11 +74,10 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        // Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != comment!.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != playlist!.UserGuid)
+            return Forbid();
         
         var modified= playlist!.Edit(request.Name);
         
@@ -96,8 +92,7 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         return successfully ? Ok() : BadRequest("Server error");
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpPost("add-sample-to-playlist")]
     public async Task<IActionResult> AddSampleToPlaylist(AddSampleToPlaylistRequest request)
     {
@@ -106,11 +101,10 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        // // Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != playlist!.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != playlist!.UserGuid)
+            return Forbid();
 
         var (alreadyContain, alreadyContainError) =
             await playlistService.CheckSampleContain(request.PlaylistGuid, request.SampleGuid);
@@ -138,8 +132,7 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         return Ok(); 
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpDelete("delete-sample-from-playlist")]
     public async Task<IActionResult> DeleteSampleFromPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid, [FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
@@ -148,11 +141,10 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        // // Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != playlist!.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != playlist!.UserGuid)
+            return Forbid();
         
         var (successfully, deleteError) = await playlistService.DeleteSampleFromPlaylist(playlistGuid, sampleGuid);
         
@@ -162,8 +154,7 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         return successfully ? Ok() : BadRequest("Server error");
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpDelete("delete-playlist")]
     public async Task<IActionResult> DeletePlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid)
     {
@@ -172,11 +163,10 @@ public class PlaylistController(IPlaylistService playlistService) : ControllerBa
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
         
-        // Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != playlist!.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != playlist!.UserGuid)
+            return Forbid();
         
         var (successfully, deleteError) = await playlistService.DeletePlaylist(playlist!);
         

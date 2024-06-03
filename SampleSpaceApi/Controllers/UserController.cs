@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.User;
 using SampleSpaceCore.Abstractions.Services;
 
@@ -67,7 +69,7 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser.Nickname, loginUser.Email));
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPost("sign-out")]
     public new async Task<IActionResult> SignOut()
     {
@@ -79,7 +81,7 @@ public class UserController(IUserService userService) : ControllerBase
         return successfully ? Ok() : BadRequest("Server error");
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpPut("edit-user")]
     public async Task<IActionResult> EditUser([FromForm] EditUserRequest request)
     {
@@ -88,10 +90,10 @@ public class UserController(IUserService userService) : ControllerBase
         if (!string.IsNullOrEmpty(getError))
             return BadRequest(getError);
 
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (Guid.Parse(loginUserGuid) != request.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (Guid.Parse(loginUserGuid) != request.UserGuid)
+            return Forbid();
         
         var modified = user!.Edit(request.Nickname, request.Email);
 
@@ -146,7 +148,7 @@ public class UserController(IUserService userService) : ControllerBase
         return successfully ? Ok() : BadRequest($"Server error: {error}");
     }
     
-    //[Authorize]
+    [Authorize]
     [HttpDelete("delete-user")]
     public async Task<IActionResult> DeleteUser([FromQuery(Name = "user-guid")] Guid userGuid)
     {
@@ -155,10 +157,10 @@ public class UserController(IUserService userService) : ControllerBase
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
         
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (Guid.Parse(loginUserGuid) != userGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (Guid.Parse(loginUserGuid) != userGuid)
+            return Forbid();
         
         var (successfully, deleteError) = await userService.Delete(user!);
         

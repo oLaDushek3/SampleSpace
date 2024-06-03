@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.SampleComment;
 using SampleSpaceCore.Abstractions.Services;
@@ -23,8 +25,7 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         return Ok(sampleComments); 
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpPost("create-comment")]
     public async Task<IActionResult> CreateComment(CreateSampleCommentRequest request)
     {
@@ -42,8 +43,7 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         return Ok(newCommentGuid);
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpPut("edit-comment")]
     public async Task<IActionResult> EditComment(EditSampleCommentRequest request)
     {
@@ -52,11 +52,10 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        // Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != comment!.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != comment!.UserGuid)
+            return Forbid();
 
         var (modifiedComment, modifiedError) = comment!.Edit(request.Comment);
         
@@ -71,8 +70,7 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         return successfully ? Ok() : BadRequest("Server error");
     }
     
-    // Раскомментировать после развертывания на сервере
-    //[Authorize]
+    [Authorize]
     [HttpDelete("delete-comment")]
     public async Task<IActionResult> DeleteSampleComment([FromQuery(Name = "comment-guid")] Guid commentGuid)
     {
@@ -81,11 +79,10 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        // Раскомментировать после развертывания на сервере
-        // var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        //
-        // if (new Guid(loginUserGuid) != comment!.UserGuid)
-        //     return Forbid();
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (new Guid(loginUserGuid) != comment!.UserGuid)
+            return Forbid();
 
         var (successfully, deleteError) = await commentServices.DeleteComment(commentGuid);
         
