@@ -85,6 +85,11 @@ export default function ProfilePage() {
 
     async function fetchPlaylistSamples(playlistGuid: string) {
         const response = await getByPlaylist(playlistGuid);
+        if(response === 404){
+            setPlaylistSamples([]);
+            return;
+        }
+            
         setPlaylistSamples(response);
     }
 
