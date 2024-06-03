@@ -12,13 +12,15 @@ export default function SearchPage() {
     
     async function fetchSamples() {
         const response = await searchSamples(searchQuery!);
-        if(response === 404)
+        if(response === 404){
+            setSamples([]);
             return;
+        }
         setSamples(response);
     }
 
     useEffect(() => {
-        fetchSamples();
+        void fetchSamples();
     }, [searchQuery])
 
     return(
