@@ -160,6 +160,7 @@ export default function ProfilePage() {
                         {userPlaylists ?
                             <>
                                 {userPlaylists?.map(playlist => <RadioButton
+                                    withHorizontalScroll={true}
                                     onSelected={() => setSelectedPlaylist(playlist)}
                                     selected={selectedPlaylist === playlist}
                                     children={playlist.name}

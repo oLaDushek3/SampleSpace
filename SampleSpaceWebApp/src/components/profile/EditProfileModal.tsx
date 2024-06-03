@@ -10,6 +10,7 @@ import IUser from "../../dal/entities/IUser.ts";
 import useClickOutside from "../../hook/useClickOutside.ts";
 import Modal from "../modal/Modal.tsx";
 import ConfirmModal from "../dialog/confirm/ConfirmModal.tsx";
+import InformModal from "../dialog/inform/InformModal.tsx";
 
 interface EditProfileModal {
     onCancel: () => void;
@@ -17,21 +18,22 @@ interface EditProfileModal {
     onDelete: () => void;
 }
 
-export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditProfileModal) {    
+export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditProfileModal) {
     const wrapperRef = useRef(null);
     const [clickOutsideRef, setClickOutsideRef] = useState<RefObject<any> | null>(wrapperRef)
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
+    const [informIsOpen, setInformIsOpen] = useState(false);
     useClickOutside(clickOutsideRef, onCancel);
 
-    const {editUser, deleteUser} = useUserApi();
+    const {editUser, deleteUser, forgotPassword} = useUserApi();
     const {loginUser, setUser} = useAuth();
-    
+
     const [avatarBlob, setAvatarBlob] = useState<Blob>();
     const [avatarSrc, setAvatarSrc] = useState(loginUser!.avatarPath ? loginUser!.avatarPath : "");
     const [nickname, setNickname] = useState(loginUser!.nickname);
     const [email, setEmail] = useState(loginUser!.email);
     const [error, setError] = useState("");
-    
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -75,15 +77,29 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
         setConfirmIsOpen(false)
         setClickOutsideRef(wrapperRef);
     }
+
+    const handleResetPassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        void await forgotPassword(window.location.origin + "/reset-password", loginUser!.email);
+        
+        setClickOutsideRef(null);
+        setInformIsOpen(true);
+    }
     
+    const handleInformOnClose = () => {
+        setClickOutsideRef(wrapperRef);
+        setInformIsOpen(false);
+    }
+
     useEffect(() => {
-        if(avatarBlob)
+        if (avatarBlob)
             setAvatarSrc(URL.createObjectURL(avatarBlob));
     }, [avatarBlob]);
-    
+
     const avatarPreview = (
         <UserAvatar src={avatarSrc} height={125}/>)
-    
+
     return (
         <div ref={wrapperRef}
              className={editProfileClasses.editProfile + " verticalPanel"}>
@@ -98,7 +114,7 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
                                onUpload={(file) => setAvatarBlob(new Blob([file]))}
                                setError={setError}/>
                 </div>
-                
+
                 <label htmlFor="nickname">Имя пользователя</label>
                 <input id="nickname"
                        className="text-input"
@@ -124,22 +140,30 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
                     Сохранить
                 </Button>
 
+                <div className={"horizontalPanel"}>
+                    <Button alone={true}
+                            onClick={handleResetPassword}>
+                        Сбросить пароль
+                    </Button>
 
-                <Button warning={true}
-                        alone={true}
-                        onClick={handleDelete}>
-                    Удалить аккаунт
-                </Button>
-                
+                    <Button warning={true}
+                            alone={true}
+                            onClick={handleDelete}>
+                        Удалить аккаунт
+                    </Button>
+                </div>
+
                 <Button alone={true} onClick={onCancel}>Отмена</Button>
             </form>
-            
-            <Modal open={confirmIsOpen}>
+
+            <Modal open={confirmIsOpen || informIsOpen}>
                 {confirmIsOpen && <ConfirmModal message={"Аккаунт будет удален"}
                                                 onConfirm={handleDeleteConfirm}
                                                 onCancel={handleDeleteCancelled}/>}
+                {informIsOpen && <InformModal message={"На вашу почту отправленно письмо с сылкой на востановление пароля"}
+                                 onClose={handleInformOnClose}/>}
             </Modal>
-            
+
         </div>
     )
 }
