@@ -94,7 +94,6 @@ export default function ProfilePage() {
     }
 
     useEffect(() => {
-        signOut();
         void fetchUser();
     }, [nickname]);
 
