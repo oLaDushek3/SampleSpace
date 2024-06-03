@@ -16,7 +16,7 @@ export default function useApiBase(): useApiBaseType {
     const navigate = useNavigate();
     const {showInform} = useInformModal();
 
-    const baseAddress = "http://localhost:5000/api/";
+    const baseAddress = "http://158.160.171.213/api/";
 
     const get = async (url: string) => {
         return await axios.get(url)
