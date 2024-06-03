@@ -1,6 +1,7 @@
 .editProfile {
     padding: 1rem;
     width: 400px;
+    max-width: 400px;
 }
 
 .avatarPanel {
