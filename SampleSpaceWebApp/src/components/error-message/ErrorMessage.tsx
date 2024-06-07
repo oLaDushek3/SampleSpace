@@ -1,5 +1,5 @@
 import classes from "./ErrorMessage.module.css"
-import {Dispatch, SetStateAction, useEffect} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
 interface ErrorMessageProps {
     error : string;
@@ -7,10 +7,14 @@ interface ErrorMessageProps {
 }
 
 export default function ErrorMessage({error, setError}: ErrorMessageProps) {
+    const [resetErrorTimeout, setResetErrorTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
     
     useEffect(() => {
+        if(resetErrorTimeout)
+            clearTimeout(resetErrorTimeout);
+        
         setError(error);
-        setTimeout(() => setError(""), 3500);
+        setResetErrorTimeout(setTimeout(() => setError(""), 3500));
     }, [error]);
     
     return (
