@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
     const token = searchParams.get("token")
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const {validation, validationError} = usePasswordValidation();
+    const {validation} = usePasswordValidation();
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +35,9 @@ export default function ResetPasswordPage() {
             return;
         }
 
-        if(!validation(password)){
+        let validationError: string = validation(password);
+        
+        if(validationError.trim.length !== 0){
             setError(validationError);
             return;
         }
@@ -44,7 +46,7 @@ export default function ResetPasswordPage() {
 
         console.log(response);
         if(response === 403){
-            setInformMessage("Токен для смены пароля не действителен");
+            setInformMessage("Ссылка для смены пароля не действителен");
             setInformIsOpen(true);
             return;
         }            
