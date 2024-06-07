@@ -24,7 +24,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const {validation, validationError} = usePasswordValidation();
+    const {validation} = usePasswordValidation();
     const [error, setError] = useState("");
     
     const handleSubmit = async (e: React.FormEvent) => {
@@ -39,8 +39,10 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
             setError("Пароли не совпадают");
             return;
         }
+
+        let validationError: string = validation(password)
         
-        if(!validation(password)){
+        if(validationError.trim().length !== 0){
             setError(validationError);
             return;
         }
