@@ -59,7 +59,7 @@ export default function useApiBase(): useApiBaseType {
     }
     
     const handleAxiosError = (error : null | any) => {
-        if(error.code === "ERR_NETWORK"){
+        if(error.code === "ERR_NETWORK" || error.code === "ERR_BAD_RESPONSE"){
             showInform("Техническая неисправность на сервере. Пожалуйста попробуйте позже");
             return null;
         }
