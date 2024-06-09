@@ -26,36 +26,6 @@ using PostgreSQLUsersRepository = SampleSpaceDal.PostgreSQL.Repositories.UserRep
 using ICloudStorageUserRepository = SampleSpaceCore.Abstractions.CloudStorage.Repositories.IUserRepository;
 using CloudStorageUserRepository = SampleSpaceDal.CloudStorage.Repositories.UserRepository.UserRepository;
 
-// void AddApiAuthentication(IServiceCollection services, IConfiguration configuration)
-// {
-//     var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
-//
-//     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-//     {
-//         options.TokenValidationParameters = new TokenValidationParameters
-//         {
-//             ValidateIssuer = false,
-//             ValidateAudience = false,
-//             ValidateLifetime = true,
-//             ValidateIssuerSigningKey = true,
-//             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-//         };
-//
-//         options.Events = new JwtBearerEvents
-//         {
-//             OnMessageReceived = context =>
-//             {
-//                 context.Token = context.Request.Cookies["jwt"];
-//
-//                 return Task.CompletedTask;
-//             }
-//         };
-//     });
-//
-//     services.AddAuthentication();
-//     services.AddSingleton<AuthTokensOptions>(_ => GetOptions(configuration));
-// }
-
 AuthTokensOptions GetOptions(IConfiguration configuration)
 {
     return configuration.GetSection("AuthTokensOptions").Get<AuthTokensOptions>()!;
@@ -146,6 +116,7 @@ ConfigureCors(services);
 ConfigureRedis(services);
 
 services.Configure<AuthTokensOptions>(configuration.GetSection(nameof(AuthTokensOptions)));
+services.Configure<FfMpegOptions>(configuration.GetSection(nameof(FfMpegOptions)));
 services.Configure<CloudStorageOptions>(configuration.GetSection(nameof(CloudStorageOptions)));
 services.Configure<EmailServiceOptions>(configuration.GetSection(nameof(EmailServiceOptions)));
 

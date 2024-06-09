@@ -41,7 +41,7 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
 
     public (Stream? trimmedSampleStream, string error) TrimSample(Stream sampleFileStream, double sampleStart, double sampleEnd)
     {
-        var (sampleStream, error) = sampleTrimmer.TrimMp3File(sampleFileStream,
+        var (sampleStream, error) = sampleTrimmer.TestTrimMp3File(sampleFileStream,
             TimeSpan.FromSeconds(sampleStart),
             TimeSpan.FromSeconds(sampleEnd));
 
