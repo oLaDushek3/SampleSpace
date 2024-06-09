@@ -55,7 +55,7 @@ public class UserController(IUserService userService) : ControllerBase
         if (!string.IsNullOrEmpty(signUpError))
             return BadRequest(signUpError);
 
-        return Ok(signUpUserGuid);
+        return Ok();
     }
 
     [HttpPost("sign-in")]

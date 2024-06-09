@@ -54,7 +54,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
             return;
         }
         
-        if (response === 200) {
+        if (response === true) {
             onClose();
         } else {
             setError("Ошибка регистрации");
