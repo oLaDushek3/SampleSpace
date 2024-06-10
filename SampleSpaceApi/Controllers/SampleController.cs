@@ -94,7 +94,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         return successfully ? Ok() : BadRequest("Server error");
     }
 
-    [Authorize]
     [HttpPost("create-sample")]
     [RequestSizeLimit(20_000_000)]
     public async Task<IActionResult> CreateSample([FromForm] CreateSampleRequest createSampleRequest)
