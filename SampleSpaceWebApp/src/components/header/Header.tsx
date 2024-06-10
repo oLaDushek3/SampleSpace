@@ -5,7 +5,7 @@ import Search from "../search/Search.tsx";
 import AuthHeaderPanel from "./AuthHeaderPanel.tsx";
 import headerClasses from "./Header.module.css"
 import {useNavigate, useSearchParams} from "react-router-dom";
-import logo from "/logo.png"
+import logo from "/Logo.png"
 import Button, {ButtonVisualType} from "../button/Button.tsx";
 import {IoSettingsOutline} from "react-icons/io5";
 import {useRef, useState} from "react";
@@ -29,7 +29,7 @@ export default function Header() {
         <header className={headerClasses.headerPanel + " horizontalPanel"}>
             <img src={logo}
                  alt="Sample Space"
-                 style={{height: "25px", cursor: "pointer"}}
+                 style={{cursor: "pointer"}}
                  onClick={() => navigate("/")}/>
 
             {loginUser && <CreateSampleHeaderPanel/>}
