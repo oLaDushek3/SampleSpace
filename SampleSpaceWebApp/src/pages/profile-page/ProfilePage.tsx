@@ -52,6 +52,7 @@ export default function ProfilePage() {
         setConfirmIsOpen(false);
         await signOut();
         delUser();
+        navigate(`/`);
     }
 
     const handleEditProfileOnSuccess = async (modifiedUser: IUser) => {
