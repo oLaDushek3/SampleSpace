@@ -170,7 +170,12 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
 
     public async Task<(bool successfully, string error)> Delete(User user)
     {
-        return await postgreSqlUserRepository.Delete(user.UserGuid);
+        var deleteFromPostgres = await postgreSqlUserRepository.Delete(user.UserGuid);
+
+        if (!string.IsNullOrEmpty(deleteFromPostgres.error))
+            return (false, deleteFromPostgres.error);
+        
+        return  await cloudStorageUserRepository.Delete(user.UserGuid);
     }
 
     private async Task SendResetEmail(string email, string resetToken, string route)

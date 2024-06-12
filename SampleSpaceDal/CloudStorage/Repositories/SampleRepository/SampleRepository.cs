@@ -82,7 +82,7 @@ public class SampleRepository(IOptions<CloudStorageOptions> options) : BaseRepos
     {
         var objectName = $"posts/{userGuid}/{sampleName}";
 
-        var request = new DeleteObjectRequest()
+        var request = new DeleteObjectRequest
         {
             BucketName = BucketName,
             Key = objectName,

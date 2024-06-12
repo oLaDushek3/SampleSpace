@@ -1,7 +1,9 @@
 using System.Globalization;
+using System.Security.Claims;
 using Aspose.Cells;
 using Aspose.Words;
 using Aspose.Words.Drawing.Charts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Sample;
@@ -147,6 +149,29 @@ public class SampleController(ISampleService sampleService) : ControllerBase
             return BadRequest(createError);
 
         return Ok(sampleGuid);
+    }
+    
+    [Authorize]
+    [HttpPost("delete-sample")]
+    [RequestSizeLimit(20_000_000)]
+    public async Task<IActionResult> DeleteSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
+    {
+        var (sample, getError) = await sampleService.GetSample(sampleGuid);
+        
+        if(!string.IsNullOrEmpty(getError))
+            return  BadRequest(getError);
+        
+        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        
+        if (Guid.Parse(loginUserGuid) != sample!.UserGuid)
+            return Forbid();
+        
+        var (successfully, deleteError) = await sampleService.DeleteSample(sample);
+        
+        if(!string.IsNullOrEmpty(deleteError))
+            return  BadRequest(deleteError);
+        
+        return successfully ? Ok() : BadRequest("Server error");
     }
 
     [HttpGet("generate-word")]
