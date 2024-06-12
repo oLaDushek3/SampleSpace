@@ -14,7 +14,7 @@ interface useSampleApiType {
 }
 
 export default function useSampleApi(): useSampleApiType {
-    const {baseAddress, get, post} = useApiBase();
+    const {baseAddress, get, post, download} = useApiBase();
 
     const getAllSamples = async (): Promise<Array<ISample>> => {
         let url = baseAddress + "sample/get-all-samples";
@@ -48,12 +48,12 @@ export default function useSampleApi(): useSampleApiType {
 
     const generateWord = async (userGuid: string): Promise<boolean> => {
         let url = baseAddress + `sample/generate-word?user-guid=${userGuid}`
-        return await get(url);
+        return await download(url);
     }
 
     const generateExcel = async (userGuid: string): Promise<boolean> => {
         let url = baseAddress + `sample/generate-excel?user-guid=${userGuid}`
-        return await get(url);
+        return await download(url);
     }
 
     const createSample = async (uploadedSampleFile: File, sampleStart: number, sampleEnd: number,

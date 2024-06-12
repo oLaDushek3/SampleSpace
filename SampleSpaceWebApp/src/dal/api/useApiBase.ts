@@ -8,7 +8,8 @@ interface useApiBaseType {
     get: Function,
     post: Function,
     put: Function,
-    del: Function
+    del: Function,
+    download: Function
 }
 
 export default function useApiBase(): useApiBaseType {
@@ -58,6 +59,11 @@ export default function useApiBase(): useApiBaseType {
             })
     }
     
+    const download = async (url: string) => {
+        window.open(url);
+        return true;
+    }
+    
     const handleAxiosError = (error : null | any) => {
         if(error.code === "ERR_NETWORK" || error.code === "ERR_BAD_RESPONSE"){
             showInform("Техническая неисправность на сервере. Пожалуйста попробуйте позже");
@@ -81,5 +87,5 @@ export default function useApiBase(): useApiBaseType {
         showInform("Ошибка аутентификации");
     }
  
-    return {baseAddress, get, post: post, put: put, del: del};
+    return {baseAddress, get, post, put, del, download};
 }

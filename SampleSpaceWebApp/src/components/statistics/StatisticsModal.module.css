@@ -1,8 +1,12 @@
 .statisticsPanel {
     padding: 1rem;
     align-items: center;
-    width: 525px;
-    height: auto;
+    overflow-x: auto;
+}
+
+.chartContainer {
+    max-width: 575px;
+    overflow-x: auto;
 }
 
 .buttonPanel {
