@@ -24,5 +24,5 @@ public interface ISampleService
 
     public Task<(Guid? sampleGuid, string error)> CreateSample(Sample sample);
 
-    public Task<(bool successfully, string error)> DeleteSample(Guid sampleGuid);
+    public Task<(bool successfully, string error)> DeleteSample(Sample sample);
 }

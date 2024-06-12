@@ -62,8 +62,13 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
         return await postgreSqlSampleRepository.Create(sample);
     }
 
-    public async Task<(bool successfully, string error)> DeleteSample(Guid sampleGuid)
+    public async Task<(bool successfully, string error)> DeleteSample(Sample sample)
     {
-        return await postgreSqlSampleRepository.Delete(sampleGuid);
+        var deleteFromPostgres = await postgreSqlSampleRepository.Delete(sample.SampleGuid);
+        
+        if(!string.IsNullOrEmpty(deleteFromPostgres.error))
+            return (false, deleteFromPostgres.error);
+        
+        return await cloudStorageSampleRepository.Delete(sample.UserGuid, sample.Name);
     }
 }

@@ -18,6 +18,7 @@ import UserAvatar from "../../components/user-avatar/UserAvatar.tsx";
 import Modal from "../../components/modal/Modal.tsx";
 import EditProfileModal from "../../components/profile/EditProfileModal.tsx";
 import ConfirmModal from "../../components/dialog/confirm/ConfirmModal.tsx";
+import StatisticsModal from "../../components/statistics/StatisticsModal.tsx";
 
 export default function ProfilePage() {
     const navigate = useNavigate()
@@ -35,18 +36,7 @@ export default function ProfilePage() {
     const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
 
-    // const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
-
-    // const [userSamples, setUserSamples] = useState<Array<ISample>>()
-
-    // async function fetchUserSamples() {
-    //     const response = await getUserSamples(user!.userGuid);
-    //     setUserSamples(response);
-    // }
-
-    // useEffect(() => {
-    //     void fetchUserSamples();
-    // }, [user]);
+    const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
     const handleSignOutConfirm = async () => {
         setConfirmIsOpen(false);
@@ -65,7 +55,7 @@ export default function ProfilePage() {
         delUser();
         navigate(`/`);
     }
-    
+
     async function fetchUser() {
         const response = await getUser(nickname!);
         setUser(response);
@@ -86,11 +76,11 @@ export default function ProfilePage() {
 
     async function fetchPlaylistSamples(playlistGuid: string) {
         const response = await getByPlaylist(playlistGuid);
-        if(response === 404){
+        if (response === 404) {
             setPlaylistSamples([]);
             return;
         }
-            
+
         setPlaylistSamples(response);
     }
 
@@ -136,10 +126,10 @@ export default function ProfilePage() {
 
                         {user.userGuid === loginUser?.userGuid &&
                             <div className="horizontalPanel">
-                                {/*<Button primary={true}*/}
-                                {/*        onClick={() => setStatisticsIsOpen(true)}>*/}
-                                {/*    Статистика*/}
-                                {/*</Button>*/}
+                                <Button primary={false}
+                                        onClick={() => setStatisticsIsOpen(true)}>
+                                    Статистика
+                                </Button>
 
                                 <Button primary={false}
                                         onClick={() => setEditProfileIsOpen(true)}>
@@ -178,11 +168,13 @@ export default function ProfilePage() {
                 {playlistSamples && <SampleList samples={playlistSamples}/>}
             </div>
 
-            <Modal open={editProfileIsOpen || confirmIsOpen}>
-                {/*<StatisticsModal samples={userSamples} onClose={() => setStatisticsIsOpen(false)}/>*/}
+            <Modal open={editProfileIsOpen || confirmIsOpen || statisticsIsOpen}>
+                {statisticsIsOpen && <StatisticsModal onClose={() => setStatisticsIsOpen(false)}/>}
+                
                 {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)}
                                                         onSuccess={handleEditProfileOnSuccess}
                                                         onDelete={handleEditProfileOnDelete}/>}
+                
                 {confirmIsOpen && <ConfirmModal message={"Будет выполнени выход из аккаунта"}
                                                 onConfirm={handleSignOutConfirm}
                                                 onCancel={() => setConfirmIsOpen(false)}/>}
