@@ -30,6 +30,7 @@ import {
     Tooltip
 } from 'chart.js';
 import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
+import {useEffect, useRef, useState} from "react";
 
 Chart.register(
     ArcElement,
@@ -58,14 +59,29 @@ Chart.register(
 );
 
 interface StatisticsModalProps {
-    samples?: Array<ISample>;
     onClose: Function;
 }
 
-export default function StatisticsModal({samples = [], onClose}: StatisticsModalProps) {
+export default function StatisticsModal({onClose}: StatisticsModalProps) {
+    const {getUserSamples} = useSampleApi();
+    const [samples, setSamples] = useState<ISample[]>([])
+    const chartRef = useRef<HTMLDivElement>(null);
     const {generateExcel, generateWord} = useSampleApi();
     const {loginUser} = useAuth();
-    
+
+    async function fetchUserSamples() {
+        const response = await getUserSamples(loginUser?.userGuid);
+        setSamples(response);
+    }
+
+    useEffect(() => {
+        void fetchUserSamples();
+    }, []);
+
+    useEffect(() => {
+        chartRef!.current!.style.width = `${samples.length * 50}px`;
+    }, [samples]);
+
     async function getWordFile() {
         await generateWord(loginUser!.userGuid);
     }
@@ -73,22 +89,30 @@ export default function StatisticsModal({samples = [], onClose}: StatisticsModal
     async function getExcelFile() {
         await generateExcel(loginUser!.userGuid);
     }
-    
+
     return (
-        <div className={statisticsModalClasses.statisticsPanel + " verticalPanel"}>
-            {samples?.length > 0 ?
-                <Bar data={{
-                    labels: samples!.map((sample) => sample.name),
-                    datasets: [
-                        {
-                            label: "Количество прослушиваний",
-                            data: samples!.map((sample) => sample.numberOfListens),
-                            backgroundColor: "#759",
-                            borderRadius: 5
-                        }
-                    ]
-                }}/> :
-                <h1>Статистика отсутствует</h1>}
+        <div className={statisticsModalClasses.statisticsPanel}>
+            <div className={statisticsModalClasses.chartContainer}>
+                <div ref={chartRef}>
+                    {samples?.length > 0 ?
+                        <Bar height={300}
+                             options={{
+                                 maintainAspectRatio: false,
+                             }}
+                             data={{
+                                 labels: samples!.map((sample) => sample.name),
+                                 datasets: [
+                                     {
+                                         label: "Количество прослушиваний",
+                                         data: samples!.map((sample) => sample.numberOfListens),
+                                         backgroundColor: "#759",
+                                         borderRadius: 5
+                                     }
+                                 ]
+                             }}/> :
+                        <h1>Статистика отсутствует</h1>}
+                </div>
+            </div>
 
 
             <div className={statisticsModalClasses.buttonPanel + " horizontalPanel"}>
@@ -102,7 +126,7 @@ export default function StatisticsModal({samples = [], onClose}: StatisticsModal
                     Скачать xlsx
                 </Button>
             </div>
-            
+
             <p style={{textAlign: "center", margin: "0.5rem", cursor: "pointer"}}
                onClick={() => onClose()}>Назад</p>
         </div>

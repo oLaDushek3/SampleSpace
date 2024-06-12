@@ -1,5 +1,7 @@
 using System.Globalization;
-using Microsoft.AspNetCore.Authorization;
+using Aspose.Cells;
+using Aspose.Words;
+using Aspose.Words.Drawing.Charts;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.Sample;
@@ -128,7 +130,7 @@ public class SampleController(ISampleService sampleService) : ControllerBase
             createdSample.CoverStream);
 
         createdSample.Dispose();
-        
+
         if (!string.IsNullOrEmpty(uploadError))
             return BadRequest(uploadError);
 
@@ -145,5 +147,75 @@ public class SampleController(ISampleService sampleService) : ControllerBase
             return BadRequest(createError);
 
         return Ok(sampleGuid);
+    }
+
+    [HttpGet("generate-word")]
+    public async Task<IActionResult> GenerateWord([FromQuery(Name = "user-guid")] Guid user_guid)
+    {
+        var (samples, getError) = await sampleService.GetUserSamples(user_guid);
+
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
+
+        var doc = new Document();
+        var builder = new DocumentBuilder(doc);
+
+        var shape = builder.InsertChart(ChartType.Column, 432, 252);
+        shape.Name = "Статистика прослушиваний";
+        
+        var chart = shape.Chart;
+
+        var seriesColl = chart.Series;
+
+        seriesColl.Clear();
+
+        string[] categories = { "Количество прослушиваний" };
+
+        foreach (var sample in samples!)
+        {
+            seriesColl.Add(sample.Name, categories, new double[] { sample.NumberOfListens });
+        }
+
+        var path = "Files/Statistics.docx";
+        doc.Save(path);
+
+        var bytes = await System.IO.File.ReadAllBytesAsync(path);
+        var resultFile = File(bytes, "application/docx");
+        resultFile.FileDownloadName = "Statistics.docx";
+        return resultFile;
+    }
+
+    [HttpGet("generate-excel")]
+    public async Task<IActionResult> GenerateExcel([FromQuery(Name = "user-guid")] Guid user_guid)
+    {
+        var (samples, getError) = await sampleService.GetUserSamples(user_guid);
+
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
+
+        var workbook = new Workbook();
+        var worksheet = workbook.Worksheets[0];
+
+        worksheet.Cells[0, 0].PutValue("Название");
+        worksheet.Cells[1, 0].PutValue("Количество прослушиваний");
+        for (var i = 0; i < samples!.Count; i++)
+        {
+            worksheet.Cells[0, i + 1].PutValue(samples[i].Name);
+            worksheet.Cells[1, i + 1].PutValue(samples[i].NumberOfListens);
+        }
+
+        var chartIndex = worksheet.Charts.Add(Aspose.Cells.Charts.ChartType.Column, 3, 0, 13, 3 + samples.Count);
+        var chart = worksheet.Charts[chartIndex];
+
+        chart.SetChartDataRange($"A1:{worksheet.Cells[1, samples.Count].Name}", true);
+
+        var path = "Files/Statistics.xls";
+
+        workbook.Save(path);
+
+        var bytes = await System.IO.File.ReadAllBytesAsync(path);
+        var resultFile = File(bytes, "application/xls");
+        resultFile.FileDownloadName = "Statistics.xls";
+        return resultFile;
     }
 }
