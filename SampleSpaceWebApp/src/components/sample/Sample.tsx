@@ -56,7 +56,7 @@ export default function Sample({samplePlayer, onDelete}: SampleProps) {
         <div className={sampleClasses.sample + " horizontalPanel"}
              onMouseEnter={sampleMouseEnter}
              onMouseLeave={sampleMouseLeave}>
-            <img className={sampleClasses.cover} src={samplePlayer.sample.coverLink} alt="Cover image"
+            <img className={sampleClasses.cover} src={samplePlayer.sample.coverLink += '?' + new Date().getTime()} alt="Cover image"
                  onClick={handleOpenSample}/>
 
             <div className={sampleClasses.mainSpace + " verticalPanel"}>
