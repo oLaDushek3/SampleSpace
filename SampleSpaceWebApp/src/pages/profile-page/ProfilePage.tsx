@@ -35,9 +35,17 @@ export default function ProfilePage() {
 
     const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
+    const [confirmMessage, setConfirmMessage] = useState("");
+    const [onConfirm, setOnConfirm] = useState(() => () => {})
 
     const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
+    const handleSignOut = () => {
+        setConfirmIsOpen(true);
+        setConfirmMessage("Будет выполнен выход из аккаунта");
+        setOnConfirm(() => () => handleSignOutConfirm())
+    }
+    
     const handleSignOutConfirm = async () => {
         setConfirmIsOpen(false);
         await signOut();
@@ -90,9 +98,15 @@ export default function ProfilePage() {
     }
 
     const handleDeleteSample = async (sampleGuid: string) => {
+        setConfirmIsOpen(true);
+        setConfirmMessage("Семпл будет удален");
+        setOnConfirm(() => () => handleDeleteSampleConfirm(sampleGuid))
+    }
+
+    const handleDeleteSampleConfirm = async (sampleGuid: string) => {
+        setConfirmIsOpen(false);
         await deleteSample(sampleGuid);
         void fetchUserSamples(user!.userGuid);
-        console.log(sampleGuid);
     }
 
     const handleDeleteSampleFromPlaylist = async (sampleGuid: string) => {
@@ -148,7 +162,7 @@ export default function ProfilePage() {
                                 </Button>
 
                                 <Button warning={true}
-                                        onClick={() => setConfirmIsOpen(true)}>
+                                        onClick={handleSignOut}>
                                     Выйти
                                 </Button>
                             </div>}
@@ -190,8 +204,8 @@ export default function ProfilePage() {
                                                         onSuccess={handleEditProfileOnSuccess}
                                                         onDelete={handleEditProfileOnDelete}/>}
 
-                {confirmIsOpen && <ConfirmModal message={"Будет выполнени выход из аккаунта"}
-                                                onConfirm={handleSignOutConfirm}
+                {confirmIsOpen && <ConfirmModal message={confirmMessage}
+                                                onConfirm={onConfirm}
                                                 onCancel={() => setConfirmIsOpen(false)}/>}
             </Modal>
         </>

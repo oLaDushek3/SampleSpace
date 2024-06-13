@@ -419,7 +419,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
 
     public async Task<(bool successfully, string error)> Delete(Guid sampleGuid)
     {
-        var queryString = "delete from samples where playlist_guid = $1";
+        var queryString = "delete from samples where sample_guid = $1";
 
         var connection = GetConnection();
 

@@ -80,7 +80,7 @@ export default function useSampleApi(): useSampleApiType {
     }
 
     const deleteSample = async (sampleGuid: string): Promise<IUser>  => {
-        let url = baseAddress + `sample/sample-user?sample-guid=${sampleGuid}`;
+        let url = baseAddress + `sample/delete-sample?sample-guid=${sampleGuid}`;
         return await del(url);
     }
     
