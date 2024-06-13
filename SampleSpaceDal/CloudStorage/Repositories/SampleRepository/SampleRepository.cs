@@ -80,7 +80,7 @@ public class SampleRepository(IOptions<CloudStorageOptions> options) : BaseRepos
 
     public async Task<(bool successfully, string error)> Delete(Guid userGuid, string sampleName)
     {
-        var objectName = $"posts/{userGuid}/{sampleName}";
+        var objectName = $"samples/{userGuid}/{sampleName}/{sampleName}.mp3";
 
         var request = new DeleteObjectRequest
         {
@@ -89,6 +89,24 @@ public class SampleRepository(IOptions<CloudStorageOptions> options) : BaseRepos
         };
 
         var client = GetClient();
+        try
+        {
+            await client.DeleteObjectAsync(request);
+        }
+        catch (Exception exception)
+        {
+            return (false, exception.Message);
+        }
+        
+        objectName = $"samples/{userGuid}/{sampleName}/{sampleName}.jpg";
+
+        request = new DeleteObjectRequest
+        {
+            BucketName = BucketName,
+            Key = objectName,
+        };
+
+        client = GetClient();
         try
         {
             await client.DeleteObjectAsync(request);
