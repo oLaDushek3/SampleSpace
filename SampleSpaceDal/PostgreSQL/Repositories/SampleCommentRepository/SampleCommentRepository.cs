@@ -54,8 +54,8 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
             };
 
             var (commentUser, sampleUserError) = User.Create(sampleCommentEntity.User.UserGuid,
-                sampleCommentEntity.User.Nickname,
-                sampleCommentEntity.User.Email, null, sampleCommentEntity.User.AvatarPath);
+                sampleCommentEntity.User.Nickname, sampleCommentEntity.User.Email, null,
+                sampleCommentEntity.User.IsAdmin, sampleCommentEntity.User.AvatarPath);
 
             if (!string.IsNullOrEmpty(sampleUserError))
                 return (null, sampleUserError);
@@ -125,8 +125,8 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
                 };
 
                 var (commentUser, sampleUserError) = User.Create(sampleCommentEntity.User.UserGuid,
-                    sampleCommentEntity.User.Nickname,
-                    sampleCommentEntity.User.Email, null, sampleCommentEntity.User.AvatarPath);
+                    sampleCommentEntity.User.Nickname, sampleCommentEntity.User.Email, null,
+                    sampleCommentEntity.User.IsAdmin, sampleCommentEntity.User.AvatarPath);
 
                 if (!string.IsNullOrEmpty(sampleUserError))
                     return (null, sampleUserError);
@@ -196,7 +196,7 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
             await connection.CloseAsync();
         }
     }
-    
+
     public async Task<(bool successfully, string error)> Edit(SampleComment comment)
     {
         var queryString = "update sample_comments set comment = $2, date = $3 where sample_comment_guid = $1";
@@ -204,7 +204,7 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
         var connection = GetConnection();
 
         var command = new NpgsqlCommand(queryString, connection)
-        { 
+        {
             Parameters =
             {
                 new NpgsqlParameter { Value = comment.SampleCommentGuid },
@@ -212,7 +212,7 @@ public class SampleCommentRepository(IConfiguration configuration) : BaseReposit
                 new NpgsqlParameter { Value = comment.Date }
             }
         };
-        
+
         try
         {
             await connection.OpenAsync();

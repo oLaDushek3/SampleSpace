@@ -45,7 +45,7 @@ export default function ProfilePage() {
         setConfirmMessage("Будет выполнен выход из аккаунта");
         setOnConfirm(() => () => handleSignOutConfirm())
     }
-    
+
     const handleSignOutConfirm = async () => {
         setConfirmIsOpen(false);
         await signOut();
@@ -191,10 +191,9 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {playlistSamples && <SampleList onDelete={selectedPlaylist?.playlistGuid === user!.userGuid ?
+                {playlistSamples && <SampleList onDelete={selectedPlaylist?.playlistGuid === user!.userGuid ? 
                     handleDeleteSample :
-                    handleDeleteSampleFromPlaylist}
-                                                samples={playlistSamples}/>}
+                    handleDeleteSampleFromPlaylist} samples={playlistSamples}/>}
             </div>
 
             <Modal open={editProfileIsOpen || confirmIsOpen || statisticsIsOpen}>

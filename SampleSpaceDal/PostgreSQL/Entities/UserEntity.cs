@@ -11,4 +11,6 @@ public class UserEntity
     public string PasswordHash { get; set; } = string.Empty;
     
     public string? AvatarPath { get; set; } = string.Empty;
+
+    public bool IsAdmin { get; set; } = false;
 }

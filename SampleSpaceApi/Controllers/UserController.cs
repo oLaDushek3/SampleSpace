@@ -18,7 +18,7 @@ public class UserController(IUserService userService) : ControllerBase
 
         if (existUser.loginUser != null)
             return Conflict("User with this nickname already exists");
-        
+
         existUser = await userService.GetUserByEmail(request.Email);
 
         if (existUser.loginUser != null)
@@ -28,28 +28,28 @@ public class UserController(IUserService userService) : ControllerBase
 
         if (!passwordValid)
             return BadRequest(passwordValidError);
-        
+
         var (user, userError) = SampleSpaceCore.Models.User.Create(Guid.NewGuid(), request.Nickname,
             request.Email, request.Password);
-        
+
         if (!string.IsNullOrEmpty(userError))
             return BadRequest(userError);
-        
+
         if (request.AvatarFile != null)
         {
             var avatarStream = request.AvatarFile.OpenReadStream();
-            
+
             var (avatarLink, uploadError) = await userService.UploadUserAvatar(user!.UserGuid, avatarStream);
 
             if (!string.IsNullOrEmpty(uploadError))
             {
                 await avatarStream.DisposeAsync();
                 return BadRequest(uploadError);
-            }   
+            }
 
             user.PutAvatarPath(avatarLink!);
         }
-        
+
         var (signUpUserGuid, signUpError) = await userService.SignUp(user!);
 
         if (!string.IsNullOrEmpty(signUpError))
@@ -66,7 +66,8 @@ public class UserController(IUserService userService) : ControllerBase
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
 
-        return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser.Nickname, loginUser.Email));
+        return Ok(new UserResponse(loginUser!.UserGuid, loginUser.AvatarPath, loginUser.Nickname, loginUser.Email,
+            loginUser.IsAdmin));
     }
 
     [Authorize]
@@ -91,38 +92,38 @@ public class UserController(IUserService userService) : ControllerBase
             return BadRequest(getError);
 
         var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
+
         if (Guid.Parse(loginUserGuid) != request.UserGuid)
             return Forbid();
-        
+
         var modified = user!.Edit(request.Nickname, request.Email);
 
         if (!string.IsNullOrEmpty(modified.Error))
             return BadRequest(modified.Error);
-        
+
         if (request.AvatarFile != null)
         {
             var avatarStream = request.AvatarFile.OpenReadStream();
-            
+
             var (avatarLink, uploadError) = await userService.UploadUserAvatar(user.UserGuid, avatarStream);
 
             if (!string.IsNullOrEmpty(uploadError))
             {
                 await avatarStream.DisposeAsync();
                 return BadRequest(uploadError);
-            }   
+            }
 
             user.PutAvatarPath(avatarLink!);
         }
-        
+
         var (successfully, editError) = await userService.EditUser(user);
-        
-        if(!string.IsNullOrEmpty(editError))
-            return  BadRequest(editError);
+
+        if (!string.IsNullOrEmpty(editError))
+            return BadRequest(editError);
 
         return successfully ? Ok(user) : BadRequest("Server error");
     }
-    
+
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
     {
@@ -130,46 +131,46 @@ public class UserController(IUserService userService) : ControllerBase
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
-        
+
         return user != null ? Ok() : NotFound("User not found");
     }
-    
+
     [HttpPut("reset-password")]
     public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
     {
         var (successfully, error, errorCode) = await userService.ResetPassword(request.ResetToken, request.NewPassword);
-        
+
         if (errorCode == 400)
             return BadRequest("Server error");
-        
+
         if (errorCode != 200)
             return Forbid();
-        
+
         return successfully ? Ok() : BadRequest($"Server error: {error}");
     }
-    
+
     [Authorize]
     [HttpDelete("delete-user")]
     public async Task<IActionResult> DeleteUser([FromQuery(Name = "user-guid")] Guid userGuid)
     {
         var (user, getError) = await userService.GetUserByGuid(userGuid);
-        
-        if(!string.IsNullOrEmpty(getError))
-            return  BadRequest(getError);
-        
+
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
+
         var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
+
         if (Guid.Parse(loginUserGuid) != userGuid)
             return Forbid();
-        
+
         var (successfully, deleteError) = await userService.Delete(user!);
-        
-        if(!string.IsNullOrEmpty(deleteError))
-            return  BadRequest(deleteError);
-        
+
+        if (!string.IsNullOrEmpty(deleteError))
+            return BadRequest(deleteError);
+
         return successfully ? Ok() : BadRequest("Server error");
     }
-    
+
     [HttpGet("get-user-by-nickname")]
     public async Task<IActionResult> GetUser(string nickname)
     {

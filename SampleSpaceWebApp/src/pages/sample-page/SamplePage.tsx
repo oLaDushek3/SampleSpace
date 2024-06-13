@@ -115,7 +115,6 @@ export default function SamplePage() {
                                onChange={samplePlayer?.isActive ? handleSeek : () => {
                                }}/>
 
-                        {/*Исправить*/}
                         {samplePlayer &&
                             <p>{samplePlayer?.isActive
                                 ? formatDuration(currentTime)
@@ -170,7 +169,7 @@ export default function SamplePage() {
                                 </div>}
                         </div>
                     </div>
-                    
+
                     <div className={samplePageClasses.userPanel + " horizontalPanel"}>
                         <Link to={`/${samplePlayer?.sample.user.nickname}`}>
                             <UserAvatar src={samplePlayer?.sample.user.avatarPath} height={42}/>
@@ -186,11 +185,10 @@ export default function SamplePage() {
             {sampleComments ?
                 <div className={samplePageClasses.commentsPanel + " verticalPanel"}>
                     <h3 style={{fontSize: "18px", fontWeight: "bold"}}>Комментарии</h3>
-                    {sampleComments.length != 0 ?
-                        sampleComments.map(comment => <Comment comment={comment} updateCallBack={fetchSampleComments}
-                                                               key={comment.sampleCommentGuid.toString()}/>)
-                        : <p className={"secondaryFont"} style={{textAlign: "center"}}>Комментирии отсутствуют. Будьте
-                            первым.</p>
+                    {sampleComments.length != 0 ? sampleComments.map(comment =>
+                            <Comment comment={comment} updateCallBack={fetchSampleComments}
+                                     key={comment.sampleCommentGuid.toString()}/>) :
+                        <p className={"secondaryFont"} style={{textAlign: "center"}}>Комментирии отсутствуют</p>
                     }
                     {}
                 </div>

@@ -37,14 +37,14 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                 PasswordHash = reader.GetString(reader.GetOrdinal("password_hash")),
                 AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
                     ? reader.GetString(reader.GetOrdinal("avatar_path"))
-                    : null
+                    : null,
+                IsAdmin = reader.GetBoolean(reader.GetOrdinal("is_admin"))
             };
 
             await reader.CloseAsync();
 
             var (user, error) = User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email,
-                userEntity.PasswordHash,
-                userEntity.AvatarPath);
+                userEntity.PasswordHash, userEntity.IsAdmin, userEntity.AvatarPath);
 
             return !string.IsNullOrEmpty(error) ? (null, error) : (user, string.Empty);
         }
@@ -88,13 +88,13 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                 AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
                     ? reader.GetString(reader.GetOrdinal("avatar_path"))
                     : null,
+                IsAdmin = reader.GetBoolean(reader.GetOrdinal("is_admin"))
             };
 
             await reader.CloseAsync();
 
             var (user, error) = User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email,
-                userEntity.PasswordHash,
-                userEntity.AvatarPath);
+                userEntity.PasswordHash, userEntity.IsAdmin, userEntity.AvatarPath);
 
             return !string.IsNullOrEmpty(error) ? (null, error) : (user, string.Empty);
         }
@@ -138,13 +138,13 @@ public class UsersRepository(IConfiguration configuration) : BaseRepository(conf
                 AvatarPath = !reader.IsDBNull(reader.GetOrdinal("avatar_path"))
                     ? reader.GetString(reader.GetOrdinal("avatar_path"))
                     : null,
+                IsAdmin = reader.GetBoolean(reader.GetOrdinal("is_admin"))
             };
 
             await reader.CloseAsync();
 
             var (user, error) = User.Create(userEntity.UserGuid, userEntity.Nickname, userEntity.Email,
-                userEntity.PasswordHash,
-                userEntity.AvatarPath);
+                userEntity.PasswordHash, userEntity.IsAdmin, userEntity.AvatarPath);
 
             return !string.IsNullOrEmpty(error) ? (null, error) : (user, string.Empty);
         }
