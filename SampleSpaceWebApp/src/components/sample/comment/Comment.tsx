@@ -49,7 +49,7 @@ export default function Comment({comment, updateCallBack}: CommentProps) {
                                 <p>{comment.user.nickname}</p>
                             </Link>
 
-                            {loginUser?.userGuid == comment.userGuid &&
+                            {loginUser?.userGuid == comment.userGuid || loginUser?.isAdmin &&
                                 <div className={commentClasses.toolsPanel + " horizontalPanel"}>
                                     <Button primary={false}
                                             visualType={ButtonVisualType.icon}

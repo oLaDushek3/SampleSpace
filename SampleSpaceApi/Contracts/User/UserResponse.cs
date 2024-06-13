@@ -4,4 +4,5 @@ public record UserResponse(
     Guid UserGuid,
     string? AvatarPath,
     string Nickname,
-    string Email);
+    string Email,
+    bool IsAdmin);

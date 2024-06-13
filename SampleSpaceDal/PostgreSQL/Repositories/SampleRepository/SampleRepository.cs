@@ -253,7 +253,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             await reader.CloseAsync();
 
             var (sampleUser, sampleUserError) = User.Create(sampleEntity.User.UserGuid, sampleEntity.User.Nickname,
-                sampleEntity.User.Email, null, sampleEntity.User.AvatarPath);
+                sampleEntity.User.Email, null, sampleEntity.User.IsAdmin, sampleEntity.User.AvatarPath);
 
             if (!string.IsNullOrEmpty(sampleUserError))
                 return (null, sampleUserError);

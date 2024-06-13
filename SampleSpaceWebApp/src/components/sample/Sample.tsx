@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {CiTrash} from "react-icons/ci";
 import Icon from "../icon/Icon.tsx";
 import {useState} from "react";
+import useAuth from "../../hook/useAuth.ts";
 
 interface SampleProps {
     samplePlayer: ISamplePlayer;
@@ -14,6 +15,7 @@ interface SampleProps {
 }
 
 export default function Sample({samplePlayer, onDelete}: SampleProps) {
+    const {loginUser} = useAuth()
     const [toolButtonsClasses, setToolButtonsClasses] = useState(sampleClasses.toolButtons)
     const navigate = useNavigate()
     const {
@@ -67,7 +69,7 @@ export default function Sample({samplePlayer, onDelete}: SampleProps) {
                         <p className={"singleLineText"}>{samplePlayer.sample.artist}</p>
                     </div>
 
-                    {onDelete &&
+                    {onDelete && (loginUser?.userGuid === samplePlayer.sample.sampleGuid || loginUser?.isAdmin)  &&
                         <div className={toolButtonsClasses}>
                             <Button visualType={ButtonVisualType.icon}
                                     onClick={() => onDelete(samplePlayer.sample.sampleGuid)}>
