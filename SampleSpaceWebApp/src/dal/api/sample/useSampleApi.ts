@@ -1,5 +1,6 @@
 import ISample from "../../entities/ISample.ts";
 import useApiBase from "../useApiBase.ts";
+import IUser from "../../entities/IUser.ts";
 
 interface useSampleApiType {
     getAllSamples: Function,
@@ -10,11 +11,12 @@ interface useSampleApiType {
     addAnListensToSample: Function,
     generateWord: Function,
     generateExcel: Function,
-    createSample: Function
+    createSample: Function,
+    deleteSample: Function
 }
 
 export default function useSampleApi(): useSampleApiType {
-    const {baseAddress, get, post, download} = useApiBase();
+    const {baseAddress, get, post, del, download} = useApiBase();
 
     const getAllSamples = async (): Promise<Array<ISample>> => {
         let url = baseAddress + "sample/get-all-samples";
@@ -77,6 +79,11 @@ export default function useSampleApi(): useSampleApiType {
         return await post(url, formData);
     }
 
+    const deleteSample = async (sampleGuid: string): Promise<IUser>  => {
+        let url = baseAddress + `sample/sample-user?sample-guid=${sampleGuid}`;
+        return await del(url);
+    }
+    
     return {
         getAllSamples,
         searchSamples,
@@ -86,6 +93,7 @@ export default function useSampleApi(): useSampleApiType {
         addAnListensToSample,
         generateWord,
         generateExcel,
-        createSample
+        createSample,
+        deleteSample
     }
 }

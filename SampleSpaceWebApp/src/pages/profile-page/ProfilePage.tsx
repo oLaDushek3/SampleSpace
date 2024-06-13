@@ -23,8 +23,8 @@ import StatisticsModal from "../../components/statistics/StatisticsModal.tsx";
 export default function ProfilePage() {
     const navigate = useNavigate()
     const {getUser, signOut} = useUserApi();
-    const {getByPlaylist, getUserSamples} = useSampleApi();
-    const {getUserPlaylists} = usePlaylistApi();
+    const {getByPlaylist, getUserSamples, deleteSample} = useSampleApi();
+    const {getUserPlaylists, deleteSampleFromPlaylist} = usePlaylistApi();
 
     const {nickname} = useParams<{ nickname: string }>();
     const [user, setUser] = useState<IUser | null>();
@@ -87,6 +87,17 @@ export default function ProfilePage() {
     async function fetchUserSamples(userGuid: string) {
         const response = await getUserSamples(userGuid);
         setPlaylistSamples(response);
+    }
+
+    const handleDeleteSample = async (sampleGuid: string) => {
+        await deleteSample(sampleGuid);
+        void fetchUserSamples(user!.userGuid);
+        console.log(sampleGuid);
+    }
+
+    const handleDeleteSampleFromPlaylist = async (sampleGuid: string) => {
+        await deleteSampleFromPlaylist(selectedPlaylist?.playlistGuid, sampleGuid);
+        void fetchPlaylistSamples(selectedPlaylist!.playlistGuid);
     }
 
     useEffect(() => {
@@ -154,27 +165,31 @@ export default function ProfilePage() {
                     <div className={profilePageClasses.playlists + " horizontalPanel"}>
                         {userPlaylists ?
                             <>
-                                {userPlaylists?.map(playlist => <RadioButton
-                                    withHorizontalScroll={true}
-                                    onSelected={() => setSelectedPlaylist(playlist)}
-                                    selected={selectedPlaylist === playlist}
-                                    children={playlist.name}
-                                    key={playlist.playlistGuid}/>)}
+                                {userPlaylists?.map(playlist =>
+                                    <RadioButton
+                                        withHorizontalScroll={true}
+                                        onSelected={() => setSelectedPlaylist(playlist)}
+                                        selected={selectedPlaylist === playlist}
+                                        children={playlist.name}
+                                        key={playlist.playlistGuid}/>)}
                             </>
                             : <LoadingSpinner/>}
                     </div>
                 </div>
 
-                {playlistSamples && <SampleList samples={playlistSamples}/>}
+                {playlistSamples && <SampleList onDelete={selectedPlaylist?.playlistGuid === user!.userGuid ?
+                    handleDeleteSample :
+                    handleDeleteSampleFromPlaylist}
+                                                samples={playlistSamples}/>}
             </div>
 
             <Modal open={editProfileIsOpen || confirmIsOpen || statisticsIsOpen}>
                 {statisticsIsOpen && <StatisticsModal onClose={() => setStatisticsIsOpen(false)}/>}
-                
+
                 {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)}
                                                         onSuccess={handleEditProfileOnSuccess}
                                                         onDelete={handleEditProfileOnDelete}/>}
-                
+
                 {confirmIsOpen && <ConfirmModal message={"Будет выполнени выход из аккаунта"}
                                                 onConfirm={handleSignOutConfirm}
                                                 onCancel={() => setConfirmIsOpen(false)}/>}

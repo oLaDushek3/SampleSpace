@@ -4,12 +4,17 @@ import Button, {ButtonVisualType} from "../button/Button.tsx";
 import {IoPlay, IoPause} from "react-icons/io5";
 import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import {useNavigate} from "react-router-dom";
+import {CiTrash} from "react-icons/ci";
+import Icon from "../icon/Icon.tsx";
+import {useState} from "react";
 
 interface SampleProps {
     samplePlayer: ISamplePlayer;
+    onDelete?: (sampleGuid: string) => void;
 }
 
-export default function Sample({samplePlayer}: SampleProps) {
+export default function Sample({samplePlayer, onDelete}: SampleProps) {
+    const [toolButtonsClasses, setToolButtonsClasses] = useState(sampleClasses.toolButtons)
     const navigate = useNavigate()
     const {
         handlePlayingSamplePlayer,
@@ -18,7 +23,7 @@ export default function Sample({samplePlayer}: SampleProps) {
         currentTime,
         isPlaying
     } = useSamplePlayer()
-    
+
     function formatDuration(durationSeconds: number) {
         const minutes = Math.floor(durationSeconds / 60);
         const seconds = Math.floor(durationSeconds % 60);
@@ -33,16 +38,47 @@ export default function Sample({samplePlayer}: SampleProps) {
             handlePlayPause();
     }
 
+    const handleOpenSample = () => {
+        navigate({pathname: `/sample/${samplePlayer.sample.sampleGuid}`})
+    }
+
+    const sampleMouseEnter = () => {
+        setToolButtonsClasses(`${sampleClasses.toolButtons} ${sampleClasses.active}`);
+    }
+
+    const sampleMouseLeave = () => {
+        setToolButtonsClasses(sampleClasses.toolButtons);
+    }
+    
     return (
-        <div className={sampleClasses.sample + " horizontalPanel"}>
+        <div className={sampleClasses.sample + " horizontalPanel"}
+             onMouseEnter={sampleMouseEnter}
+             onMouseLeave={sampleMouseLeave}>
             <img className={sampleClasses.cover} src={samplePlayer.sample.coverLink} alt="Cover image"
-                 onClick={() => {navigate({pathname: `/sample/${samplePlayer.sample.sampleGuid}`})}}/>
+                 onClick={handleOpenSample}/>
 
             <div className={sampleClasses.mainSpace + " verticalPanel"}>
-                <div>
-                    <h3 className={"singleLineText"}>{samplePlayer.sample.name}</h3>
-                    <p className={"singleLineText"}>{samplePlayer.sample.artist}</p>
+                <div className={"horizontalPanel"}>
+                    <div className={sampleClasses.sampleInfo}>
+                        <p className={sampleClasses.sampleName + " singleLineText"}
+                              onClick={handleOpenSample}>
+                            {samplePlayer.sample.name}
+                        </p>
+                        <p className={"singleLineText"}>{samplePlayer.sample.artist}</p>
+                    </div>
+
+                    {onDelete &&
+                        <div className={toolButtonsClasses}>
+                            <Button visualType={ButtonVisualType.icon}
+                                    onClick={() => onDelete(samplePlayer.sample.sampleGuid)}>
+                                <Icon>
+                                    <CiTrash/>
+                                </Icon>
+                            </Button>
+                        </div>}
+
                 </div>
+
 
                 <div className={sampleClasses.track + " horizontalPanel"}>
                     <Button visualType={ButtonVisualType.withIcon}
@@ -50,13 +86,14 @@ export default function Sample({samplePlayer}: SampleProps) {
                             onClick={handlePlayback}>
                         {samplePlayer.isActive && isPlaying ? <IoPause/> : <IoPlay/>}
                     </Button>
-                    
+
                     <input type="range"
                            min="0"
                            max={samplePlayer.sample.duration}
                            step="0.001"
                            value={samplePlayer.isActive ? currentTime : 0}
-                           onChange={samplePlayer.isActive ? handleSeek : () => {}}/>
+                           onChange={samplePlayer.isActive ? handleSeek : () => {
+                           }}/>
 
                     <p>{samplePlayer.isActive
                         ? formatDuration(currentTime)
@@ -64,5 +101,5 @@ export default function Sample({samplePlayer}: SampleProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
