@@ -2,6 +2,8 @@ import {ChangeEvent, createContext, ReactNode, useEffect, useRef, useState} from
 import useLocalStorageState from 'use-local-storage-state'
 import ISamplePlayer from "../models/ISamplePlayer.ts";
 import {useLocation} from 'react-router-dom';
+import useAuth from "../hook/useAuth.ts";
+import useSampleApi from "../dal/api/sample/useSampleApi.ts";
 
 export enum ActionAtTheEnd {
     pause,
@@ -28,19 +30,27 @@ export interface SamplePlayerContextType {
 
 export const SamplePlayerContext = createContext<SamplePlayerContextType>({
     samplePlayerList: null,
-    handleSamplePlayerList: () => {},
+    handleSamplePlayerList: () => {
+    },
     playingSamplePlayer: null,
-    handlePlayingSamplePlayer: () => {},
-    handlePlayPause: () => {},
-    handleSeek: () => {},
+    handlePlayingSamplePlayer: () => {
+    },
+    handlePlayPause: () => {
+    },
+    handleSeek: () => {
+    },
     currentTime: 0,
-    handleActionAtTheEnd: () => {},
+    handleActionAtTheEnd: () => {
+    },
     currentActionAtTheEnd: ActionAtTheEnd.pause,
-    handleVolume: () => {},
+    handleVolume: () => {
+    },
     currentVolume: 0,
     isPlaying: false,
-    handlePlaySkipForward: () => {},
-    handlePlaySkipPrevious: () => {}
+    handlePlaySkipForward: () => {
+    },
+    handlePlaySkipPrevious: () => {
+    }
 });
 
 interface SamplePlayerProviderProps {
@@ -57,6 +67,11 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     const [currentVolume, setCurrentVolume] = useLocalStorageState<number>("volume", {defaultValue: 0.5});
     const location = useLocation();
 
+    const {loginUser} = useAuth();
+    const {addAnListensToSample} = useSampleApi();
+    const [listenTimeout, setListenTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
+    const [listen, setListen] = useState(false)
+    
     useEffect(() => {
         setPlayingSamplePlayer(null);
         setSamplePlayerList(null);
@@ -69,16 +84,25 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     useEffect(() => {
         handlePause();
     }, [samplePlayerList]);
-    
-    const handlePlayingSamplePlayer = (samplePlayer: ISamplePlayer) => {
+
+    const handlePlayingSamplePlayer = (samplePlayer: ISamplePlayer) => {        
         if (playingSamplePlayer)
             playingSamplePlayer.isActive = false;
 
-        //Attaching a timestamp to the URL to avoid caching
+        //Attaching a timestamp to the URL to avoid caching 
         samplePlayer.sample.sampleLink += '?' + new Date().getTime();
         samplePlayer.isActive = true;
         setPlayingSamplePlayer(samplePlayer);
         setIsPlaying(true);
+
+        if(listenTimeout){
+            setListen(false);
+            clearTimeout(listenTimeout);
+        }
+        
+        if(loginUser?.userGuid != samplePlayer.sample.userGuid){
+            setListenTimeout(setTimeout(() => handleListen(samplePlayer.sample.sampleGuid), 5000));
+        }
     }
 
     useEffect(() => {
@@ -87,13 +111,25 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
             audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
         };
     }, [playingSamplePlayer, currentActionAtTheEnd]);
+
+    const handleListen = (sampleGuid: string) => {
+        setListen(true);
+        addAnListensToSample(sampleGuid);
+    }
     
     const handlePlay = () => {
+        if(loginUser?.userGuid != playingSamplePlayer?.sample.userGuid && !listen){
+            setListenTimeout(setTimeout(() => handleListen(playingSamplePlayer!.sample.sampleGuid), 5000));
+        }
+        
         void audioRef.current!.play();
         setIsPlaying(true);
     };
 
     const handlePause = () => {
+        if(listenTimeout)
+            clearTimeout(listenTimeout);
+        
         audioRef.current!.pause();
         setIsPlaying(false);
     };
@@ -106,7 +142,7 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         }
     };
 
-    const handleTimeUpdate = () => {
+    const handleTimeUpdate = () => {        
         setCurrentTime(audioRef.current!.currentTime);
 
         if (audioRef.current!.currentTime === audioRef.current!.duration) {
@@ -130,6 +166,9 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
     };
 
     const handleSeek = (e: ChangeEvent<HTMLInputElement>) => {
+        if(listenTimeout)
+            clearTimeout(listenTimeout);
+        
         audioRef.current!.currentTime = +e.currentTarget.value;
         setCurrentTime(+e.currentTarget.value);
     };
