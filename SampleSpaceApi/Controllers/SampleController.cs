@@ -152,7 +152,7 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("delete-sample")]
+    [HttpDelete("delete-sample")]
     [RequestSizeLimit(20_000_000)]
     public async Task<IActionResult> DeleteSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
