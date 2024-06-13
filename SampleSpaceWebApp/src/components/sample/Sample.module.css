@@ -19,9 +19,33 @@
     cursor: pointer;
 }
 
+.sampleInfo {
+    width: 264px;
+    overflow: hidden;
+}
+
+.toolButtons {
+    display: none;
+}
+
+.toolButtons.active {
+    display: block;
+}
+
 .mainSpace {
     overflow: hidden;
     flex: 1;
+}
+
+.sampleName {
+    font-size: 18px;
+    font-weight: bold;
+    width: auto;
+}
+
+.sampleName:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .track {
