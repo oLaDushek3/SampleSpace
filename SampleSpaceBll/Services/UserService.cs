@@ -9,7 +9,7 @@ using ICloudStorageUserRepository = SampleSpaceCore.Abstractions.CloudStorage.Re
 
 namespace SampleSpaceBll.Services;
 
-public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
+public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository, ISampleService sampleService,
         ICloudStorageUserRepository cloudStorageUserRepository, IPasswordHasher passwordHasher,
         IPasswordValidation passwordValidation, ITokenManager tokenManager, IEmailService emailService)
     : IUserService
@@ -27,7 +27,7 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
 
         if (!valid)
             return (false, validError);
-        
+
         return (true, string.Empty);
     }
 
@@ -89,7 +89,7 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
     }
 
     public async Task<(bool successfully, string error, int errorCode)> ResetPassword(string resetToken,
-        string newPassword) 
+        string newPassword)
     {
         Guid userGuid;
         try
@@ -174,8 +174,8 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
 
         if (!string.IsNullOrEmpty(deleteFromPostgres.error))
             return (false, deleteFromPostgres.error);
-        
-        return  await cloudStorageUserRepository.Delete(user.UserGuid);
+
+        return await cloudStorageUserRepository.Delete(user.UserGuid);
     }
 
     private async Task SendResetEmail(string email, string resetToken, string route)
@@ -190,5 +190,20 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository,
             subject: "Сброс пароля",
             html: $@"<h4>Сброс Пароля</h4>
                     {message}");
+    }
+
+    public async Task<(List<SampleAdditionStatistic>? sampleAdditionStatistics, string error)>
+        GenerateSampleAdditionStatistics(Guid userGuid)
+    {
+        var (userSamples, getError) = await sampleService.GetUserSamples(userGuid);
+
+        if (!string.IsNullOrEmpty(getError))
+            return (null, getError);
+
+        var sampleAdditionStatistics = userSamples!
+            .GroupBy(sample => sample.Date)
+            .Select(grp => SampleAdditionStatistic.Create(grp.Key, grp.Count()));
+
+        return (sampleAdditionStatistics.ToList(), string.Empty);
     }
 }

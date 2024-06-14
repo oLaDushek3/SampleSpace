@@ -9,14 +9,12 @@ interface useSampleApiType {
     getSample: Function,
     getUserSamples: Function,
     addAnListensToSample: Function,
-    generateWord: Function,
-    generateExcel: Function,
     createSample: Function,
     deleteSample: Function
 }
 
 export default function useSampleApi(): useSampleApiType {
-    const {baseAddress, get, post, del, download} = useApiBase();
+    const {baseAddress, get, post, del} = useApiBase();
 
     const getAllSamples = async (): Promise<Array<ISample>> => {
         let url = baseAddress + "sample/get-all-samples";
@@ -46,16 +44,6 @@ export default function useSampleApi(): useSampleApiType {
     const addAnListensToSample = async (sampleGuid: string): Promise<boolean> => {
         let url = baseAddress + `sample/add-an-listens-to-sample?sample-guid=${sampleGuid}`;
         return await get(url);
-    }
-
-    const generateWord = async (userGuid: string): Promise<boolean> => {
-        let url = baseAddress + `sample/generate-word?user-guid=${userGuid}`
-        return await download(url);
-    }
-
-    const generateExcel = async (userGuid: string): Promise<boolean> => {
-        let url = baseAddress + `sample/generate-excel?user-guid=${userGuid}`
-        return await download(url);
     }
 
     const createSample = async (uploadedSampleFile: File, sampleStart: number, sampleEnd: number,
@@ -91,8 +79,6 @@ export default function useSampleApi(): useSampleApiType {
         getSample,
         getUserSamples,
         addAnListensToSample,
-        generateWord,
-        generateExcel,
         createSample,
         deleteSample
     }

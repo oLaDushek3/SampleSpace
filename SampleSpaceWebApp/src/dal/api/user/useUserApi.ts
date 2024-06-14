@@ -12,12 +12,15 @@ interface useUserApiType {
     forgotPassword: Function,
     resetPassword: Function,
     deleteUser: Function,
-    getUser: Function
+    getUser: Function,
+    generateWord: Function,
+    generateExcel: Function,
+    getSampleAdditionStatistics: Function
 }
 
 export default function useUserApi(): useUserApiType {
-    const {baseAddress, get, post, put, del} = useApiBase();
-    
+    const {baseAddress, get, post, put, del, download} = useApiBase();
+
     const signUp = async (avatarBlob: Blob, nickname: string, email: string, password: string): Promise<boolean | string> => {
         let url = baseAddress + "user/sign-up";
 
@@ -26,7 +29,7 @@ export default function useUserApi(): useUserApiType {
         formData.append('Nickname', nickname);
         formData.append('Email', email);
         formData.append('Password', password);
-        
+
         return await post(url, formData);
     }
 
@@ -41,7 +44,7 @@ export default function useUserApi(): useUserApiType {
         return await post(url);
     }
 
-    const editUser = async (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string): Promise<IUser>  => {
+    const editUser = async (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string): Promise<IUser> => {
         let url = baseAddress + `user/edit-user`;
 
         const formData = new FormData();
@@ -53,27 +56,54 @@ export default function useUserApi(): useUserApiType {
         return await put(url, formData);
     }
 
-    const forgotPassword = async (route: string, email: string): Promise<IUser>  => {
+    const forgotPassword = async (route: string, email: string): Promise<IUser> => {
         let url = baseAddress + `user/forgot-password`;
         let blank: IForgotPassword = {route, email};
         return await post(url, blank);
     }
 
-    const resetPassword = async (resetToken: string, newPassword: string): Promise<IUser>  => {
+    const resetPassword = async (resetToken: string, newPassword: string): Promise<IUser> => {
         let url = baseAddress + `user/reset-password`;
         let blank: IResetPassword = {resetToken, newPassword};
         return await put(url, blank);
     }
 
-    const deleteUser = async (userGuid: string): Promise<IUser>  => {
+    const deleteUser = async (userGuid: string): Promise<IUser> => {
         let url = baseAddress + `user/delete-user?user-guid=${userGuid}`;
         return await del(url);
     }
-    
-    const getUser = async (nickname: string): Promise<IUser>  => {
+
+    const getUser = async (nickname: string): Promise<IUser> => {
         let url = baseAddress + `user/get-user-by-nickname?nickname=${nickname}`;
         return await get(url);
     }
+
+    const generateWord = async (userGuid: string): Promise<boolean> => {
+        let url = baseAddress + `user/generate-word?user-guid=${userGuid}`
+        return await download(url);
+    }
+
+    const generateExcel = async (userGuid: string): Promise<boolean> => {
+        let url = baseAddress + `user/generate-excel?user-guid=${userGuid}`
+        return await download(url);
+    }
+
+    const getSampleAdditionStatistics = async (userGuid: string): Promise<boolean> => {
+        let url = baseAddress + `user/get-sample-addition-statistics?user-guid=${userGuid}`
+        return await get(url);
+    }
     
-    return {signUp, signIn, signOut, editUser, forgotPassword, resetPassword, deleteUser, getUser};
+    return {
+        signUp, 
+        signIn, 
+        signOut, 
+        editUser, 
+        forgotPassword,
+        resetPassword, 
+        deleteUser, 
+        getUser,
+        generateWord,
+        generateExcel,
+        getSampleAdditionStatistics
+    };
 }
