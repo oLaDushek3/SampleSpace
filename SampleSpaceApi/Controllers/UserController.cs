@@ -1,14 +1,18 @@
 ﻿using System.Security.Claims;
+using Aspose.Cells;
+using Aspose.Words;
+using Aspose.Words.Drawing.Charts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleSpaceApi.Contracts.User;
 using SampleSpaceCore.Abstractions.Services;
+using SampleSpaceDal.PostgreSQL.Repositories.SampleRepository;
 
 namespace SampleSpaceApi.Controllers;
 
 [ApiController]
 [Route("api/user")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, ISampleService sampleService) : ControllerBase
 {
     [HttpPost("sign-up")]
     [RequestSizeLimit(7_500_000)]
@@ -70,7 +74,6 @@ public class UserController(IUserService userService) : ControllerBase
             loginUser.IsAdmin));
     }
 
-    [Authorize]
     [HttpPost("sign-out")]
     public new async Task<IActionResult> SignOut()
     {
@@ -180,5 +183,86 @@ public class UserController(IUserService userService) : ControllerBase
             return BadRequest(error);
 
         return Ok(user);
+    }
+
+    [HttpGet("generate-word")]
+    public async Task<IActionResult> GenerateWord([FromQuery(Name = "user-guid")] Guid userGuid)
+    {
+        var (samples, getError) = await sampleService.GetUserSamples(userGuid);
+
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
+
+        var doc = new Document();
+        var builder = new DocumentBuilder(doc);
+
+        var shape = builder.InsertChart(ChartType.Column, 432, 252);
+        shape.Name = "Статистика прослушиваний";
+
+        var chart = shape.Chart;
+
+        var seriesColl = chart.Series;
+
+        seriesColl.Clear();
+
+        string[] categories = { "Количество прослушиваний" };
+
+        foreach (var sample in samples!)
+        {
+            seriesColl.Add(sample.Name, categories, new double[] { sample.NumberOfListens });
+        }
+
+        var path = "Files/Statistics.docx";
+        doc.Save(path);
+
+        var bytes = await System.IO.File.ReadAllBytesAsync(path);
+        var resultFile = File(bytes, "application/docx");
+        resultFile.FileDownloadName = "Statistics.docx";
+        return resultFile;
+    }
+
+    [HttpGet("generate-excel")]
+    public async Task<IActionResult> GenerateExcel([FromQuery(Name = "user-guid")] Guid userGuid)
+    {
+        var (samples, getError) = await sampleService.GetUserSamples(userGuid);
+
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
+
+        var workbook = new Workbook();
+        var worksheet = workbook.Worksheets[0];
+
+        worksheet.Cells[0, 0].PutValue("Название");
+        worksheet.Cells[1, 0].PutValue("Количество прослушиваний");
+        for (var i = 0; i < samples!.Count; i++)
+        {
+            worksheet.Cells[0, i + 1].PutValue(samples[i].Name);
+            worksheet.Cells[1, i + 1].PutValue(samples[i].NumberOfListens);
+        }
+
+        var chartIndex = worksheet.Charts.Add(Aspose.Cells.Charts.ChartType.Column, 3, 0, 13, 3 + samples.Count);
+        var chart = worksheet.Charts[chartIndex];
+
+        chart.SetChartDataRange($"A1:{worksheet.Cells[1, samples.Count].Name}", true);
+
+        var path = "Files/Statistics.xls";
+
+        workbook.Save(path);
+
+        var bytes = await System.IO.File.ReadAllBytesAsync(path);
+        var resultFile = File(bytes, "application/xls");
+        resultFile.FileDownloadName = "Statistics.xls";
+        return resultFile;
+    }
+
+    [HttpGet("get-sample-addition-statistics")]
+    public async Task<IActionResult> GetSampleAdditionStatistics([FromQuery(Name = "user-guid")] Guid userGuid)
+    {
+        var (sampleAdditionStatistics, generateError) = await userService.GenerateSampleAdditionStatistics(userGuid);
+
+        if (!string.IsNullOrEmpty(generateError))
+            return BadRequest(generateError);
+
+        return Ok(sampleAdditionStatistics);
     }
 }

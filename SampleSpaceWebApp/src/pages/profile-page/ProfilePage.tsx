@@ -169,7 +169,6 @@ export default function ProfilePage() {
 
                     </div>
                 </div>
-
                 <div className={profilePageClasses.playlistsPanel + " horizontalPanel"}>
 
                     {user.userGuid === loginUser?.userGuid &&
@@ -197,7 +196,8 @@ export default function ProfilePage() {
             </div>
 
             <Modal open={editProfileIsOpen || confirmIsOpen || statisticsIsOpen}>
-                {statisticsIsOpen && <StatisticsModal onClose={() => setStatisticsIsOpen(false)}/>}
+                {statisticsIsOpen && <StatisticsModal userGuid={user.userGuid} 
+                                                      onClose={() => setStatisticsIsOpen(false)}/>}
 
                 {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)}
                                                         onSuccess={handleEditProfileOnSuccess}

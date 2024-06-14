@@ -25,4 +25,6 @@ public class SampleEntity
     public int NumberOfListens { get; set; }
 
     public UserEntity User { get; set; } = new UserEntity();
+    
+    public DateOnly Date { get; set; }
 }

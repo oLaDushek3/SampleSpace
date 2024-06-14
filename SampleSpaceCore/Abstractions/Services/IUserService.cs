@@ -28,4 +28,7 @@ public interface IUserService
     public Task<(bool successfully, string error)> EditUser(User user);
 
     public Task<(bool successfully, string error)> Delete(User user);
+
+    public Task<(List<SampleAdditionStatistic>? sampleAdditionStatistics, string error)>
+        GenerateSampleAdditionStatistics(Guid userGuid);
 }

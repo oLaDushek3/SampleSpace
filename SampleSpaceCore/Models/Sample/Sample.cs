@@ -6,7 +6,7 @@ public class Sample
     private const int MaxArtistLength = 75;
 
     private Sample(Guid sampleGuid, string sampleLink, string coverLink, string name, string artist, Guid userGuid,
-        double duration, string? vkontakteLink, string? spotifyLink, string? soundcloudLink, int numberOfListens, User? user)
+        double duration, string? vkontakteLink, string? spotifyLink, string? soundcloudLink, int numberOfListens, User? user, DateOnly date)
     {
         SampleGuid = sampleGuid;
         SampleLink = sampleLink;
@@ -20,6 +20,7 @@ public class Sample
         SoundcloudLink = soundcloudLink;
         NumberOfListens = numberOfListens;
         User = user;
+        Date = date;
     }
 
     public Guid SampleGuid { get; private set; }
@@ -45,10 +46,12 @@ public class Sample
     public int NumberOfListens { get; private set; }
     
     public User? User { get; private set; }
+    
+    public DateOnly Date { get; private set; }
 
     public static (Sample? Sample, string Error) Create(Guid sampleGuid, string sampleLink, string coverLink,
         string name, string artist, Guid userGuid, double duration, string? vkontakteLink,
-        string? spotifyLink, string? soundcloudLink, int numberOfListens, User? user)
+        string? spotifyLink, string? soundcloudLink, int numberOfListens, User? user, DateOnly date)
     {
         if (string.IsNullOrEmpty(sampleLink))
             return (null, "Sample link cannot be empty");
@@ -63,7 +66,7 @@ public class Sample
             return (null, $"Artist cannot be empty or longer then {MaxArtistLength} symbols");
 
         var sample = new Sample(sampleGuid, sampleLink, coverLink, name, artist, userGuid, duration, vkontakteLink,
-            spotifyLink, soundcloudLink, numberOfListens, user);
+            spotifyLink, soundcloudLink, numberOfListens, user, date);
 
         return (sample, string.Empty);
     }
