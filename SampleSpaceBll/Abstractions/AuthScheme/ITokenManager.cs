@@ -7,8 +7,8 @@ namespace SampleSpaceBll.Abstractions.AuthScheme;
 public interface ITokenManager
 {
     public string CreateResetToken(Guid userGuid);
-    
-    public Tokens CreateTokens(Guid userGuid);
+
+    public Tokens CreateTokens(UserClaims userClaims);
 
     public Task SaveTokens(HttpResponse response, Tokens tokens, Guid userId);
     
@@ -18,7 +18,7 @@ public interface ITokenManager
     
     public ClaimsPrincipal GetPrincipalFromToken(string token);
 
-    public Guid GetUserIdFromToken(string token);
+    public UserClaims GetUserClaimsFromToken(string token);
     
     public bool CheckTokenValid(string token);
 

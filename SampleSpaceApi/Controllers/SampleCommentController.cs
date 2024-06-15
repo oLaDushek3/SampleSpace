@@ -52,9 +52,10 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
-        if (new Guid(loginUserGuid) != comment!.UserGuid)
+        var loginUserGuid = Guid.Parse(User.FindFirst(ClaimTypes.Authentication)!.Value);
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
+
+        if (loginUserGuid != comment!.UserGuid && !userIsAdmin)
             return Forbid();
 
         var (modifiedComment, modifiedError) = comment!.Edit(request.Comment);
@@ -79,9 +80,10 @@ public class SampleCommentController(ISampleCommentServices commentServices) : C
         if(!string.IsNullOrEmpty(getError))
             return  BadRequest(getError);
 
-        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
-        if (new Guid(loginUserGuid) != comment!.UserGuid)
+        var loginUserGuid = Guid.Parse(User.FindFirst(ClaimTypes.Authentication)!.Value);
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
+
+        if (loginUserGuid != comment!.UserGuid && !userIsAdmin)
             return Forbid();
 
         var (successfully, deleteError) = await commentServices.DeleteComment(commentGuid);
