@@ -2,6 +2,7 @@ import sampleClasses from "./Sample.module.css"
 import ISamplePlayer from "../../models/ISamplePlayer.ts";
 import Button, {ButtonVisualType} from "../button/Button.tsx";
 import {IoPlay, IoPause} from "react-icons/io5";
+import {MdSpatialAudioOff} from "react-icons/md";
 import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import {useNavigate} from "react-router-dom";
 import {CiTrash} from "react-icons/ci";
@@ -51,25 +52,26 @@ export default function Sample({samplePlayer, onDelete}: SampleProps) {
     const sampleMouseLeave = () => {
         setToolButtonsClasses(sampleClasses.toolButtons);
     }
-    
+
     return (
         <div className={sampleClasses.sample + " horizontalPanel"}
              onMouseEnter={sampleMouseEnter}
              onMouseLeave={sampleMouseLeave}>
-            <img className={sampleClasses.cover} src={samplePlayer.sample.coverLink += '?' + new Date().getTime()} alt="Cover image"
+            <img className={sampleClasses.cover} src={samplePlayer.sample.coverLink += '?' + new Date().getTime()}
+                 alt="Cover image"
                  onClick={handleOpenSample}/>
 
             <div className={sampleClasses.mainSpace + " verticalPanel"}>
                 <div className={"horizontalPanel"}>
                     <div className={sampleClasses.sampleInfo}>
                         <p className={sampleClasses.sampleName + " singleLineText"}
-                              onClick={handleOpenSample}>
+                           onClick={handleOpenSample}>
                             {samplePlayer.sample.name}
                         </p>
                         <p className={"singleLineText"}>{samplePlayer.sample.artist}</p>
                     </div>
 
-                    {onDelete && (loginUser?.userGuid === samplePlayer.sample.sampleGuid || loginUser?.isAdmin)  &&
+                    {onDelete && (loginUser?.userGuid === samplePlayer.sample.sampleGuid || loginUser?.isAdmin) &&
                         <div className={toolButtonsClasses}>
                             <Button visualType={ButtonVisualType.icon}
                                     onClick={() => onDelete(samplePlayer.sample.sampleGuid)}>
@@ -78,9 +80,7 @@ export default function Sample({samplePlayer, onDelete}: SampleProps) {
                                 </Icon>
                             </Button>
                         </div>}
-
                 </div>
-
 
                 <div className={sampleClasses.track + " horizontalPanel"}>
                     <Button visualType={ButtonVisualType.withIcon}
@@ -100,6 +100,14 @@ export default function Sample({samplePlayer, onDelete}: SampleProps) {
                     <p>{samplePlayer.isActive
                         ? formatDuration(currentTime)
                         : formatDuration(samplePlayer.sample.duration)}</p>
+                </div>
+
+                <div className={sampleClasses.numberOfListens}>
+                    <Icon height={18}>
+                        <MdSpatialAudioOff/>
+                    </Icon>
+
+                    <p>{samplePlayer.sample.numberOfListens}</p>
                 </div>
             </div>
         </div>
