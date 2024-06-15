@@ -150,27 +150,28 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
         return Ok(sampleGuid);
     }
-    
+
     [Authorize]
     [HttpDelete("delete-sample")]
     [RequestSizeLimit(20_000_000)]
     public async Task<IActionResult> DeleteSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
         var (sample, getError) = await sampleService.GetSample(sampleGuid);
-        
-        if(!string.IsNullOrEmpty(getError))
-            return  BadRequest(getError);
-        
-        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
-        
-        if (Guid.Parse(loginUserGuid) != sample!.UserGuid)
+
+        if (!string.IsNullOrEmpty(getError))
+            return BadRequest(getError);
+
+        var loginUserGuid = Guid.Parse(User.FindFirst(ClaimTypes.Authentication)!.Value);
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
+
+        if (loginUserGuid != sample!.UserGuid && !userIsAdmin)
             return Forbid();
-        
+
         var (successfully, deleteError) = await sampleService.DeleteSample(sample);
-        
-        if(!string.IsNullOrEmpty(deleteError))
-            return  BadRequest(deleteError);
-        
+
+        if (!string.IsNullOrEmpty(deleteError))
+            return BadRequest(deleteError);
+
         return successfully ? Ok() : BadRequest("Server error");
     }
 }

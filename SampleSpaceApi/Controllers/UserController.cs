@@ -161,9 +161,10 @@ public class UserController(IUserService userService, ISampleService sampleServi
         if (!string.IsNullOrEmpty(getError))
             return BadRequest(getError);
 
-        var loginUserGuid = User.FindFirst(ClaimTypes.Authentication)!.Value;
+        var loginUserGuid = Guid.Parse(User.FindFirst(ClaimTypes.Authentication)!.Value);
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
 
-        if (Guid.Parse(loginUserGuid) != userGuid)
+        if (loginUserGuid != userGuid && !userIsAdmin)
             return Forbid();
 
         var (successfully, deleteError) = await userService.Delete(user!);
@@ -185,9 +186,15 @@ public class UserController(IUserService userService, ISampleService sampleServi
         return Ok(user);
     }
 
+    [Authorize]
     [HttpGet("generate-word")]
     public async Task<IActionResult> GenerateWord([FromQuery(Name = "user-guid")] Guid userGuid)
     {
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
+
+        if (!userIsAdmin)
+            return Forbid();
+        
         var (samples, getError) = await sampleService.GetUserSamples(userGuid);
 
         if (!string.IsNullOrEmpty(getError))
@@ -220,10 +227,16 @@ public class UserController(IUserService userService, ISampleService sampleServi
         resultFile.FileDownloadName = "Statistics.docx";
         return resultFile;
     }
-
+    
+    [Authorize]
     [HttpGet("generate-excel")]
     public async Task<IActionResult> GenerateExcel([FromQuery(Name = "user-guid")] Guid userGuid)
     {
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
+
+        if (!userIsAdmin)
+            return Forbid();
+        
         var (samples, getError) = await sampleService.GetUserSamples(userGuid);
 
         if (!string.IsNullOrEmpty(getError))
@@ -255,9 +268,15 @@ public class UserController(IUserService userService, ISampleService sampleServi
         return resultFile;
     }
 
+    [Authorize]
     [HttpGet("get-sample-addition-statistics")]
     public async Task<IActionResult> GetSampleAdditionStatistics([FromQuery(Name = "user-guid")] Guid userGuid)
     {
+        var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
+
+        if (!userIsAdmin)
+            return Forbid();
+        
         var (sampleAdditionStatistics, generateError) = await userService.GenerateSampleAdditionStatistics(userGuid);
 
         if (!string.IsNullOrEmpty(generateError))

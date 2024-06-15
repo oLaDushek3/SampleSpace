@@ -47,7 +47,7 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
 
         return tokenValue;
     }
-    
+
     private string GenerateAccessToken(IEnumerable<Claim> claims)
     {
         var signingCredentials = new SigningCredentials(
@@ -76,9 +76,13 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
         return Convert.ToBase64String(randomNumber);
     }
 
-    public Tokens CreateTokens(Guid userGuid)
+    public Tokens CreateTokens(UserClaims userClaims)
     {
-        Claim[] claims = { new(ClaimTypes.Authentication, userGuid.ToString()) };
+        Claim[] claims =
+        {
+            new(ClaimTypes.Authentication, userClaims.UserGuid.ToString()),
+            new(ClaimTypes.Role, userClaims.IsAdmin.ToString())
+        };
 
         var accessToken = GenerateAccessToken(claims);
         var refreshToken = GenerateRefreshToken();
@@ -97,18 +101,18 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
 
     public async Task RefreshTokens(HttpResponse response, Tokens tokens)
     {
-        var userGuid = GetUserIdFromToken(tokens.AccessToken);
+        var userClaims = GetUserClaimsFromToken(tokens.AccessToken);
 
-        var cachedTokens = await authTokensRepository.GetTokens(userGuid!, tokens.RefreshToken);
+        var cachedTokens = await authTokensRepository.GetTokens(userClaims.UserGuid, tokens.RefreshToken);
 
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
 
-        await authTokensRepository.DeleteTokens(userGuid!, cachedTokens.RefreshToken);
+        await authTokensRepository.DeleteTokens(userClaims.UserGuid, cachedTokens.RefreshToken);
 
-        var newTokens = CreateTokens(userGuid!);
+        var newTokens = CreateTokens(userClaims);
 
-        await SaveTokens(response, newTokens, userGuid!);
+        await SaveTokens(response, newTokens, userClaims.UserGuid);
     }
 
     public async Task DeleteTokens(HttpContext context)
@@ -120,9 +124,9 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
         if (tokens == null)
             return;
 
-        var userGuid = GetUserIdFromToken(tokens.AccessToken);
+        var userClaims = GetUserClaimsFromToken(tokens.AccessToken);
 
-        await authTokensRepository.DeleteTokens(userGuid!, tokens.RefreshToken);
+        await authTokensRepository.DeleteTokens(userClaims.UserGuid, tokens.RefreshToken);
     }
 
     public ClaimsPrincipal GetPrincipalFromToken(string token)
@@ -136,13 +140,18 @@ public class TokenManager(AuthTokensOptions options, IAuthTokensRepository authT
         return claims;
     }
 
-    public Guid GetUserIdFromToken(string token)
+    public UserClaims GetUserClaimsFromToken(string token)
     {
         var claims = GetPrincipalFromToken(token);
 
-        var guidString = claims.FindFirst(ClaimTypes.Authentication)!.Value;
+        var userGuidString = claims.FindFirst(ClaimTypes.Authentication)!.Value;
+        var userIsAdminString = claims.FindFirst(ClaimTypes.Role)!.Value;
 
-        return Guid.Parse(guidString);
+        return new UserClaims
+        {
+            UserGuid = Guid.Parse(userGuidString),
+            IsAdmin = Convert.ToBoolean(userIsAdminString)
+        };
     }
 
     public bool CheckTokenValid(string token)

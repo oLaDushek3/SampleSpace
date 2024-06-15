@@ -2,6 +2,7 @@
 using SampleSpaceBll.Abstractions.Auth;
 using SampleSpaceBll.Abstractions.AuthScheme;
 using SampleSpaceBll.Abstractions.Email;
+using SampleSpaceBll.Models;
 using SampleSpaceCore.Abstractions.Services;
 using SampleSpaceCore.Models;
 using IPostgreSQLUserRepository = SampleSpaceCore.Abstractions.PostgreSQL.Repositories.IUsersRepository;
@@ -57,7 +58,11 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository, ISa
         if (!passwordVerifyResult)
             return (null, "Failed to login");
 
-        var tokens = tokenManager.CreateTokens(user.UserGuid);
+        var tokens = tokenManager.CreateTokens(new UserClaims
+        {
+            UserGuid = user.UserGuid,
+            IsAdmin = user.IsAdmin
+        });
 
         try
         {
@@ -91,18 +96,17 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository, ISa
     public async Task<(bool successfully, string error, int errorCode)> ResetPassword(string resetToken,
         string newPassword)
     {
-        Guid userGuid;
+        UserClaims userClaims;
         try
         {
-            userGuid = tokenManager.GetUserIdFromToken(resetToken);
-            ;
+            userClaims = tokenManager.GetUserClaimsFromToken(resetToken);
         }
         catch
         {
             return (false, "Invalid token", 403);
         }
 
-        var (user, getError) = await postgreSqlUserRepository.GetByGuid(userGuid: userGuid);
+        var (user, getError) = await postgreSqlUserRepository.GetByGuid(userGuid: userClaims.UserGuid);
 
         if (!string.IsNullOrEmpty(getError))
             return (false, getError, 404);
