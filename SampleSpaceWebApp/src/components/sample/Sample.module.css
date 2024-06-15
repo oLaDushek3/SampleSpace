@@ -33,6 +33,7 @@
 }
 
 .mainSpace {
+    align-content: center;
     overflow: hidden;
     flex: 1;
 }
@@ -52,4 +53,18 @@
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
+}
+
+.numberOfListens {
+    display: flex;
+}
+
+.numberOfListens > * {
+    font-weight: lighter;
+    align-content: center;
+    font-size: 16px;
+}
+
+.numberOfListens > *:not(:last-child) {
+    margin-right: 0.25rem;
 }
