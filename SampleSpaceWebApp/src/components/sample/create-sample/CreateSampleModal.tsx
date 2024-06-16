@@ -35,14 +35,18 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
     const [soundcloudLink, setSoundcloudLink] = useState("");
     const [error, setError] = useState("");
     const {loginUser} = useAuth();
-
+    const [submitLoading, setSubmitLoading] = useState(false)
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setSubmitLoading(true);
 
         if (name.trim().length === 0 || artist.trim().length === 0 || !coverFile) {
             setError("Не все поля заполнены");
+            setSubmitLoading(false);
             return
         }
+        
         await createSample(uploadSample!, sampleRegion?.start, sampleRegion?.end, coverFile,
             name, artist, loginUser!.userGuid, vkontakteLink, spotifyLink, soundcloudLink);
 
@@ -173,7 +177,8 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
 
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
-                <Button alone={true}
+                <Button active={submitLoading} 
+                        alone={true}
                         primary={true}
                         onClick={handleSubmit}>
                     Создать
