@@ -82,7 +82,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         {
             Parameters =
             {
-                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = limit > 0 ? limit : DBNull.Value },
                 new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
             }
         };
@@ -152,7 +152,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         {
             Parameters =
             {
-                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = limit > 0 ? limit : DBNull.Value },
                 new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
             }
         };
@@ -224,7 +224,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             Parameters =
             {
                 new NpgsqlParameter { Value = "%" + searchString.ToLower() + "%" },
-                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = limit > 0 ? limit : DBNull.Value },
                 new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
             }
         };
@@ -298,7 +298,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             Parameters =
             {
                 new NpgsqlParameter { Value = playlistGuid },
-                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = limit > 0 ? limit : DBNull.Value },
                 new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
             }
         };
@@ -444,7 +444,7 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
             Parameters =
             {
                 new NpgsqlParameter { Value = userGuid },
-                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = limit > 0 ? limit : DBNull.Value },
                 new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
             }
         };
