@@ -79,8 +79,7 @@ export default function PlayerHeaderPanel({isActive = false}: PlayerHeaderPanelP
 
         setPlayingSampleIsLast(false);
         setPlayingSampleIsFirst(false);
-
-    }, [playingSamplePlayer]);
+    }, [samplePlayerList, playingSamplePlayer]);
 
     return (
         <div className={classes + " verticalPanel"}>
