@@ -24,9 +24,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
 
-        if (samples == null || samples.Count == 0)
-            return NotFound();
-
         return Ok(samples);
     }
 
@@ -39,9 +36,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
 
-        if (samples == null || samples.Count == 0)
-            return NotFound();
-
         return Ok(samples);
     }
 
@@ -53,9 +47,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
-
-        if (samples == null || samples.Count == 0)
-            return NotFound();
 
         return Ok(samples);
     }
@@ -70,9 +61,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
 
-        if (samples == null || samples.Count == 0)
-            return NotFound();
-
         return Ok(samples);
     }
 
@@ -85,9 +73,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
-
-        if (samples == null || samples.Count == 0)
-            return NotFound();
 
         return Ok(samples);
     }
@@ -110,16 +95,13 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user-guid")] Guid userGuid,
         [FromQuery] GetByPageRequest getByPageRequest)
     {
-        var (sample, error) =
+        var (samples, error) =
             await sampleService.GetUserSamples(userGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
 
-        if (sample == null)
-            return NotFound();
-
-        return Ok(sample);
+        return Ok(samples);
     }
 
     [Authorize]
