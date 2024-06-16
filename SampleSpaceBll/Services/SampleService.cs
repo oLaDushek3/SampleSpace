@@ -14,14 +14,24 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
         return await postgreSqlSampleRepository.GetAll();
     }
 
-    public async Task<(List<Sample>? samples, string error)> Search(string searchString)
+    public async Task<(List<Sample>? samples, string error)> GetSortByDate(int limit, int numberOfPage)
     {
-        return await postgreSqlSampleRepository.Search(searchString);
+        return await postgreSqlSampleRepository.GetSortByDate(limit, numberOfPage);
     }
 
-    public async Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid)
+    public async Task<(List<Sample>? samples, string error)> GetSortByListens(int limit, int numberOfPage)
     {
-        return await postgreSqlSampleRepository.GetByPlaylist(playlistGuid);
+        return await postgreSqlSampleRepository.GetSortByListens(limit, numberOfPage);
+    }
+
+    public async Task<(List<Sample>? samples, string error)> Search(string searchString, int limit, int numberOfPage)
+    {
+        return await postgreSqlSampleRepository.Search(searchString, limit, numberOfPage);
+    }
+
+    public async Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid, int limit, int numberOfPage)
+    {
+        return await postgreSqlSampleRepository.GetByPlaylist(playlistGuid, limit, numberOfPage);
     }
 
     public async Task<(Sample? sample, string error)> GetSample(Guid sampleGuid)
@@ -29,9 +39,9 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
         return await postgreSqlSampleRepository.GetByGuid(sampleGuid);
     }
 
-    public async Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid)
+    public async Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid, int limit, int numberOfPage)
     {
-        return await postgreSqlSampleRepository.GetUserSamples(userGuid);
+        return await postgreSqlSampleRepository.GetUserSamples(userGuid, limit, numberOfPage);
     }
 
     public async Task<(bool successfully, string error)> AddAnListensToSample(Guid sampleGuid)
@@ -39,7 +49,8 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
         return await postgreSqlSampleRepository.AddAnListens(sampleGuid);
     }
 
-    public (Stream? trimmedSampleStream, string error) TrimSample(Stream sampleFileStream, double sampleStart, double sampleEnd)
+    public (Stream? trimmedSampleStream, string error) TrimSample(Stream sampleFileStream, double sampleStart,
+        double sampleEnd)
     {
         var (sampleStream, error) = sampleTrimmer.TestTrimMp3File(sampleFileStream,
             TimeSpan.FromSeconds(sampleStart),
@@ -65,10 +76,10 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
     public async Task<(bool successfully, string error)> DeleteSample(Sample sample)
     {
         var deleteFromPostgres = await postgreSqlSampleRepository.Delete(sample.SampleGuid);
-        
-        if(!string.IsNullOrEmpty(deleteFromPostgres.error))
+
+        if (!string.IsNullOrEmpty(deleteFromPostgres.error))
             return (false, deleteFromPostgres.error);
-        
+
         return await cloudStorageSampleRepository.Delete(sample.UserGuid, sample.Name);
     }
 }
