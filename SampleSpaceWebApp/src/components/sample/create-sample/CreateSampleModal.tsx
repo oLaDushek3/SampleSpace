@@ -26,7 +26,7 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
     const coverRef = useRef<HTMLImageElement>(null);
     useClickOutside(wrapperRef, onClose);
     const [uploadSample, setUploadSample] = useState<File | null>();
-    const [coverBlob, setCoverBlob] = useState<Blob>();
+    const [coverFile, setCoverFile] = useState<File | null>();
     const [sampleRegion, setSampleRegion] = useState<SampleRegion>({start: 0, end: 0});
     const [name, setName] = useState("");
     const [artist, setArtist] = useState("");
@@ -39,11 +39,11 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (name.trim().length === 0 || artist.trim().length === 0 || !coverBlob) {
+        if (name.trim().length === 0 || artist.trim().length === 0 || !coverFile) {
             setError("Не все поля заполнены");
             return
         }
-        await createSample(uploadSample!, sampleRegion?.start, sampleRegion?.end, coverBlob,
+        await createSample(uploadSample!, sampleRegion?.start, sampleRegion?.end, coverFile,
             name, artist, loginUser!.userGuid, vkontakteLink, spotifyLink, soundcloudLink);
 
         onClose();
@@ -67,7 +67,7 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
 
                 if (cover) {
                     const coverBlob = new Blob([cover])
-                    setCoverBlob(coverBlob);
+                    setCoverFile(new File([coverBlob], "cover.jpg"));
                 }
 
                 if (name)
@@ -80,9 +80,9 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
     }, [uploadSample]);
 
     useEffect(() => {
-        if (coverBlob)
-            coverRef.current!.src = URL.createObjectURL(coverBlob);
-    }, [coverBlob]);
+        if (coverFile)
+            coverRef.current!.src = URL.createObjectURL(coverFile);
+    }, [coverFile]);
 
     const handleUploadSample = (uploadSample: File) => {
         setUploadSample(uploadSample);
@@ -109,9 +109,9 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
                     <div className={"verticalPanel"}>
                         <div className={createSampleModalClasses.samplePanel + " horizontalPanel"}>
                             <div className={createSampleModalClasses.cover}>
-                                <FileInput dropMessage={""} filePreview={coverBlob && coverPreview}
+                                <FileInput dropMessage={""} filePreview={coverFile && coverPreview}
                                            accept={FileInputAccept.image}
-                                           onUpload={(file) => setCoverBlob(new Blob([file]))}
+                                           onUpload={(file) => setCoverFile(file)}
                                            setError={setError}/>
                             </div>
 
