@@ -199,7 +199,7 @@ public class UserService(IPostgreSQLUserRepository postgreSqlUserRepository, ISa
     public async Task<(List<SampleAdditionStatistic>? sampleAdditionStatistics, string error)>
         GenerateSampleAdditionStatistics(Guid userGuid)
     {
-        var (userSamples, getError) = await sampleService.GetUserSamples(userGuid);
+        var (userSamples, getError) = await sampleService.GetUserSamples(userGuid, 0, 0);
 
         if (!string.IsNullOrEmpty(getError))
             return (null, getError);

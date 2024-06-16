@@ -71,9 +71,10 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         }
     }
 
-    public async Task<(List<Sample>? samples, string error)> GetByPage(int limit, int numberOfPage)
+    public async Task<(List<Sample>? samples, string error)> GetSortByDate(int limit, int numberOfPage)
     {
-        var queryString = "select * from samples limit $1 offset $2";
+        var queryString = "select * from samples order by date desc " +
+                          "limit $1 offset $2";
 
         var connection = GetConnection();
 
@@ -81,8 +82,8 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         {
             Parameters =
             {
-                new NpgsqlParameter { Value = limit },
-                new NpgsqlParameter { Value = (numberOfPage - 1) * limit }
+                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
             }
         };
 
@@ -140,15 +141,20 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         }
     }
 
-    public async Task<(List<Sample>? samples, string error)> Search(string searchString)
+    public async Task<(List<Sample>? samples, string error)> GetSortByListens(int limit, int numberOfPage)
     {
-        var queryString = "select * from samples where name ilike $1 or artist ilike $1";
+        var queryString = "select * from samples order by date number_of_listens " +
+                          "limit $1 offset $2";
 
         var connection = GetConnection();
 
         var command = new NpgsqlCommand(queryString, connection)
         {
-            Parameters = { new NpgsqlParameter { Value = "%" + searchString.ToLower() + "%" } }
+            Parameters =
+            {
+                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
+            }
         };
 
         try
@@ -205,18 +211,96 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         }
     }
 
-    public async Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid)
+    public async Task<(List<Sample>? samples, string error)> Search(string searchString, int limit, int numberOfPage)
+    {
+        var queryString =
+            "select * from samples where name ilike $1 or artist ilike $1 " +
+            "order by date desc limit $2 offset $3";
+
+        var connection = GetConnection();
+
+        var command = new NpgsqlCommand(queryString, connection)
+        {
+            Parameters =
+            {
+                new NpgsqlParameter { Value = "%" + searchString.ToLower() + "%" },
+                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
+            }
+        };
+
+        try
+        {
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            var samples = new List<Sample>();
+            while (await reader.ReadAsync())
+            {
+                var sampleEntity = new SampleEntity
+                {
+                    SampleGuid = reader.GetGuid(reader.GetOrdinal("sample_guid")),
+                    SampleLink = reader.GetString(reader.GetOrdinal("sample_link")),
+                    CoverLink = reader.GetString(reader.GetOrdinal("cover_link")),
+                    Name = reader.GetString(reader.GetOrdinal("name")),
+                    Artist = reader.GetString(reader.GetOrdinal("artist")),
+                    UserGuid = reader.GetGuid(reader.GetOrdinal("user_guid")),
+                    Duration = reader.GetDouble(reader.GetOrdinal("duration")),
+                    NumberOfListens = reader.GetInt32(reader.GetOrdinal("number_of_listens")),
+                    Date = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("date")))
+                };
+
+                if (!reader.IsDBNull(reader.GetOrdinal("vkontakte_link")))
+                    sampleEntity.VkontakteLink = reader.GetString(reader.GetOrdinal("vkontakte_link"));
+                if (!reader.IsDBNull(reader.GetOrdinal("spotify_link")))
+                    sampleEntity.SpotifyLink = reader.GetString(reader.GetOrdinal("spotify_link"));
+                if (!reader.IsDBNull(reader.GetOrdinal("soundcloud_link")))
+                    sampleEntity.SoundcloudLink = reader.GetString(reader.GetOrdinal("soundcloud_link"));
+
+                var (sample, error) = Sample.Create(sampleEntity.SampleGuid, sampleEntity.SampleLink,
+                    sampleEntity.CoverLink, sampleEntity.Name, sampleEntity.Artist, sampleEntity.UserGuid,
+                    sampleEntity.Duration, sampleEntity.VkontakteLink, sampleEntity.SpotifyLink,
+                    sampleEntity.SoundcloudLink, sampleEntity.NumberOfListens, null, sampleEntity.Date);
+
+                if (!string.IsNullOrEmpty(error))
+                    return (null, error);
+
+                samples.Add(sample!);
+            }
+
+            await reader.CloseAsync();
+
+            return (samples, string.Empty);
+        }
+        catch (Exception exception)
+        {
+            return (null, exception.Message);
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    public async Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid, int limit, int numberOfPage)
     {
         var queryString = "select samples.* " +
                           "from playlist_samples " +
                           "join samples on playlist_samples.sample_guid = samples.sample_guid " +
-                          "where playlist_samples.playlist_guid = $1";
+                          "where playlist_samples.playlist_guid = $1" +
+                          "order by date desc limit $2 offset $3";
 
         var connection = GetConnection();
 
         var command = new NpgsqlCommand(queryString, connection)
         {
-            Parameters = { new NpgsqlParameter { Value = playlistGuid } }
+            Parameters =
+            {
+                new NpgsqlParameter { Value = playlistGuid },
+                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
+            }
         };
 
         try
@@ -348,15 +432,21 @@ public class SampleRepository(IConfiguration configuration) : BaseRepository(con
         }
     }
 
-    public async Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid)
+    public async Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid, int limit, int numberOfPage)
     {
-        var queryString = "select * from samples where user_guid = $1";
+        var queryString = "select * from samples where user_guid = $1 " +
+                          "order by date desc limit $2 offset $3";
 
         var connection = GetConnection();
 
         var command = new NpgsqlCommand(queryString, connection)
         {
-            Parameters = { new NpgsqlParameter { Value = userGuid } }
+            Parameters =
+            {
+                new NpgsqlParameter { Value = userGuid },
+                new NpgsqlParameter { Value = limit > 0 ? limit : "all" },
+                new NpgsqlParameter { Value = numberOfPage > 0 ?  (numberOfPage - 1) * limit : 0}
+            }
         };
 
         try

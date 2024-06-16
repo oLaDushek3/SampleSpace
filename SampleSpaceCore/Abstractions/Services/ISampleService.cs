@@ -1,4 +1,3 @@
-using SampleSpaceCore.Models;
 using SampleSpaceCore.Models.Sample;
 
 namespace SampleSpaceCore.Abstractions.Services;
@@ -7,13 +6,17 @@ public interface ISampleService
 {
     public Task<(List<Sample>? samples, string error)> GetAll();
 
-    public Task<(List<Sample>? samples, string error)> Search(string searchString);
+    public Task<(List<Sample>? samples, string error)> GetSortByDate(int limit, int numberOfPage);
+    
+    public Task<(List<Sample>? samples, string error)> GetSortByListens(int limit, int numberOfPage);
+    
+    public Task<(List<Sample>? samples, string error)> Search(string searchString, int limit, int numberOfPage);
 
-    public Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid);
+    public Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid, int limit, int numberOfPage);
 
     public Task<(Sample? sample, string error)> GetSample(Guid sampleGuid);
 
-    public Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid);
+    public Task<(List<Sample>? samples, string error)> GetUserSamples(Guid userGuid, int limit, int numberOfPage);
 
     public Task<(bool successfully, string error)> AddAnListensToSample(Guid sampleGuid);
 

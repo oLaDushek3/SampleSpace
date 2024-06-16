@@ -195,7 +195,7 @@ public class UserController(IUserService userService, ISampleService sampleServi
         if (!userIsAdmin)
             return Forbid();
         
-        var (samples, getError) = await sampleService.GetUserSamples(userGuid);
+        var (samples, getError) = await sampleService.GetUserSamples(userGuid, 0, 0);
 
         if (!string.IsNullOrEmpty(getError))
             return BadRequest(getError);
@@ -237,7 +237,7 @@ public class UserController(IUserService userService, ISampleService sampleServi
         if (!userIsAdmin)
             return Forbid();
         
-        var (samples, getError) = await sampleService.GetUserSamples(userGuid);
+        var (samples, getError) = await sampleService.GetUserSamples(userGuid, 0, 0);
 
         if (!string.IsNullOrEmpty(getError))
             return BadRequest(getError);

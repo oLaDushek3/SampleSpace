@@ -16,7 +16,6 @@ namespace SampleSpaceApi.Controllers;
 [Route("api/sample")]
 public class SampleController(ISampleService sampleService) : ControllerBase
 {
-    [EnableCors]
     [HttpGet("get-all-samples")]
     public async Task<IActionResult> GetAllSamples()
     {
@@ -31,10 +30,40 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         return Ok(samples);
     }
 
-    [HttpGet("search-samples")]
-    public async Task<IActionResult> SearchSample([FromQuery(Name = "search-string")] string searchString)
+    [HttpGet("get-sort-by-date")]
+    public async Task<IActionResult> GetSortByDate([FromQuery] GetByPageRequest getByPageRequest)
     {
-        var (samples, error) = await sampleService.Search(searchString);
+        var (samples, error) = 
+            await sampleService.GetSortByDate(getByPageRequest.Limit, getByPageRequest.NumberOfPage);
+
+        if (!string.IsNullOrEmpty(error))
+            return BadRequest(error);
+
+        if (samples == null || samples.Count == 0)
+            return NotFound();
+
+        return Ok(samples);
+    }
+
+    [HttpGet("get-sort-by-listens")]
+    public async Task<IActionResult> GetSortByListens([FromQuery] GetByPageRequest getByPageRequest)
+    {
+        var (samples, error) =
+            await sampleService.GetSortByListens(getByPageRequest.Limit, getByPageRequest.NumberOfPage);
+
+        if (!string.IsNullOrEmpty(error))
+            return BadRequest(error);
+
+        if (samples == null || samples.Count == 0)
+            return NotFound();
+
+        return Ok(samples);
+    }
+
+    [HttpGet("search-samples")]
+    public async Task<IActionResult> SearchSample([FromQuery(Name = "search-string")] string searchString, GetByPageRequest getByPageRequest)
+    {
+        var (samples, error) = await sampleService.Search(searchString, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -46,9 +75,9 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     }
 
     [HttpGet("get-by-playlist")]
-    public async Task<IActionResult> GetByPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid)
+    public async Task<IActionResult> GetByPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid, GetByPageRequest getByPageRequest)
     {
-        var (samples, error) = await sampleService.GetByPlaylist(playlistGuid);
+        var (samples, error) = await sampleService.GetByPlaylist(playlistGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -74,9 +103,9 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     }
 
     [HttpGet("get-user-samples")]
-    public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user-guid")] Guid userGuid)
+    public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user-guid")] Guid userGuid, GetByPageRequest getByPageRequest)
     {
-        var (sample, error) = await sampleService.GetUserSamples(userGuid);
+        var (sample, error) = await sampleService.GetUserSamples(userGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -86,7 +115,8 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
         return Ok(sample);
     }
-
+    
+    [Authorize]
     [HttpGet("add-an-listens-to-sample")]
     public async Task<IActionResult> AddAnListensToSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
