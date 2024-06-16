@@ -1,4 +1,6 @@
 .headerPanel {
+    position: sticky;
+    top: 0;
     height: 60px;
     padding: 0.5rem 1rem;
     display: flex;
