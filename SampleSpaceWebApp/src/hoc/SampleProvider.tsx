@@ -13,7 +13,7 @@ export enum ActionAtTheEnd {
 
 export interface SamplePlayerContextType {
     samplePlayerList: ISamplePlayer[] | null;
-    handleSamplePlayerList: (samplePlayerList: ISamplePlayer[]) => void;
+    handleSamplePlayerList: (samplePlayerList: ISamplePlayer[], append?: boolean) => void;
     playingSamplePlayer: ISamplePlayer | null;
     handlePlayingSamplePlayer: (samplePlayer: ISamplePlayer) => void;
     handlePlayPause: () => void;
@@ -76,14 +76,16 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
         setPlayingSamplePlayer(null);
         setSamplePlayerList(null);
     }, [location]);
-
-    const handleSamplePlayerList = (samplePlayerList: ISamplePlayer[]) => {
-        setSamplePlayerList(samplePlayerList);
+    
+    const handleSamplePlayerList = (newSamplePlayerList: ISamplePlayer[], append: boolean = false) => {
+        if(!append){
+            setSamplePlayerList(samplePlayerList);
+            handlePause();
+        }
+        else{
+            setSamplePlayerList(samplePlayerList ? [...samplePlayerList, ...newSamplePlayerList] : newSamplePlayerList)
+        }
     }
-
-    useEffect(() => {
-        handlePause();
-    }, [samplePlayerList]);
 
     const handlePlayingSamplePlayer = (samplePlayer: ISamplePlayer) => {        
         if (playingSamplePlayer)
