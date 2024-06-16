@@ -33,7 +33,7 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     [HttpGet("get-sort-by-date")]
     public async Task<IActionResult> GetSortByDate([FromQuery] GetByPageRequest getByPageRequest)
     {
-        var (samples, error) = 
+        var (samples, error) =
             await sampleService.GetSortByDate(getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
@@ -61,9 +61,11 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     }
 
     [HttpGet("search-samples")]
-    public async Task<IActionResult> SearchSample([FromQuery(Name = "search-string")] string searchString, GetByPageRequest getByPageRequest)
+    public async Task<IActionResult> SearchSample([FromQuery(Name = "search-string")] string searchString,
+        [FromQuery] GetByPageRequest getByPageRequest)
     {
-        var (samples, error) = await sampleService.Search(searchString, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
+        var (samples, error) =
+            await sampleService.Search(searchString, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -75,9 +77,11 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     }
 
     [HttpGet("get-by-playlist")]
-    public async Task<IActionResult> GetByPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid, GetByPageRequest getByPageRequest)
+    public async Task<IActionResult> GetByPlaylist([FromQuery(Name = "playlist-guid")] Guid playlistGuid,
+        [FromQuery] GetByPageRequest getByPageRequest)
     {
-        var (samples, error) = await sampleService.GetByPlaylist(playlistGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
+        var (samples, error) =
+            await sampleService.GetByPlaylist(playlistGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -103,9 +107,11 @@ public class SampleController(ISampleService sampleService) : ControllerBase
     }
 
     [HttpGet("get-user-samples")]
-    public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user-guid")] Guid userGuid, GetByPageRequest getByPageRequest)
+    public async Task<IActionResult> GetUserSamples([FromQuery(Name = "user-guid")] Guid userGuid,
+        [FromQuery] GetByPageRequest getByPageRequest)
     {
-        var (sample, error) = await sampleService.GetUserSamples(userGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
+        var (sample, error) =
+            await sampleService.GetUserSamples(userGuid, getByPageRequest.Limit, getByPageRequest.NumberOfPage);
 
         if (!string.IsNullOrEmpty(error))
             return BadRequest(error);
@@ -115,7 +121,7 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
         return Ok(sample);
     }
-    
+
     [Authorize]
     [HttpGet("add-an-listens-to-sample")]
     public async Task<IActionResult> AddAnListensToSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
