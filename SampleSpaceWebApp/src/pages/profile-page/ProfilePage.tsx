@@ -25,18 +25,19 @@ export default function ProfilePage() {
     const {getUser, signOut} = useUserApi();
     const {getByPlaylist, getUserSamples, deleteSample} = useSampleApi();
     const {getUserPlaylists, deleteSampleFromPlaylist} = usePlaylistApi();
+    const [fetchFunction, setFetchFunction] = useState<(numberOfPage: number) => Promise<ISample[]>>()
 
     const {nickname} = useParams<{ nickname: string }>();
     const [user, setUser] = useState<IUser | null>();
     const {loginUser, delUser} = useAuth()
     const [userPlaylists, setUserPlaylists] = useState<IPlaylist[]>();
     const [selectedPlaylist, setSelectedPlaylist] = useState<IPlaylist>();
-    const [playlistSamples, setPlaylistSamples] = useState<ISample[]>();
 
     const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState("");
-    const [onConfirm, setOnConfirm] = useState(() => () => {})
+    const [onConfirm, setOnConfirm] = useState(() => () => {
+    })
 
     const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
@@ -82,21 +83,6 @@ export default function ProfilePage() {
         setSelectedPlaylist(response[0]);
     }
 
-    async function fetchPlaylistSamples(playlistGuid: string) {
-        const response = await getByPlaylist(playlistGuid);
-        if (response === 404) {
-            setPlaylistSamples([]);
-            return;
-        }
-
-        setPlaylistSamples(response);
-    }
-
-    async function fetchUserSamples(userGuid: string) {
-        const response = await getUserSamples(userGuid);
-        setPlaylistSamples(response);
-    }
-
     const handleDeleteSample = async (sampleGuid: string) => {
         setConfirmIsOpen(true);
         setConfirmMessage("Семпл будет удален");
@@ -106,12 +92,12 @@ export default function ProfilePage() {
     const handleDeleteSampleConfirm = async (sampleGuid: string) => {
         setConfirmIsOpen(false);
         await deleteSample(sampleGuid);
-        void fetchUserSamples(user!.userGuid);
+        setFetchFunction(() => (numberOfPage: number) => getUserSamples(user!.userGuid, 15, numberOfPage));
     }
 
     const handleDeleteSampleFromPlaylist = async (sampleGuid: string) => {
-        await deleteSampleFromPlaylist(selectedPlaylist?.playlistGuid, sampleGuid);
-        void fetchPlaylistSamples(selectedPlaylist!.playlistGuid);
+        await deleteSampleFromPlaylist(selectedPlaylist!.playlistGuid, sampleGuid);
+        setFetchFunction(() => (numberOfPage: number) => getByPlaylist(selectedPlaylist!.playlistGuid, 15, numberOfPage));
     }
 
     useEffect(() => {
@@ -126,11 +112,11 @@ export default function ProfilePage() {
     useEffect(() => {
         if (selectedPlaylist) {
             if (selectedPlaylist.playlistGuid === user!.userGuid) {
-                void fetchUserSamples(user!.userGuid);
+                setFetchFunction(() => (numberOfPage: number) => getUserSamples(user!.userGuid, 15, numberOfPage));
                 return;
             }
 
-            void fetchPlaylistSamples(selectedPlaylist.playlistGuid);
+            setFetchFunction(() => (numberOfPage: number) => getByPlaylist(selectedPlaylist.playlistGuid, 15, numberOfPage));
         }
     }, [selectedPlaylist]);
 
@@ -190,13 +176,14 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {playlistSamples && <SampleList onDelete={selectedPlaylist?.playlistGuid === user!.userGuid ? 
-                    handleDeleteSample :
-                    handleDeleteSampleFromPlaylist} samples={playlistSamples}/>}
+                {selectedPlaylist && fetchFunction &&
+                    <SampleList onDelete={selectedPlaylist?.playlistGuid === user!.userGuid ?
+                        handleDeleteSample :
+                        handleDeleteSampleFromPlaylist} fetchFunction={fetchFunction}/>}
             </div>
 
             <Modal open={editProfileIsOpen || confirmIsOpen || statisticsIsOpen}>
-                {statisticsIsOpen && <StatisticsModal userGuid={user.userGuid} 
+                {statisticsIsOpen && <StatisticsModal userGuid={user.userGuid}
                                                       onClose={() => setStatisticsIsOpen(false)}/>}
 
                 {editProfileIsOpen && <EditProfileModal onCancel={() => setEditProfileIsOpen(false)}

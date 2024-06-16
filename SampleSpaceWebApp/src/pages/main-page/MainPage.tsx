@@ -1,22 +1,10 @@
-import {useEffect, useState} from "react";
-import ISample from '../../dal/entities/ISample.ts';
-import SampleList from "../../components/sample-list/SampleList.tsx";
 import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
+import SampleList from "../../components/sample-list/SampleList.tsx";
 
 export default function MainPage() {
-    const {getAllSamples} = useSampleApi();
-    const [samples, setSamples] = useState<ISample[] | null>(null)
-
-    async function fetchSamples() {
-        const response = await getAllSamples();
-        setSamples(response);
-    }
-
-    useEffect(() => {
-        void fetchSamples();
-    }, [])
+    const {getSortByDate} = useSampleApi();
     
     return(
-        <SampleList samples={samples}/>
+        <SampleList fetchFunction={(numberOfPage: number) => getSortByDate(18, numberOfPage)}/>
     )
 }
