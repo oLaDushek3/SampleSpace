@@ -6,7 +6,7 @@ import IResetPassword from "../blanks/user/IResetPassword.ts";
 import ISampleAdditionStatistic from "../../entities/ISampleAdditionStatistic.ts";
 
 interface useUserApiType {
-    signUp: (avatarBlob: Blob, nickname: string, email: string, password: string) => Promise<boolean | string>,
+    signUp: (nickname: string, email: string, password: string, avatarBlob?: Blob) => Promise<boolean | string>,
     signIn: (nickname: string, password: string) => Promise<IUser | string>,
     signOut: () => Promise<IUser | string>,
     editUser: (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string) => Promise<IUser | string>
@@ -22,11 +22,12 @@ interface useUserApiType {
 export default function useUserApi(): useUserApiType {
     const {baseAddress, get, post, put, del, download} = useApiBase();
 
-    const signUp = async (avatarBlob: Blob, nickname: string, email: string, password: string): Promise<boolean | string> => {
+    const signUp = async (nickname: string, email: string, password: string, avatarBlob?: Blob): Promise<boolean | string> => {
         let url = baseAddress + "user/sign-up";
 
         const formData = new FormData();
-        formData.append('AvatarFile', avatarBlob);
+        if(avatarBlob)
+            formData.append('AvatarFile', avatarBlob);
         formData.append('Nickname', nickname);
         formData.append('Email', email);
         formData.append('Password', password);

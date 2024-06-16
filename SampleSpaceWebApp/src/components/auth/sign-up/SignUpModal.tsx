@@ -30,7 +30,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!avatarBlob || nickname.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0) {
+        if (nickname.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0) {
             setError("Не все поля заполнены");
             return;
         }
@@ -47,7 +47,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
             return;
         }
 
-        const response = await signUp(avatarBlob, nickname, email, password);
+        const response = await signUp(nickname, email, password, avatarBlob);
 
         if (response === "409") {
             setError("Пользователь с таким именем или почтой уже существует");
