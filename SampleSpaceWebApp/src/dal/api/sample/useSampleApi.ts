@@ -3,10 +3,11 @@ import useApiBase from "../useApiBase.ts";
 
 interface useSampleApiType {
     getAllSamples: () => Promise<ISample[]>,
-    searchSamples: (searchString: string) => Promise<ISample[]>,
-    getByPlaylist: (playlistGuid: string) => Promise<ISample[]>,
+    getSortByDate: (limit: number, numberOfPage: number) => Promise<ISample[]>,
+    searchSamples: (searchString: string, limit: number, numberOfPage: number) => Promise<ISample[]>,
+    getByPlaylist: (playlistGuid: string, limit: number, numberOfPage: number) => Promise<ISample[]>,
     getSample: (sampleGuid: string) => Promise<ISample | null>,
-    getUserSamples: (userGuid: string) => Promise<ISample[]>,
+    getUserSamples: (userGuid: string, limit: number, numberOfPage: number) => Promise<ISample[]>,
     addAnListensToSample: (sampleGuid: string) => Promise<boolean>,
     createSample: (uploadedSampleFile: File, sampleStart: number, sampleEnd: number,
                    coverBlob: Blob, sampleName: string, sampleArtist: string,
@@ -23,13 +24,18 @@ export default function useSampleApi(): useSampleApiType {
         return await get(url);
     }
 
-    const searchSamples = async (searchString: string): Promise<Array<ISample>> => {
-        let url = baseAddress + `sample/search-samples?search-string=${searchString}`
+    const getSortByDate = async (limit: number, numberOfPage: number): Promise<ISample[]> => {
+        let url = baseAddress + `sample/get-sort-by-date?Limit=${limit}&NumberOfPage=${numberOfPage}`;
         return await get(url);
     }
 
-    const getByPlaylist = async (playlistGuid: string): Promise<ISample[]> => {
-        let url = baseAddress + `sample/get-by-playlist?playlist-guid=${playlistGuid}`
+    const searchSamples = async (searchString: string, limit: number, numberOfPage: number): Promise<Array<ISample>> => {
+        let url = baseAddress + `sample/search-samples?search-string=${searchString}&Limit=${limit}&NumberOfPage=${numberOfPage}`
+        return await get(url);
+    }
+
+    const getByPlaylist = async (playlistGuid: string, limit: number, numberOfPage: number): Promise<ISample[]> => {
+        let url = baseAddress + `sample/get-by-playlist?playlist-guid=${playlistGuid}&Limit=${limit}&NumberOfPage=${numberOfPage}`
         return await get(url);
     }
 
@@ -38,8 +44,8 @@ export default function useSampleApi(): useSampleApiType {
         return await get(url);
     }
 
-    const getUserSamples = async (userGuid: string): Promise<ISample[]> => {
-        let url = baseAddress + `sample/get-user-samples?user-guid=${userGuid}`
+    const getUserSamples = async (userGuid: string, limit: number, numberOfPage: number): Promise<ISample[]> => {
+        let url = baseAddress + `sample/get-user-samples?user-guid=${userGuid}&Limit=${limit}&NumberOfPage=${numberOfPage}`
         return await get(url);
     }
 
@@ -76,6 +82,7 @@ export default function useSampleApi(): useSampleApiType {
     
     return {
         getAllSamples,
+        getSortByDate,
         searchSamples,
         getByPlaylist,
         getSample,
