@@ -140,7 +140,8 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
 
     useEffect(() => {
         if (selectedStatisticsPage === StatisticPageType.numbersOfListensChartPage)
-            chartRef!.current!.style.width = `${samples.length * 50}px`;
+            if(samples.length > 6)
+                chartRef!.current!.style.width = `${samples.length * 50}px`;
     }, [samples]);
 
     async function getWordFile() {
