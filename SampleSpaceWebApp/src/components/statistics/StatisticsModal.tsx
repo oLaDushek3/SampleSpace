@@ -94,7 +94,7 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
                              maintainAspectRatio: false,
                          }}
                          data={{
-                             labels: samples!.map((sample) => sample.name),
+                             labels: samples!.reverse().map((sample) => sample.name),
                              datasets: [
                                  {
                                      label: "Количество прослушиваний",
@@ -123,14 +123,14 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
     )
 
     const sampleAdditionStatisticsPage = (
-        <SampleAdditionCalendar data={sampleAdditionStatistics}/>
+        <SampleAdditionCalendar data={sampleAdditionStatistics.reverse()}/>
     )
 
     const [selectedStatisticsPage, setSelectedStatisticsPage] = useState<StatisticPageType>()
 
     const setNumbersOfListensChartPage = async () => {
         setSelectedStatisticsPage(StatisticPageType.numbersOfListensChartPage);
-        setSamples(await getUserSamples(userGuid));
+        setSamples(await getUserSamples(userGuid, 0, 0));
     }
 
     const setSampleAdditionStatisticsPage = async () => {

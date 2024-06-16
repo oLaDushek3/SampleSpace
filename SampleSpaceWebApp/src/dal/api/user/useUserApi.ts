@@ -3,6 +3,7 @@ import IUser from "../../entities/IUser.ts";
 import useApiBase from "../useApiBase.ts";
 import IForgotPassword from "../blanks/user/IForgotPassword.ts";
 import IResetPassword from "../blanks/user/IResetPassword.ts";
+import ISampleAdditionStatistic from "../../entities/ISampleAdditionStatistic.ts";
 
 interface useUserApiType {
     signUp: (avatarBlob: Blob, nickname: string, email: string, password: string) => Promise<boolean | string>,
@@ -15,7 +16,7 @@ interface useUserApiType {
     getUser: (nickname: string) => Promise<IUser>,
     generateWord: (userGuid: string) => Promise<boolean>,
     generateExcel: (userGuid: string) => Promise<boolean>,
-    getSampleAdditionStatistics: (userGuid: string) => Promise<boolean>
+    getSampleAdditionStatistics: (userGuid: string) => Promise<ISampleAdditionStatistic[]>
 }
 
 export default function useUserApi(): useUserApiType {
@@ -88,7 +89,7 @@ export default function useUserApi(): useUserApiType {
         return await download(url);
     }
 
-    const getSampleAdditionStatistics = async (userGuid: string): Promise<boolean> => {
+    const getSampleAdditionStatistics = async (userGuid: string): Promise<ISampleAdditionStatistic[]> => {
         let url = baseAddress + `user/get-sample-addition-statistics?user-guid=${userGuid}`
         return await get(url);
     }
