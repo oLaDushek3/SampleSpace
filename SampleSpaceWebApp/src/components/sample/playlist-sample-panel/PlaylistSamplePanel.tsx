@@ -27,7 +27,7 @@ export default function PlaylistSamplePanel({isActive = false, sampleGuid}: Play
 
     async function fetchPlaylists() {
         const response = await getUserPlaylistsRelativeSample(loginUser!.userGuid, sampleGuid);
-        setPlaylists(response);
+        setPlaylists(response as IPlaylistRelativeSample[]);
     }
 
     useEffect(() => {

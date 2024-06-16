@@ -20,6 +20,7 @@ import useClickOutside from "../../hook/useClickOutside.ts";
 import PlaylistSamplePanel from "../../components/sample/playlist-sample-panel/PlaylistSamplePanel.tsx";
 import useSampleApi from "../../dal/api/sample/useSampleApi.ts";
 import useSampleCommentApi from "../../dal/api/sample-comment/useSampleCommentApi.ts";
+import ISample from "../../dal/entities/ISample.ts";
 
 export default function SamplePage() {
     const {getSample} = useSampleApi();
@@ -44,7 +45,7 @@ export default function SamplePage() {
     async function fetchSample() {
         if (sampleGuid) {
             const response = await getSample(sampleGuid);
-            setSamplePlayer(response !== null ? {sample: response, isActive: false} : null);
+            setSamplePlayer(response !== null ? {sample: response as ISample, isActive: false} : null);
         }
     }
 
@@ -54,7 +55,7 @@ export default function SamplePage() {
 
     async function fetchSampleComments() {
         const response = await getSampleComments(samplePlayer!.sample.sampleGuid);
-        setSampleComments(response);
+        setSampleComments(response as ISampleComment[]);
     }
 
     useEffect(() => {

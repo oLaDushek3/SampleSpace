@@ -42,11 +42,11 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
             return
         }
 
-        const response = await editUser(loginUser?.userGuid, avatarBlob, nickname, email);
+        const response = await editUser(loginUser!.userGuid, avatarBlob, nickname, email);
 
         if (response) {
             setUser(response);
-            onSuccess(response);
+            onSuccess(response as IUser);
         } else {
             setError("Ошибка сохранения изменений");
             return
@@ -82,11 +82,11 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
         e.preventDefault();
 
         void await forgotPassword(window.location.origin + "/reset-password", loginUser!.email);
-        
+
         setClickOutsideRef(null);
         setInformIsOpen(true);
     }
-    
+
     const handleInformOnClose = () => {
         setClickOutsideRef(wrapperRef);
         setInformIsOpen(false);
@@ -112,7 +112,8 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
                     <FileInput filePreview={avatarPreview}
                                accept={FileInputAccept.image}
                                onUpload={(file) => setAvatarBlob(new Blob([file]))}
-                               setError={setError}/>
+                               setError={setError}
+                               fileMaxSizeMb={7.5}/>
                 </div>
 
                 <label htmlFor="nickname">Имя пользователя</label>
@@ -160,7 +161,8 @@ export default function EditProfileModal({onCancel, onSuccess, onDelete}: EditPr
                 {confirmIsOpen && <ConfirmModal message={"Аккаунт будет удален"}
                                                 onConfirm={handleDeleteConfirm}
                                                 onCancel={handleDeleteCancelled}/>}
-                {informIsOpen && <InformModal message={"На вашу почту отправленно письмо с сылкой на востановление пароля"}
+                {informIsOpen &&
+                    <InformModal message={"На вашу почту отправленно письмо с сылкой на востановление пароля"}
                                  onClose={handleInformOnClose}/>}
             </Modal>
 

@@ -25,7 +25,7 @@ export default function ProfilePage() {
     const {getUser, signOut} = useUserApi();
     const {getByPlaylist, getUserSamples, deleteSample} = useSampleApi();
     const {getUserPlaylists, deleteSampleFromPlaylist} = usePlaylistApi();
-    const [fetchFunction, setFetchFunction] = useState<(numberOfPage: number) => Promise<ISample[]>>()
+    const [fetchFunction, setFetchFunction] = useState<(numberOfPage: number) => Promise<ISample[] | string>>()
 
     const {nickname} = useParams<{ nickname: string }>();
     const [user, setUser] = useState<IUser | null>();
@@ -66,20 +66,20 @@ export default function ProfilePage() {
 
     async function fetchUser() {
         const response = await getUser(nickname!);
-        setUser(response);
+        setUser(response as IUser);
     }
 
     async function fetchUserPlaylist() {
-        const response: IPlaylist[] = await getUserPlaylists(user!.userGuid.toString());
-        response.unshift({
+        const response = await getUserPlaylists(user!.userGuid.toString());
+        (response as IPlaylist[]).unshift({
             playlistGuid: user!.userGuid,
             userGuid: user!.userGuid,
             name: "Созданные",
             canBeModified: false
         });
 
-        setUserPlaylists(response);
-        setSelectedPlaylist(response[0]);
+        setUserPlaylists((response as IPlaylist[]));
+        setSelectedPlaylist((response as IPlaylist[])[0]);
     }
 
     const handleDeleteSample = async (sampleGuid: string) => {

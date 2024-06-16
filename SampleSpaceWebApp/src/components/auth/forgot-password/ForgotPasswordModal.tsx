@@ -32,7 +32,7 @@ export default function ForgotPasswordModal({onClose}: ForgotPasswordModalProps)
         
         const response = await forgotPassword(window.location.origin + "/reset-password", email);
 
-        if(response === 404){
+        if(response === "404"){
             setError("Пользователь с такой вочтой не найден");
             return;
         }

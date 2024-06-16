@@ -17,7 +17,7 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     useClickOutside(wrapperRef, onClose);
 
     const {signUp} = useUserApi();
-    
+
     const [avatarBlob, setAvatarBlob] = useState<Blob>();
     const [avatarSrc, setAvatarSrc] = useState("");
     const [nickname, setNickname] = useState("");
@@ -26,34 +26,34 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     const [confirmPassword, setConfirmPassword] = useState("");
     const {validation} = usePasswordValidation();
     const [error, setError] = useState("");
-    
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
-        if (nickname.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0) {
+
+        if (!avatarBlob || nickname.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0) {
             setError("Не все поля заполнены");
             return;
         }
 
-        if(password !== confirmPassword){
+        if (password !== confirmPassword) {
             setError("Пароли не совпадают");
             return;
         }
 
         let validationError: string = validation(password)
-        
-        if(validationError.trim().length !== 0){
+
+        if (validationError.trim().length !== 0) {
             setError(validationError);
             return;
         }
 
         const response = await signUp(avatarBlob, nickname, email, password);
-        
-        if(response === 409){
+
+        if (response === "409") {
             setError("Пользователь с таким именем или почтой уже существует");
             return;
         }
-        
+
         if (response === true) {
             onClose();
         } else {
@@ -63,16 +63,16 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
     }
 
     useEffect(() => {
-        if(avatarBlob)
+        if (avatarBlob)
             setAvatarSrc(URL.createObjectURL(avatarBlob));
     }, [avatarBlob]);
-    
+
     const avatarPreview = (
         <UserAvatar src={avatarSrc} height={125}/>)
 
     return (
-        <div ref={wrapperRef} 
-             className={signUpModalClasses.signUp + " verticalPanel"} >
+        <div ref={wrapperRef}
+             className={signUpModalClasses.signUp + " verticalPanel"}>
             <p style={{fontSize: "24px", fontWeight: "bold"}}>Регистрация</p>
 
             <form className={"verticalPanel"}
@@ -82,10 +82,11 @@ export default function SignUpModal({onClose}: SignUpModalProps) {
                     <FileInput filePreview={avatarPreview}
                                accept={FileInputAccept.image}
                                onUpload={(file) => setAvatarBlob(new Blob([file]))}
-                               setError={setError}/>
+                               setError={setError}
+                               fileMaxSizeMb={7.5}/>
                 </div>
 
-                
+
                 <label htmlFor="nickname">Имя пользователя</label>
                 <input id="nickname"
                        className="text-input"

@@ -7,16 +7,16 @@ import ISampleAdditionStatistic from "../../entities/ISampleAdditionStatistic.ts
 
 interface useUserApiType {
     signUp: (avatarBlob: Blob, nickname: string, email: string, password: string) => Promise<boolean | string>,
-    signIn: (nickname: string, password: string) => Promise<IUser>,
-    signOut: () => Promise<IUser>,
-    editUser: (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string) => Promise<IUser>
-    forgotPassword: (route: string, email: string) => Promise<IUser>,
-    resetPassword: (resetToken: string, newPassword: string) => Promise<IUser>,
-    deleteUser: (userGuid: string) => Promise<IUser>,
-    getUser: (nickname: string) => Promise<IUser>,
-    generateWord: (userGuid: string) => Promise<boolean>,
-    generateExcel: (userGuid: string) => Promise<boolean>,
-    getSampleAdditionStatistics: (userGuid: string) => Promise<ISampleAdditionStatistic[]>
+    signIn: (nickname: string, password: string) => Promise<IUser | string>,
+    signOut: () => Promise<IUser | string>,
+    editUser: (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string) => Promise<IUser | string>
+    forgotPassword: (route: string, email: string) => Promise<IUser | string>,
+    resetPassword: (resetToken: string, newPassword: string) => Promise<IUser | string>,
+    deleteUser: (userGuid: string) => Promise<IUser | string>,
+    getUser: (nickname: string) => Promise<IUser | string>,
+    generateWord: (userGuid: string) => Promise<boolean | string>,
+    generateExcel: (userGuid: string) => Promise<boolean | string>,
+    getSampleAdditionStatistics: (userGuid: string) => Promise<ISampleAdditionStatistic[] | string>
 }
 
 export default function useUserApi(): useUserApiType {
@@ -34,7 +34,7 @@ export default function useUserApi(): useUserApiType {
         return await post(url, formData);
     }
 
-    const signIn = async (nickname: string, password: string): Promise<IUser> => {
+    const signIn = async (nickname: string, password: string): Promise<IUser | string> => {
         let url = baseAddress + "user/sign-in";
         let blank: ILoginBlank = {nickname, password};
         return await post(url, blank);
@@ -45,7 +45,7 @@ export default function useUserApi(): useUserApiType {
         return await post(url);
     }
 
-    const editUser = async (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string): Promise<IUser> => {
+    const editUser = async (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string): Promise<IUser | string> => {
         let url = baseAddress + `user/edit-user`;
 
         const formData = new FormData();
@@ -57,39 +57,39 @@ export default function useUserApi(): useUserApiType {
         return await put(url, formData);
     }
 
-    const forgotPassword = async (route: string, email: string): Promise<IUser> => {
+    const forgotPassword = async (route: string, email: string): Promise<IUser | string> => {
         let url = baseAddress + `user/forgot-password`;
         let blank: IForgotPassword = {route, email};
         return await post(url, blank);
     }
 
-    const resetPassword = async (resetToken: string, newPassword: string): Promise<IUser> => {
+    const resetPassword = async (resetToken: string, newPassword: string): Promise<IUser | string> => {
         let url = baseAddress + `user/reset-password`;
         let blank: IResetPassword = {resetToken, newPassword};
         return await put(url, blank);
     }
 
-    const deleteUser = async (userGuid: string): Promise<IUser> => {
+    const deleteUser = async (userGuid: string): Promise<IUser | string> => {
         let url = baseAddress + `user/delete-user?user-guid=${userGuid}`;
         return await del(url);
     }
 
-    const getUser = async (nickname: string): Promise<IUser> => {
+    const getUser = async (nickname: string): Promise<IUser | string> => {
         let url = baseAddress + `user/get-user-by-nickname?nickname=${nickname}`;
         return await get(url);
     }
 
-    const generateWord = async (userGuid: string): Promise<boolean> => {
+    const generateWord = async (userGuid: string): Promise<boolean | string> => {
         let url = baseAddress + `user/generate-word?user-guid=${userGuid}`
         return await download(url);
     }
 
-    const generateExcel = async (userGuid: string): Promise<boolean> => {
+    const generateExcel = async (userGuid: string): Promise<boolean | string> => {
         let url = baseAddress + `user/generate-excel?user-guid=${userGuid}`
         return await download(url);
     }
 
-    const getSampleAdditionStatistics = async (userGuid: string): Promise<ISampleAdditionStatistic[]> => {
+    const getSampleAdditionStatistics = async (userGuid: string): Promise<ISampleAdditionStatistic[] | string> => {
         let url = baseAddress + `user/get-sample-addition-statistics?user-guid=${userGuid}`
         return await get(url);
     }
