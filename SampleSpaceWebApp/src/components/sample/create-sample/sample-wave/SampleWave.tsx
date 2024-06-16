@@ -21,7 +21,6 @@ export default function SampleWave({sampleBlob, onRegionUpdate}: SampleWaveProps
     const [sampleUrl, setSampleUrl] = useState("")
     const sampleWaveContainerRef = useRef<HTMLDivElement>(null);
     
-    const [decodeErrorTimeout, setDecodeErrorTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
     const {showInform} = useInformModal();
 
     const [volumeValue, setVolumeValue] = useState(0.5);
@@ -64,15 +63,17 @@ export default function SampleWave({sampleBlob, onRegionUpdate}: SampleWaveProps
                 Timeline.create()
             )
 
+            let decodeErrorTimeout1: ReturnType<typeof setTimeout> | null;
+            
             wavesurfer.on('loading', () => {
-                setDecodeErrorTimeout(setTimeout(() => {
+                decodeErrorTimeout1 = setTimeout(() => {
                     showInform("Ошибка загрузки файла");
-                }, 30000));
+                }, 15000);
             })
 
             wavesurfer.on('decode', () => {
-                if(decodeErrorTimeout)
-                    clearTimeout(decodeErrorTimeout);
+                if(decodeErrorTimeout1)
+                    clearTimeout(decodeErrorTimeout1);
             })
 
             const wavesurferRegions = wavesurfer.registerPlugin(Regions.create())
