@@ -4,10 +4,10 @@ import IEditSampleCommentBlank from "../blanks/sample-comment/IEditSampleComment
 import useApiBase from "../useApiBase.ts";
 
 interface useSampleCommentApiType {
-    getSampleComments: Function,
-    createNewComment: Function,
-    editComment: Function,
-    deleteComment: Function
+    getSampleComments: (sampleGuid: string) => Promise<Array<ISampleComment>>,
+    createNewComment: (sampleGuid: string, userGuid: string, comment: string) => Promise<string>,
+    editComment: (commentGuid: string, comment: string) => Promise<boolean>,
+    deleteComment: (commentGuid: string) => Promise<boolean>
 }
 
 export default  function useSampleCommentApi(): useSampleCommentApiType {

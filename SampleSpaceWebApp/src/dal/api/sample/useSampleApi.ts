@@ -1,22 +1,24 @@
 import ISample from "../../entities/ISample.ts";
 import useApiBase from "../useApiBase.ts";
-import IUser from "../../entities/IUser.ts";
 
 interface useSampleApiType {
-    getAllSamples: Function,
-    searchSamples: Function,
-    getByPlaylist: Function,
-    getSample: Function,
-    getUserSamples: Function,
-    addAnListensToSample: Function,
-    createSample: Function,
-    deleteSample: Function
+    getAllSamples: () => Promise<ISample[]>,
+    searchSamples: (searchString: string) => Promise<ISample[]>,
+    getByPlaylist: (playlistGuid: string) => Promise<ISample[]>,
+    getSample: (sampleGuid: string) => Promise<ISample | null>,
+    getUserSamples: (userGuid: string) => Promise<ISample[]>,
+    addAnListensToSample: (sampleGuid: string) => Promise<boolean>,
+    createSample: (uploadedSampleFile: File, sampleStart: number, sampleEnd: number,
+                   coverBlob: Blob, sampleName: string, sampleArtist: string,
+                   userGuid: string, vkontakteLink: string, spotifyLink: string,
+                   soundcloudLink: string) => Promise<boolean>,
+    deleteSample: (sampleGuid: string) => Promise<boolean>
 }
 
 export default function useSampleApi(): useSampleApiType {
     const {baseAddress, get, post, del} = useApiBase();
 
-    const getAllSamples = async (): Promise<Array<ISample>> => {
+    const getAllSamples = async (): Promise<ISample[]> => {
         let url = baseAddress + "sample/get-all-samples";
         return await get(url);
     }
@@ -26,7 +28,7 @@ export default function useSampleApi(): useSampleApiType {
         return await get(url);
     }
 
-    const getByPlaylist = async (playlistGuid: string): Promise<Array<ISample>> => {
+    const getByPlaylist = async (playlistGuid: string): Promise<ISample[]> => {
         let url = baseAddress + `sample/get-by-playlist?playlist-guid=${playlistGuid}`
         return await get(url);
     }
@@ -36,7 +38,7 @@ export default function useSampleApi(): useSampleApiType {
         return await get(url);
     }
 
-    const getUserSamples = async (userGuid: string): Promise<Array<ISample>> => {
+    const getUserSamples = async (userGuid: string): Promise<ISample[]> => {
         let url = baseAddress + `sample/get-user-samples?user-guid=${userGuid}`
         return await get(url);
     }
@@ -67,7 +69,7 @@ export default function useSampleApi(): useSampleApiType {
         return await post(url, formData);
     }
 
-    const deleteSample = async (sampleGuid: string): Promise<IUser>  => {
+    const deleteSample = async (sampleGuid: string): Promise<boolean>  => {
         let url = baseAddress + `sample/delete-sample?sample-guid=${sampleGuid}`;
         return await del(url);
     }
