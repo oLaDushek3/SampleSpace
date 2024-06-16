@@ -5,17 +5,17 @@ import IForgotPassword from "../blanks/user/IForgotPassword.ts";
 import IResetPassword from "../blanks/user/IResetPassword.ts";
 
 interface useUserApiType {
-    signUp: Function,
-    signIn: Function,
-    signOut: Function,
-    editUser: Function
-    forgotPassword: Function,
-    resetPassword: Function,
-    deleteUser: Function,
-    getUser: Function,
-    generateWord: Function,
-    generateExcel: Function,
-    getSampleAdditionStatistics: Function
+    signUp: (avatarBlob: Blob, nickname: string, email: string, password: string) => Promise<boolean | string>,
+    signIn: (nickname: string, password: string) => Promise<IUser>,
+    signOut: () => Promise<IUser>,
+    editUser: (userGuid: string, avatarBlob?: Blob, nickname?: string, email?: string) => Promise<IUser>
+    forgotPassword: (route: string, email: string) => Promise<IUser>,
+    resetPassword: (resetToken: string, newPassword: string) => Promise<IUser>,
+    deleteUser: (userGuid: string) => Promise<IUser>,
+    getUser: (nickname: string) => Promise<IUser>,
+    generateWord: (userGuid: string) => Promise<boolean>,
+    generateExcel: (userGuid: string) => Promise<boolean>,
+    getSampleAdditionStatistics: (userGuid: string) => Promise<boolean>
 }
 
 export default function useUserApi(): useUserApiType {

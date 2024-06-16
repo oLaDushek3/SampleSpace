@@ -6,13 +6,13 @@ import IAddSampleToPlaylistBlank from "../blanks/playlist/IAddSampleToPlaylistBl
 import useApiBase from "../useApiBase.ts";
 
 interface usePlaylistApiType{
-    getUserPlaylists: Function,
-    getUserPlaylistsRelativeSample: Function,
-    createPlaylist: Function,
-    editPlaylist: Function,
-    addSampleToPlaylist: Function,
-    deleteSampleFromPlaylist: Function,
-    deletePlaylist: Function
+    getUserPlaylists: (userGuid: string) => Promise<IPlaylist[]>,
+    getUserPlaylistsRelativeSample: (userGuid: string, sampleGuid: string) => Promise<IPlaylistRelativeSample[]>,
+    createPlaylist: (userGuid: string, name: string) => Promise<string>,
+    editPlaylist: (playlistGuid: string, name: string) => Promise<boolean>,
+    addSampleToPlaylist: (playlistGuid: string, sampleGuid: string) => Promise<boolean>,
+    deleteSampleFromPlaylist: (playlistGuid: string, sampleGuid: string) => Promise<boolean>,
+    deletePlaylist: (playlistGuid: string) => Promise<boolean>
 }
 
 export default function usePlaylistApi(): usePlaylistApiType{

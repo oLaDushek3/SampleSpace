@@ -5,11 +5,11 @@ import useInformModal from "../../hook/useInformModal.ts";
 
 interface useApiBaseType {
     baseAddress: string,
-    get: Function,
-    post: Function,
-    put: Function,
-    del: Function,
-    download: Function
+    get: (url: string) => Promise<any>,
+    post: (url: string, blank?: any) => Promise<any>,
+    put: (url: string, blank: any) => Promise<any>,
+    del: (url: string) => Promise<any>,
+    download: (url: string) => Promise<boolean>
 }
 
 export default function useApiBase(): useApiBaseType {
@@ -19,7 +19,7 @@ export default function useApiBase(): useApiBaseType {
 
     const baseAddress = "http://158.160.171.213/api/";
 
-    const get = async (url: string) => {
+    const get = async (url: string): Promise<any> => {
         return await axios.get(url)
             .then(async res => {
                 return res.data;
@@ -29,7 +29,7 @@ export default function useApiBase(): useApiBaseType {
             })
     }
 
-    const post = async (url: string, blank: any) => {
+    const post = async (url: string, blank?: any): Promise<any> => {
         return await axios.post(url, blank)
             .then(async res => {
                 return res.data ? res.data : true;
@@ -39,7 +39,7 @@ export default function useApiBase(): useApiBaseType {
             })
     }
 
-    const put = async (url: string, blank: any) => {
+    const put = async (url: string, blank: any): Promise<any> => {
         return await axios.put(url, blank)
             .then(async res => {
                 return res.data ? res.data : true;
@@ -49,7 +49,7 @@ export default function useApiBase(): useApiBaseType {
             })
     }
 
-    const del = async(url: string) => {
+    const del = async(url: string): Promise<any> => {
         return await axios.delete(url)
             .then(async res => {
                 return res.data ? res.data : true;
@@ -59,7 +59,7 @@ export default function useApiBase(): useApiBaseType {
             })
     }
     
-    const download = async (url: string) => {
+    const download = async (url: string): Promise<boolean> => {
         window.open(url);
         return true;
     }
