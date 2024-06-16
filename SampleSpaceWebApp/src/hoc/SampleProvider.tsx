@@ -102,7 +102,7 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
             clearTimeout(listenTimeout);
         }
         
-        if(loginUser?.userGuid != samplePlayer.sample.userGuid){
+        if(loginUser && loginUser.userGuid != samplePlayer.sample.userGuid){
             setListenTimeout(setTimeout(() => handleListen(samplePlayer.sample.sampleGuid), 5000));
         }
     }
@@ -116,11 +116,11 @@ export default function SamplePlayerProvider({children}: SamplePlayerProviderPro
 
     const handleListen = (sampleGuid: string) => {
         setListen(true);
-        addAnListensToSample(sampleGuid);
+        void addAnListensToSample(sampleGuid);
     }
     
     const handlePlay = () => {
-        if(loginUser?.userGuid != playingSamplePlayer?.sample.userGuid && !listen){
+        if(loginUser && loginUser.userGuid != playingSamplePlayer?.sample.userGuid && !listen){
             setListenTimeout(setTimeout(() => handleListen(playingSamplePlayer!.sample.sampleGuid), 5000));
         }
         
