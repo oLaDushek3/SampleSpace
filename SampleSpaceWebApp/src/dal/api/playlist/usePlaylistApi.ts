@@ -6,24 +6,24 @@ import IAddSampleToPlaylistBlank from "../blanks/playlist/IAddSampleToPlaylistBl
 import useApiBase from "../useApiBase.ts";
 
 interface usePlaylistApiType{
-    getUserPlaylists: (userGuid: string) => Promise<IPlaylist[]>,
-    getUserPlaylistsRelativeSample: (userGuid: string, sampleGuid: string) => Promise<IPlaylistRelativeSample[]>,
+    getUserPlaylists: (userGuid: string) => Promise<IPlaylist[] | string>,
+    getUserPlaylistsRelativeSample: (userGuid: string, sampleGuid: string) => Promise<IPlaylistRelativeSample[] | string>,
     createPlaylist: (userGuid: string, name: string) => Promise<string>,
-    editPlaylist: (playlistGuid: string, name: string) => Promise<boolean>,
-    addSampleToPlaylist: (playlistGuid: string, sampleGuid: string) => Promise<boolean>,
-    deleteSampleFromPlaylist: (playlistGuid: string, sampleGuid: string) => Promise<boolean>,
-    deletePlaylist: (playlistGuid: string) => Promise<boolean>
+    editPlaylist: (playlistGuid: string, name: string) => Promise<boolean | string>,
+    addSampleToPlaylist: (playlistGuid: string, sampleGuid: string) => Promise<boolean | string>,
+    deleteSampleFromPlaylist: (playlistGuid: string, sampleGuid: string) => Promise<boolean | string>,
+    deletePlaylist: (playlistGuid: string) => Promise<boolean | string>
 }
 
 export default function usePlaylistApi(): usePlaylistApiType{
     const {baseAddress, get , post, put, del} = useApiBase();
 
-    const getUserPlaylists = async (userGuid: string): Promise<Array<IPlaylist>> => {
+    const getUserPlaylists = async (userGuid: string): Promise<IPlaylist[] | string> => {
         let url = baseAddress + `playlist/get-user-playlists?user-guid=${userGuid}`;
         return await get(url);
     }
 
-    const getUserPlaylistsRelativeSample = async (userGuid: string, sampleGuid: string): Promise<Array<IPlaylistRelativeSample>> => {
+    const getUserPlaylistsRelativeSample = async (userGuid: string, sampleGuid: string): Promise<IPlaylistRelativeSample[] | string> => {
         let url = baseAddress + `playlist/get-user-playlists-relative-sample?user-guid=${userGuid}&sample-guid=${sampleGuid}`;
         return await get(url);
     }
@@ -34,24 +34,24 @@ export default function usePlaylistApi(): usePlaylistApiType{
         return await post(url, blank);
     }
 
-    const editPlaylist = async (playlistGuid: string, name: string): Promise<boolean> => {
+    const editPlaylist = async (playlistGuid: string, name: string): Promise<boolean | string> => {
         let url = baseAddress + "playlist/edit-playlist";
         let blank: IEditPlaylistBlank = {playlistGuid, name};
         return await put(url, blank);
     }
 
-    const addSampleToPlaylist = async (playlistGuid: string, sampleGuid: string): Promise<boolean> => {
+    const addSampleToPlaylist = async (playlistGuid: string, sampleGuid: string): Promise<boolean | string> => {
         let url = baseAddress + "playlist/add-sample-to-playlist";
         let blank: IAddSampleToPlaylistBlank = {playlistGuid, sampleGuid};
         return await post(url, blank);
     }
 
-    const deleteSampleFromPlaylist = async (playlistGuid: string, sampleGuid: string): Promise<boolean> => {
+    const deleteSampleFromPlaylist = async (playlistGuid: string, sampleGuid: string): Promise<boolean | string> => {
         let url = baseAddress + `playlist/delete-sample-from-playlist?playlist-guid=${playlistGuid}&sample-guid=${sampleGuid}`;
         return await del(url);
     }
 
-    const deletePlaylist = async (playlistGuid: string): Promise<boolean> => {
+    const deletePlaylist = async (playlistGuid: string): Promise<boolean | string> => {
         let url = baseAddress + `playlist/delete-playlist?playlist-guid=${playlistGuid}`;
         return await del(url);
     }

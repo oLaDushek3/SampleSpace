@@ -130,12 +130,12 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
 
     const setNumbersOfListensChartPage = async () => {
         setSelectedStatisticsPage(StatisticPageType.numbersOfListensChartPage);
-        setSamples(await getUserSamples(userGuid, 0, 0));
+        setSamples(await getUserSamples(userGuid, 0, 0) as ISample[]);
     }
 
     const setSampleAdditionStatisticsPage = async () => {
         setSelectedStatisticsPage(StatisticPageType.sampleAdditionStatisticsPage);
-        setSampleAdditionStatistics(await getSampleAdditionStatistics(userGuid));
+        setSampleAdditionStatistics(await getSampleAdditionStatistics(userGuid) as ISampleAdditionStatistic[]);
     }
 
     useEffect(() => {

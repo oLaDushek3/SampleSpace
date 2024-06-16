@@ -19,6 +19,7 @@ interface FileInputPropsProps {
     accept: FileInputAccept;
     onUpload: (file: File) => void;
     setError: Dispatch<SetStateAction<string>>;
+    fileMaxSizeMb: number;
 }
 
 export default function FileInput({
@@ -26,7 +27,8 @@ export default function FileInput({
                                       dropMessage = `Перетащите файл сюда \n или выберите вручную`,
                                       accept,
                                       onUpload,
-                                      setError
+                                      setError,
+                                      fileMaxSizeMb
                                   }: FileInputPropsProps) {
     const dropArea = useRef<HTMLLabelElement>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
@@ -51,6 +53,11 @@ export default function FileInput({
         
         if (!accepts[accept].includes(selectedFile.type)) {
             setError(`Не правильный формат файла`);
+            return;
+        }
+
+        if (selectedFile.size > fileMaxSizeMb * 1024 * 1024) {
+            setError(`Файл слишком большой. Максимальный размер: ${fileMaxSizeMb} мб`);
             return;
         }
         

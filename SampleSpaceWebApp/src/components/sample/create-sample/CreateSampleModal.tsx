@@ -35,7 +35,7 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
     const [soundcloudLink, setSoundcloudLink] = useState("");
     const [error, setError] = useState("");
     const {loginUser} = useAuth();
-    
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -105,14 +105,16 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
                 {!uploadSample ?
                     <FileInput accept={FileInputAccept.audio}
                                onUpload={handleUploadSample}
-                               setError={setError}/> :
+                               setError={setError}
+                               fileMaxSizeMb={12.5}/> :
                     <div className={"verticalPanel"}>
                         <div className={createSampleModalClasses.samplePanel + " horizontalPanel"}>
                             <div className={createSampleModalClasses.cover}>
                                 <FileInput dropMessage={""} filePreview={coverFile && coverPreview}
                                            accept={FileInputAccept.image}
                                            onUpload={(file) => setCoverFile(file)}
-                                           setError={setError}/>
+                                           setError={setError}
+                                           fileMaxSizeMb={7.5}/>
                             </div>
 
                             <div className={"verticalPanel"} style={{alignContent: "center"}}>

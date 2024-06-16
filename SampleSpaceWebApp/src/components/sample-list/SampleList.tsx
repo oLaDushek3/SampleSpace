@@ -7,7 +7,7 @@ import useSamplePlayer from "../../hook/useSamplePlayer.ts";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner.tsx";
 
 interface TestSampleListProps {
-    fetchFunction: (numberOfPage: number) => Promise<ISample[]>,
+    fetchFunction: (numberOfPage: number) => Promise<ISample[] | string>,
     onDelete?: (sampleGuid: string) => void;
 }
 
@@ -26,10 +26,10 @@ export default function SampleList({fetchFunction, onDelete}: TestSampleListProp
     
     useEffect(() => {
         if (fetching) {
-            fetchFunction(currentPage).then((response: ISample[]) => {
-                setSamples([...samples, ...response])
+            fetchFunction(currentPage).then((response) => {
+                setSamples([...samples, ...response as ISample[]])
                 setCurrentPage(prevState => prevState + 1);
-                updateSamplePlayers(response);
+                updateSamplePlayers(response as ISample[]);
             })
                 .finally(() => setFetching(false));
         }
