@@ -10,6 +10,7 @@ import {IoPause, IoPlay, IoVolumeHigh} from "react-icons/io5";
 import {RiForward5Fill, RiReplay5Fill} from "react-icons/ri";
 import {FiZoomIn, FiZoomOut} from "react-icons/fi";
 import Icon from "../../../icon/Icon.tsx";
+import useInformModal from "../../../../hook/useInformModal.ts";
 
 interface SampleWaveProps {
     sampleBlob: File,
@@ -19,6 +20,9 @@ interface SampleWaveProps {
 export default function SampleWave({sampleBlob, onRegionUpdate}: SampleWaveProps) {
     const [sampleUrl, setSampleUrl] = useState("")
     const sampleWaveContainerRef = useRef<HTMLDivElement>(null);
+    
+    const [decodeErrorTimeout, setDecodeErrorTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
+    const {showInform} = useInformModal();
 
     const [volumeValue, setVolumeValue] = useState(0.5);
     const [volumeClasses, setVolumeClasses] = useState(sampleWaveClasses.volume)
@@ -59,6 +63,17 @@ export default function SampleWave({sampleBlob, onRegionUpdate}: SampleWaveProps
             wavesurfer.registerPlugin(
                 Timeline.create()
             )
+
+            wavesurfer.on('loading', () => {
+                setDecodeErrorTimeout(setTimeout(() => {
+                    showInform("Ошибка загрузки файла");
+                }, 30000));
+            })
+
+            wavesurfer.on('decode', () => {
+                if(decodeErrorTimeout)
+                    clearTimeout(decodeErrorTimeout);
+            })
 
             const wavesurferRegions = wavesurfer.registerPlugin(Regions.create())
 
