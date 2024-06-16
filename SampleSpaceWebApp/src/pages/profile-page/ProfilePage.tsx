@@ -36,8 +36,7 @@ export default function ProfilePage() {
     const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
     const [confirmIsOpen, setConfirmIsOpen] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState("");
-    const [onConfirm, setOnConfirm] = useState(() => () => {
-    })
+    const [onConfirm, setOnConfirm] = useState(() => () => {})
 
     const [statisticsIsOpen, setStatisticsIsOpen] = useState(false);
 
@@ -119,13 +118,13 @@ export default function ProfilePage() {
             setFetchFunction(() => (numberOfPage: number) => getByPlaylist(selectedPlaylist.playlistGuid, 15, numberOfPage));
         }
     }, [selectedPlaylist]);
-
+    
     if (user === undefined)
         return <LoadingSpinner/>
 
     if (user === null)
         return <NotFoundPage/>
-
+    
     return (
         <>
             <div className={profilePageClasses.profilePanel}>
@@ -135,23 +134,26 @@ export default function ProfilePage() {
                         <h1>{user.nickname}</h1>
                         <h2>{user.email}</h2>
 
-                        {user.userGuid === loginUser?.userGuid &&
-                            <div className="horizontalPanel">
+                        <div className="horizontalPanel">
+                            {(user.userGuid === loginUser?.userGuid || loginUser?.isAdmin) &&
                                 <Button primary={false}
                                         onClick={() => setStatisticsIsOpen(true)}>
                                     Статистика
-                                </Button>
+                                </Button>}
 
-                                <Button primary={false}
-                                        onClick={() => setEditProfileIsOpen(true)}>
-                                    Редактировать
-                                </Button>
+                            {user.userGuid === loginUser?.userGuid &&
+                                <>
+                                    <Button primary={false}
+                                            onClick={() => setEditProfileIsOpen(true)}>
+                                        Редактировать
+                                    </Button>
 
-                                <Button warning={true}
-                                        onClick={handleSignOut}>
-                                    Выйти
-                                </Button>
-                            </div>}
+                                    <Button warning={true}
+                                            onClick={handleSignOut}>
+                                        Выйти
+                                    </Button>
+                                </>}
+                        </div>
 
                     </div>
                 </div>
