@@ -21,6 +21,10 @@ export default function SampleList({fetchFunction, onDelete}: TestSampleListProp
     const [fetching, setFetching] = useState(true);
 
     useEffect(() => {
+        resetSamplePlayers();
+    }, [fetchFunction]);
+    
+    useEffect(() => {
         if (fetching) {
             fetchFunction(currentPage).then((response: ISample[]) => {
                 setSamples([...samples, ...response])
@@ -29,8 +33,16 @@ export default function SampleList({fetchFunction, onDelete}: TestSampleListProp
             })
                 .finally(() => setFetching(false));
         }
-    }, [fetching]);
+    }, [fetching, fetchFunction]);
 
+    const resetSamplePlayers = () => {
+        setFetching(true);
+        setCurrentPage(1);
+        setSamples([])
+        setSamplePlayerList([]);
+        samplePlayer.handleSamplePlayerList([]);
+    }
+    
     const updateSamplePlayers = (samples: ISample[]) => {
         const samplePlayerListBuffer = samples?.map(sample => ({sample: sample, isActive: false}));
         setSamplePlayerList([...samplePlayerList, ...samplePlayerListBuffer]);
@@ -54,6 +66,10 @@ export default function SampleList({fetchFunction, onDelete}: TestSampleListProp
         return <LoadingSpinner/>
     }
 
+    // useEffect(() => {
+    //     console.log(samples);
+    // }, [samples]);
+    
     return (
         <div className={sampleListClasses.list}>
             {samples?.length != 0 ? samplePlayerList?.map(samplePlayer => <Sample samplePlayer={samplePlayer}
