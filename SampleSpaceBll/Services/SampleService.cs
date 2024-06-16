@@ -29,7 +29,8 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
         return await postgreSqlSampleRepository.Search(searchString, limit, numberOfPage);
     }
 
-    public async Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid, int limit, int numberOfPage)
+    public async Task<(List<Sample>? samples, string error)> GetByPlaylist(Guid playlistGuid, int limit,
+        int numberOfPage)
     {
         return await postgreSqlSampleRepository.GetByPlaylist(playlistGuid, limit, numberOfPage);
     }
@@ -50,20 +51,21 @@ public class SampleService(IPostgreSQLSampleRepository postgreSqlSampleRepositor
     }
 
     public (Stream? trimmedSampleStream, string error) TrimSample(Stream sampleFileStream, double sampleStart,
-        double sampleEnd)
+        double sampleEnd, string sampleExtension)
     {
-        var (sampleStream, error) = sampleTrimmer.TestTrimMp3File(sampleFileStream,
-            TimeSpan.FromSeconds(sampleStart),
-            TimeSpan.FromSeconds(sampleEnd));
+        var (sampleStream, error) = sampleTrimmer.TestTrimMp3File(sampleFileStream, TimeSpan.FromSeconds(sampleStart),
+            TimeSpan.FromSeconds(sampleEnd), sampleExtension);
 
         return !string.IsNullOrEmpty(error) ? (null, error) : (sampleStream, string.Empty);
     }
 
     public async Task<(string? sampleLink, string? coverLink, string error)> UploadSample(Guid userGuid,
-        string sampleName, Stream sampleStream, Stream coverStream)
+        string sampleName, Stream sampleStream, string sampleFileExtension, Stream coverStream,
+        string coverFileExtension)
     {
         var (sampleLink, coverLink, error) =
-            await cloudStorageSampleRepository.Create(userGuid, sampleName, sampleStream, coverStream);
+            await cloudStorageSampleRepository.Create(userGuid, sampleName, sampleStream, sampleFileExtension,
+                coverStream, coverFileExtension);
 
         return !string.IsNullOrEmpty(error) ? (null, null, error) : (sampleLink, coverLink, string.Empty);
     }

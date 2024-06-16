@@ -32,7 +32,7 @@ public class SampleTrimmer(IOptions<FfMpegOptions> options) : ISampleTrimmer
         return (outStream, string.Empty);
     }
 
-    public (Stream? trimmedSample, string error) TestTrimMp3File(Stream inStream, TimeSpan cutStart, TimeSpan cutEnd)
+    public (Stream? trimmedSample, string error) TestTrimMp3File(Stream inStream, TimeSpan cutStart, TimeSpan cutEnd, string outExtension)
     {
         GlobalFFOptions.Configure(new FFOptions { BinaryFolder = _options.FfMpegExeFolderPath });
 
@@ -47,7 +47,7 @@ public class SampleTrimmer(IOptions<FfMpegOptions> options) : ISampleTrimmer
                     options => options
                         .Seek(cutStart)
                         .EndSeek(cutEnd)
-                        .ForceFormat("mp3"))
+                        .ForceFormat(outExtension.Replace(".", string.Empty)))
                 .ProcessSynchronously();
         }
         catch

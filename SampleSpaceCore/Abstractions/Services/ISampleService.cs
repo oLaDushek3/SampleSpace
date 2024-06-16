@@ -20,10 +20,12 @@ public interface ISampleService
 
     public Task<(bool successfully, string error)> AddAnListensToSample(Guid sampleGuid);
 
-    public (Stream? trimmedSampleStream, string error) TrimSample(Stream sampleFileStream, double sampleStart, double sampleEnd);
-    
+    public (Stream? trimmedSampleStream, string error) TrimSample(Stream sampleFileStream, double sampleStart,
+        double sampleEnd, string sampleExtension);
+
     public Task<(string? sampleLink, string? coverLink, string error)> UploadSample(Guid userGuid,
-        string sampleName, Stream sampleStream, Stream coverStream);
+        string sampleName, Stream sampleStream, string sampleFileExtension, Stream coverStream,
+        string coverFileExtension);
 
     public Task<(Guid? sampleGuid, string error)> CreateSample(Sample sample);
 

@@ -132,10 +132,14 @@ public class SampleController(ISampleService sampleService) : ControllerBase
         if (!string.IsNullOrEmpty(createdSampleError))
             return BadRequest(createdSampleError);
 
+        var sampleExtension = Path.GetExtension(createSampleRequest.SampleFile.FileName);
+        var coverExtension = Path.GetExtension(createSampleRequest.CoverFile.FileName);
+        
         var (trimmedSampleStream, trimmedError) = sampleService.TrimSample(
             createdSample!.SampleStream,
             sampleStart,
-            sampleEnd);
+            sampleEnd, 
+            sampleExtension);
 
         if (!string.IsNullOrEmpty(trimmedError))
         {
@@ -147,7 +151,9 @@ public class SampleController(ISampleService sampleService) : ControllerBase
             createdSample.UserGuid,
             createdSample.Name,
             trimmedSampleStream!,
-            createdSample.CoverStream);
+            sampleExtension,
+            createdSample.CoverStream,
+            coverExtension);
 
         createdSample.Dispose();
 
@@ -171,7 +177,6 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
     [Authorize]
     [HttpDelete("delete-sample")]
-    [RequestSizeLimit(20_000_000)]
     public async Task<IActionResult> DeleteSample([FromQuery(Name = "sample-guid")] Guid sampleGuid)
     {
         var (sample, getError) = await sampleService.GetSample(sampleGuid);
@@ -181,7 +186,7 @@ public class SampleController(ISampleService sampleService) : ControllerBase
 
         var loginUserGuid = Guid.Parse(User.FindFirst(ClaimTypes.Authentication)!.Value);
         var userIsAdmin = Convert.ToBoolean(User.FindFirst(ClaimTypes.Role)!.Value);
-
+        
         if (loginUserGuid != sample!.UserGuid && !userIsAdmin)
             return Forbid();
 
