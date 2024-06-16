@@ -8,11 +8,11 @@ namespace SampleSpaceDal.CloudStorage.Repositories.SampleRepository;
 public class SampleRepository(IOptions<CloudStorageOptions> options) : BaseRepository(options), ISampleRepository
 {
     public async Task<(string? sampleLink, string? coverLink, string error)> Create(Guid userGuid, string sampleName,
-        Stream sampleStream, Stream coverStream)
+        Stream sampleStream, string sampleFileExtension,  Stream coverStream, string coverFileExtension)
     {
         var client = GetClient();
         
-        var sampleObjectName = $"samples/{userGuid}/{sampleName}/{sampleName}.mp3";
+        var sampleObjectName = $"samples/{userGuid}/{sampleName}/{sampleName}.{sampleFileExtension}";
         var request = new PutObjectRequest
         {
             BucketName = BucketName,
@@ -30,7 +30,7 @@ public class SampleRepository(IOptions<CloudStorageOptions> options) : BaseRepos
             return (null, null, exception.Message);
         }
         
-        var coverObjectName = $"samples/{userGuid}/{sampleName}/{sampleName}.jpg";
+        var coverObjectName = $"samples/{userGuid}/{sampleName}/{sampleName}.{coverFileExtension}";
         request = new PutObjectRequest
         {
             BucketName = BucketName,

@@ -9,8 +9,8 @@ export enum FileInputAccept {
 }
 
 const accepts = {
-    [FileInputAccept.image]: "image/jpeg",
-    [FileInputAccept.audio]: "audio/mpeg",
+    [FileInputAccept.image]: "image/png, image/jpeg",
+    [FileInputAccept.audio]: "audio/mpeg, audio/wav, audio/flac",
 }
 
 interface FileInputPropsProps {
@@ -48,7 +48,7 @@ export default function FileInput({
             return;
 
         const selectedFile = inputFileRef.current!.files[0];
-
+        
         if (!accepts[accept].includes(selectedFile.type)) {
             setError(`Не правильный формат файла`);
             return;
