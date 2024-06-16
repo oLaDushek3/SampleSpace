@@ -177,7 +177,7 @@ export default function CreateSampleModal({onClose}: CreateSampleModalProps) {
 
                 {error && <ErrorMessage error={error} setError={setError}/>}
 
-                <Button active={submitLoading} 
+                <Button active={!submitLoading} 
                         alone={true}
                         primary={true}
                         onClick={handleSubmit}>
