@@ -65,10 +65,6 @@ export default function SampleList({fetchFunction, onDelete}: TestSampleListProp
     if (samples === null) {
         return <LoadingSpinner/>
     }
-
-    // useEffect(() => {
-    //     console.log(samples);
-    // }, [samples]);
     
     return (
         <div className={sampleListClasses.list}>

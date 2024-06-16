@@ -71,7 +71,7 @@ export default function Sample({samplePlayer, onDelete}: SampleProps) {
                         <p className={"singleLineText"}>{samplePlayer.sample.artist}</p>
                     </div>
 
-                    {onDelete && (loginUser?.userGuid === samplePlayer.sample.sampleGuid || loginUser?.isAdmin) &&
+                    {onDelete && (loginUser?.userGuid === samplePlayer.sample.userGuid || loginUser?.isAdmin) &&
                         <div className={toolButtonsClasses}>
                             <Button visualType={ButtonVisualType.icon}
                                     onClick={() => onDelete(samplePlayer.sample.sampleGuid)}>
