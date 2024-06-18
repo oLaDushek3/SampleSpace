@@ -22,8 +22,4 @@
       <ProjectReference Include="..\SampleSpaceInfrastructure\SampleSpaceInfrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Files\" />
-    </ItemGroup>
-
 </Project>
