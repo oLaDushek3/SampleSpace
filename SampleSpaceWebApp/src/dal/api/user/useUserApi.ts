@@ -14,13 +14,11 @@ interface useUserApiType {
     resetPassword: (resetToken: string, newPassword: string) => Promise<IUser | string>,
     deleteUser: (userGuid: string) => Promise<IUser | string>,
     getUser: (nickname: string) => Promise<IUser | string>,
-    generateWord: (userGuid: string) => Promise<boolean | string>,
-    generateExcel: (userGuid: string) => Promise<boolean | string>,
     getSampleAdditionStatistics: (userGuid: string) => Promise<ISampleAdditionStatistic[] | string>
 }
 
 export default function useUserApi(): useUserApiType {
-    const {baseAddress, get, post, put, del, download} = useApiBase();
+    const {baseAddress, get, post, put, del} = useApiBase();
 
     const signUp = async (nickname: string, email: string, password: string, avatarBlob?: Blob): Promise<boolean | string> => {
         let url = baseAddress + "user/sign-up";
@@ -80,16 +78,6 @@ export default function useUserApi(): useUserApiType {
         return await get(url);
     }
 
-    const generateWord = async (userGuid: string): Promise<boolean | string> => {
-        let url = baseAddress + `user/generate-word?user-guid=${userGuid}`
-        return await download(url);
-    }
-
-    const generateExcel = async (userGuid: string): Promise<boolean | string> => {
-        let url = baseAddress + `user/generate-excel?user-guid=${userGuid}`
-        return await download(url);
-    }
-
     const getSampleAdditionStatistics = async (userGuid: string): Promise<ISampleAdditionStatistic[] | string> => {
         let url = baseAddress + `user/get-sample-addition-statistics?user-guid=${userGuid}`
         return await get(url);
@@ -104,8 +92,6 @@ export default function useUserApi(): useUserApiType {
         resetPassword, 
         deleteUser, 
         getUser,
-        generateWord,
-        generateExcel,
         getSampleAdditionStatistics
     };
 }
