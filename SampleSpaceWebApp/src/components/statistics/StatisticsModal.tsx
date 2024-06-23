@@ -1,5 +1,5 @@
 import statisticsModalClasses from "./StatisticsModal.module.css";
-import Button, {RadioButton} from "../button/Button.tsx";
+import {RadioButton} from "../button/Button.tsx";
 import ISample from "../../dal/entities/ISample.ts";
 import {Bar} from "react-chartjs-2";
 import {
@@ -78,7 +78,7 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
     useClickOutside(wrapperRef, onClose);
 
     const {getUserSamples} = useSampleApi();
-    const {generateExcel, generateWord, getSampleAdditionStatistics} = useUserApi();
+    const {getSampleAdditionStatistics} = useUserApi();
 
     const [samples, setSamples] = useState<ISample[]>([])
     const chartRef = useRef<HTMLDivElement>(null);
@@ -106,19 +106,6 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
                          }}/>
                 </div>
             </div>
-
-            {loginUser?.isAdmin &&
-                <div className={statisticsModalClasses.buttonPanel + " horizontalPanel"}>
-                    <Button primary={true}
-                            onClick={getWordFile}>
-                        Скачать docx
-                    </Button>
-
-                    <Button primary={true}
-                            onClick={getExcelFile}>
-                        Скачать xlsx
-                    </Button>
-                </div>}
         </div>
     )
 
@@ -143,14 +130,6 @@ export default function StatisticsModal({onClose, userGuid}: StatisticsModalProp
             if(samples.length > 6)
                 chartRef!.current!.style.width = `${samples.length * 50}px`;
     }, [samples]);
-
-    async function getWordFile() {
-        await generateWord(userGuid);
-    }
-
-    async function getExcelFile() {
-        await generateExcel(userGuid);
-    }
 
     useEffect(() => {
         void setNumbersOfListensChartPage();
