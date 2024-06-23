@@ -14,7 +14,7 @@ export default function UserAvatar({src, height}: UserAvatarProps) {
     const [classes, setClasses] = useState(userAvatarClasses.userAvatar);
     
     useEffect(() => {
-        setImageSource(src);
+        setImageSource(src += '?' + new Date().getTime());
         if(src !== null)
             setCorrectSrc(true);
         else
